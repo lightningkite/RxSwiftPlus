@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'RxSwiftProperty_Example' do
+  pod 'RxSwiftProperty', :path => '../'
+
+  target 'RxSwiftProperty_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
