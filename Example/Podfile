@@ -1,13 +1,14 @@
 use_frameworks!
 
-platform :ios, '9.0'
+platform :ios, '11.0'
 
 target 'RxSwiftProperty_Example' do
   pod 'RxSwiftProperty', :path => '../'
 
   target 'RxSwiftProperty_Tests' do
     inherit! :search_paths
-
     
   end
+  pod 'XmlToXibRuntime', :path => '../../XmlToXibRuntime/XmlToXibRuntime.podspec'
+  pod "RxCoreLocation", :git => 'https://github.com/RxSwiftCommunity/RxCoreLocation.git', :branch => 'master'
 end

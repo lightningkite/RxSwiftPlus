@@ -9,16 +9,11 @@
 Pod::Spec.new do |s|
   s.name             = 'RxSwiftProperty'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of RxSwiftProperty.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.summary          = 'Use Rx to bind data to your views'
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+  This adds the concept of Property to RxSwift, which allows immediate retrieval of the value without subscription, as well as contractually restricting completion and errors.
+  Use Rx to bind data to your views.
                        DESC
 
   s.homepage         = 'https://github.com/UnknownJoe796/RxSwiftProperty'
@@ -28,7 +23,7 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/UnknownJoe796/RxSwiftProperty.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '11.0'
 
   s.source_files = 'RxSwiftProperty/Classes/**/*'
   
@@ -39,4 +34,65 @@ TODO: Add long description of the pod here.
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
+  
+  s.subspec 'Core' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/Core"
+    sub.dependency 'RxSwift', '~> 6.2.0'
+    sub.dependency 'RxCocoa', '~> 6.2.0'
+  end
+  s.subspec 'Http' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/Http"
+    sub.dependency 'Starscream'
+  end
+  s.subspec 'Resources' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/Resources"
+    sub.dependency "RxSwiftProperty/Core"
+  end
+  s.subspec 'Bindings' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/Bindings"
+    sub.dependency "RxSwiftProperty/Core"
+    sub.dependency "IBPCollectionViewCompositionalLayout"
+  end
+  s.subspec 'BindingsCosmo' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/BindingsCosmo"
+    sub.dependency "RxSwiftProperty/Bindings"
+    sub.dependency "Cosmos"
+  end
+  s.subspec 'BindingsXibToXmlRuntime' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/BindingsXibToXmlRuntime"
+    sub.dependency "RxSwiftProperty/Bindings"
+    sub.dependency "XmlToXibRuntime"
+  end
+  s.subspec 'BindingsXibToXmlRuntimeSwiftDate' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/BindingsXibToXmlRuntimeSwiftDate"
+    sub.dependency "RxSwiftProperty/BindingsXibToXmlRuntime"
+    sub.dependency "SwiftDate"
+  end
+  s.subspec 'BindingsSearchTextField' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/BindingsSearchTextField"
+    sub.dependency "RxSwiftProperty/Bindings"
+    sub.dependency "SearchTextField"
+  end
+  s.subspec 'ViewGenerator' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/ViewGenerator"
+    sub.dependency "RxSwiftProperty/Resources"
+  end
+  s.subspec 'ViewGeneratorCalendar' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/ViewGeneratorCalendar"
+    sub.dependency "RxSwiftProperty/ViewGenerator"
+  end
+  s.subspec 'ViewGeneratorImage' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/ViewGeneratorImage"
+    sub.dependency "RxSwiftProperty/ViewGenerator"
+    sub.dependency "RxSwiftProperty/Resources"
+    sub.dependency "DKImagePickerController/Core"
+    sub.dependency "DKImagePickerController/ImageDataManager"
+    sub.dependency "DKImagePickerController/Resource"
+    sub.dependency "DKImagePickerController/Camera"
+  end
+  s.subspec 'ViewGeneratorLocation' do |sub|
+    sub.source_files =  "RxSwiftProperty/Classes/ViewGeneratorLocation"
+    sub.dependency "RxSwiftProperty/ViewGenerator"
+    sub.dependency "RxCoreLocation"
+  end
 end

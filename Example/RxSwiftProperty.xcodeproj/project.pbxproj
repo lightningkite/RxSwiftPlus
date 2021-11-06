@@ -8,11 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		7C395CA126DD89A100D34571 /* SelectorLayout.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C395CA026DD89A100D34571 /* SelectorLayout.xib */; };
+		7C395CA526DD8A1000D34571 /* SelectorLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C395CA426DD8A1000D34571 /* SelectorLayout.swift */; };
+		7C395CA726DD8BCC00D34571 /* RootLayout.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C395CA626DD8BCC00D34571 /* RootLayout.xib */; };
+		7C395CA926DD8BDC00D34571 /* RootLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C395CA826DD8BDC00D34571 /* RootLayout.swift */; };
+		7C395CAB26DD8EAF00D34571 /* RootVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C395CAA26DD8EAE00D34571 /* RootVG.swift */; };
+		7C395CAD26DE7EC600D34571 /* ignoreme.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C395CAC26DE7EC600D34571 /* ignoreme.xib */; };
 		931B1DAFC5E7BA5F39661E67 /* Pods_RxSwiftProperty_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF77A7E3AFC191802CE8D84F /* Pods_RxSwiftProperty_Example.framework */; };
 		E14D6A173547136B55F9CAA7 /* Pods_RxSwiftProperty_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6703141210AAA829C6481D8B /* Pods_RxSwiftProperty_Tests.framework */; };
 /* End PBXBuildFile section */
@@ -28,12 +33,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1AF9AECDF648BD6BA4DD9A02 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		426F80EF907F24A1394789DF /* RxSwiftProperty.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = RxSwiftProperty.podspec; path = ../RxSwiftProperty.podspec; sourceTree = "<group>"; };
+		1AF9AECDF648BD6BA4DD9A02 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		426F80EF907F24A1394789DF /* RxSwiftProperty.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = RxSwiftProperty.podspec; path = ../RxSwiftProperty.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		607FACD01AFB9204008FA782 /* RxSwiftProperty_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxSwiftProperty_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -42,11 +46,17 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6703141210AAA829C6481D8B /* Pods_RxSwiftProperty_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSwiftProperty_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE1AAEF8ABDA524165B7B2A /* Pods-RxSwiftProperty_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSwiftProperty_Example.release.xcconfig"; path = "Target Support Files/Pods-RxSwiftProperty_Example/Pods-RxSwiftProperty_Example.release.xcconfig"; sourceTree = "<group>"; };
+		7C395CA026DD89A100D34571 /* SelectorLayout.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectorLayout.xib; sourceTree = "<group>"; };
+		7C395CA426DD8A1000D34571 /* SelectorLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorLayout.swift; sourceTree = "<group>"; };
+		7C395CA626DD8BCC00D34571 /* RootLayout.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootLayout.xib; sourceTree = "<group>"; };
+		7C395CA826DD8BDC00D34571 /* RootLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootLayout.swift; sourceTree = "<group>"; };
+		7C395CAA26DD8EAE00D34571 /* RootVG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVG.swift; sourceTree = "<group>"; };
+		7C395CAC26DE7EC600D34571 /* ignoreme.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ignoreme.xib; sourceTree = "<group>"; };
 		8433721C8F277B5060862DA0 /* Pods-RxSwiftProperty_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSwiftProperty_Tests.debug.xcconfig"; path = "Target Support Files/Pods-RxSwiftProperty_Tests/Pods-RxSwiftProperty_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		A3B96AA40C68F041A0ED64B6 /* Pods-RxSwiftProperty_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSwiftProperty_Example.debug.xcconfig"; path = "Target Support Files/Pods-RxSwiftProperty_Example/Pods-RxSwiftProperty_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		AF77A7E3AFC191802CE8D84F /* Pods_RxSwiftProperty_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSwiftProperty_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1D5AF36173ED90E431E3D41 /* Pods-RxSwiftProperty_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSwiftProperty_Tests.release.xcconfig"; path = "Target Support Files/Pods-RxSwiftProperty_Tests/Pods-RxSwiftProperty_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		F2E4FA1E549F2B641B81CEDC /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		F2E4FA1E549F2B641B81CEDC /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,7 +96,6 @@
 				8433721C8F277B5060862DA0 /* Pods-RxSwiftProperty_Tests.debug.xcconfig */,
 				E1D5AF36173ED90E431E3D41 /* Pods-RxSwiftProperty_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -114,12 +123,13 @@
 		607FACD21AFB9204008FA782 /* Example for RxSwiftProperty */ = {
 			isa = PBXGroup;
 			children = (
+				7C395C9F26DD898300D34571 /* layouts */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
+				7C395CAA26DD8EAE00D34571 /* RootVG.swift */,
 			);
 			name = "Example for RxSwiftProperty";
 			path = RxSwiftProperty;
@@ -158,6 +168,18 @@
 				F2E4FA1E549F2B641B81CEDC /* LICENSE */,
 			);
 			name = "Podspec Metadata";
+			sourceTree = "<group>";
+		};
+		7C395C9F26DD898300D34571 /* layouts */ = {
+			isa = PBXGroup;
+			children = (
+				7C395CA026DD89A100D34571 /* SelectorLayout.xib */,
+				7C395CA426DD8A1000D34571 /* SelectorLayout.swift */,
+				7C395CA626DD8BCC00D34571 /* RootLayout.xib */,
+				7C395CA826DD8BDC00D34571 /* RootLayout.swift */,
+				7C395CAC26DE7EC600D34571 /* ignoreme.xib */,
+			);
+			name = layouts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,6 +249,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -248,7 +271,10 @@
 			files = (
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
+				7C395CA126DD89A100D34571 /* SelectorLayout.xib in Resources */,
+				7C395CA726DD8BCC00D34571 /* RootLayout.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				7C395CAD26DE7EC600D34571 /* ignoreme.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,11 +317,37 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RxSwiftProperty_Example/Pods-RxSwiftProperty_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Cosmos/Cosmos.framework",
+				"${BUILT_PRODUCTS_DIR}/DKCamera/DKCamera.framework",
+				"${BUILT_PRODUCTS_DIR}/DKImagePickerController/DKImagePickerController.framework",
+				"${BUILT_PRODUCTS_DIR}/IBPCollectionViewCompositionalLayout/IBPCollectionViewCompositionalLayout.framework",
+				"${BUILT_PRODUCTS_DIR}/M13Checkbox/M13Checkbox.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCoreLocation/RxCoreLocation.framework",
+				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwiftProperty/RxSwiftProperty.framework",
+				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftDate/SwiftDate.framework",
+				"${BUILT_PRODUCTS_DIR}/XmlToXibRuntime/XmlToXibRuntime.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cosmos.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DKCamera.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DKImagePickerController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IBPCollectionViewCompositionalLayout.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/M13Checkbox.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCoreLocation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftProperty.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftDate.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XmlToXibRuntime.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -331,7 +383,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				7C395CA926DD8BDC00D34571 /* RootLayout.swift in Sources */,
+				7C395CAB26DD8EAF00D34571 /* RootVG.swift in Sources */,
+				7C395CA526DD8A1000D34571 /* SelectorLayout.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -419,7 +473,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -465,7 +519,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -479,12 +533,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = RxSwiftProperty/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -494,12 +549,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = RxSwiftProperty/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -516,11 +572,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RxSwiftProperty_Example.app/RxSwiftProperty_Example";
 			};
 			name = Debug;
@@ -534,11 +591,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RxSwiftProperty_Example.app/RxSwiftProperty_Example";
 			};
 			name = Release;

@@ -1,5 +1,6 @@
 import XCTest
 import RxSwiftProperty
+import RxSwift
 
 class Tests: XCTestCase {
     
@@ -23,6 +24,10 @@ class Tests: XCTestCase {
         self.measure() {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testTemp(){
+        let subject = BehaviorSubject(value: 0)
     }
     
 }
