@@ -1,0 +1,237 @@
+
+---
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.Data"
+  template: "Data  - type: "type"
+  id: "com.lightningkite.rx.android.resources.Image"
+  template: "Image"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.ImageReference"
+#  template: "ImageReference"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ImageReference"
+  template: "Image.localURL(~uri~)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ImageReference.uri"
+  template: "~this~.url"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.ImageBitmap"
+#  template: "ImageBitmap"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ImageBitmap"
+  template: "Image.ui(~bitmap~)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ImageBitmap.bitmap"
+  template: "~this~.uiImage"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.ImageRaw"
+#  template: "ImageRaw"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ImageRaw"
+  template: "Image.raw(~raw~)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ImageRaw.raw"
+  template: "~this~.raw"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.ImageRemoteUrl"
+#  template: "ImageRemoteUrl"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ImageRemoteUrl"
+  template: "Image.remoteUrl(~url~)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ImageRemoteUrl.url"
+  template: "~this~.url"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.ImageResource"
+#  template: "ImageResource"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ImageResource"
+  template: "Image.layer(~resource~)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ImageResource.resource"
+  template: "~this~.maker"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.asImage"
+  receiver: "kotlin.String"
+  template: "Image.remoteUrl(URL(~this~)!)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.asImage"
+  receiver: "android.net.Uri"
+  template: "Image.localUrl(URL(~this~)!)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.asImage"
+  receiver: "android.graphics.Bitmap"
+  template: "Image.ui(~this~)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.asImage"
+  receiver: "kotlin.Int"
+  template: "Image.layer(~this~)"
+
+#- type: "call"
+#  id: "com.lightningkite.rx.android.resources.setFromVideoThumbnail"
+#  receiver: "android.widget.ImageView"
+#  arguments:
+#  - "com.lightningkite.rx.android.resources.Video"
+#  template: "~this~.setFromVideoThumbnail(~video~)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.setVideo"
+  receiver: "com.google.android.exoplayer2.ui.PlayerView"
+  arguments:
+  - "com.lightningkite.rx.android.resources.Video"
+  - "kotlin.Boolean"
+  template: "~this~.setVideo(~video~, playWhenReady: ~playWhenReady~)"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.StringResource"
+  template: "String"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ColorResource"
+  template: "UIColor"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.DrawableResource"
+  template: "()->CALayer"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.setText"
+  receiver: "android.widget.TextView"
+  arguments:
+  - "com.lightningkite.rx.android.resources.ViewString"
+  template: "~this~.text = ~0~"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.thumbnail"
+  receiver: "com.lightningkite.rx.android.resources.Video"
+  arguments:
+  - "kotlin.Long"
+  - "android.graphics.PointF"
+  - "android.content.Context"
+  template: "~this~.thumbnail(timeMs: ~timeMs~, size: ~size~)"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.Video"
+  template: "Video"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.VideoReference"
+#  template: "VideoReference"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.VideoReference"
+  template: "Video.localUrl(~uri~)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.VideoReference.uri"
+  template: "~this~.url"
+
+#- type: "type"
+#  id: "com.lightningkite.rx.android.resources.VideoRemoteUrl"
+#  template: "VideoRemoteUrl"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.VideoRemoteUrl"
+  template: "Video.remoteUrl(URL(~url~)!)"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.VideoRemoteUrl.url"
+  template: "~this~.url"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.asVideo"
+  receiver: "kotlin.String"
+  template: "Video.remoteUrl(URL(~this~)!)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.asVideo"
+  receiver: "android.net.Uri"
+  template: "Video.localUrl(~this~)"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ViewString"
+  template: "String"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ViewString.get"
+  template: "~this~"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ViewStringRaw"
+  template: "String"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ViewStringRaw"
+  template: "~string~"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ViewStringRaw.string"
+  template: "~this~"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ViewStringResource"
+  template: "String"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ViewStringResource"
+  template: "~resource~"
+
+- type: "get"
+  id: "com.lightningkite.rx.android.resources.ViewStringResource.resource"
+  template: "~this~"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ViewStringTemplate"
+  template: "String"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ViewStringTemplate"
+  template: "~template~.format(~arguments~)"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ViewStringComplex"
+  template: "String"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ViewStringComplex"
+  template: "(~getter~)()"
+
+- type: "type"
+  id: "com.lightningkite.rx.android.resources.ViewStringList"
+  template: "String"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.ViewStringList"
+  template: "~parts~.joined(separator: ~separator~)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.joinToViewString"
+  receiver: "kotlin.collections.List"
+  arguments:
+  - "kotlin.String"
+  template: "~this~.joined(separator: ~separator~)"
+
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.toDebugString"
+  receiver: "com.lightningkite.rx.android.resources.ViewString"
+  template: "~this~"

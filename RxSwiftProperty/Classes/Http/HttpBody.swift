@@ -139,7 +139,7 @@ public extension Image {
     func toHttpBodyRaw() -> Single<HttpBody> {
         
         switch(self){
-        case .localURL(url: let url):
+        case .localUrl(url: let url):
             return url.toRequestBody()
         case .raw(raw: let raw):
             return Single.just(HttpBody(mediaType: "image/*", data: raw))

@@ -6,15 +6,15 @@ import RxSwift
 import UIKit
 
 public enum Image {
-    case localURL(url: URL)
-    case ui(uiImage: UIImage)
-    case raw(raw: Data)
-    case remoteUrl(url: URL)
-    case layer(maker: ()->CALayer)
+    case localUrl(_ url: URL)
+    case ui(_ uiImage: UIImage)
+    case raw(_ raw: Data)
+    case remoteUrl(_ url: URL)
+    case layer(_ maker: ()->CALayer)
     
     func load() -> Single<UIImage> {
         switch self {
-        case .localURL(url: let url):
+        case .localUrl(url: let url):
             return loadImage(uri: url)
         case .ui(uiImage: let uiImage):
             return Single.just(uiImage)
@@ -76,7 +76,7 @@ public extension UIImageView {
     func setImage(_ image: Image) {
         self.image = nil
         switch image {
-        case .localURL(url: let url):
+        case .localUrl(url: let url):
             setImageFromUrl(url: url)
         case .ui(uiImage: let uiImage):
             self.image = uiImage

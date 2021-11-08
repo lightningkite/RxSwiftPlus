@@ -11,14 +11,14 @@ public enum VideoLoadError: Error {
 }
 
 public enum Video {
-    case localURL(url: URL)
-    case remoteUrl(url: URL)
+    case localUrl(_ url: URL)
+    case remoteUrl(_ url: URL)
     
     func thumbnail(timeMs: Int64 = 2000, size: CGPoint? = nil) -> Single<Image> {
         return Single.create { (em: SingleEmitter<Image>) in
             let vid: AVAsset
             switch self {
-            case .localURL(url: let url):
+            case .localUrl(url: let url):
                 vid = AVAsset(url: url)
             case .remoteUrl(url: let url):
                 vid = AVAsset(url: url)
@@ -29,7 +29,7 @@ public enum Video {
             let times = [NSValue(time: time)]
             imageGenerator.generateCGImagesAsynchronously(forTimes: times, completionHandler: { _, image, _, _, _ in
                 if let image = image {
-                    em.on(.success(Image.ui(uiImage: UIImage(cgImage: image))))
+                    em.on(.success(Image.ui(UIImage(cgImage: image))))
                 } else {
                     em.on(.failure(VideoLoadError.requestError))
                 }
@@ -39,7 +39,7 @@ public enum Video {
 }
 
 public extension AVPlayerViewController {
-    func setVideo(video: Video){
+    func setVideo(_ video: Video, playWhenReady: Bool = false){
         var player: AVPlayer;
         switch video {
 //        case let video as VideoReference:
@@ -47,11 +47,14 @@ public extension AVPlayerViewController {
 //        case let video as VideoRemoteUrl:
 //            guard let url = URL(string: video.url) else { return }
 //            player = AVPlayer(url: url)
-        case .localURL(url: let url):
+        case .localUrl(url: let url):
             player = AVPlayer(url: url)
         case .remoteUrl(url: let url):
             player = AVPlayer(url: url)
         }
         self.player = player
+        if playWhenReady {
+            player.play()
+        }
     }
 }

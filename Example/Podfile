@@ -10,5 +10,6 @@ target 'RxSwiftProperty_Example' do
     
   end
   pod 'XmlToXibRuntime', :path => '../../XmlToXibRuntime/XmlToXibRuntime.podspec'
+  pod 'KhrysalisRuntime', :path => '../../khrysalis/ios-runtime/KhrysalisRuntime/KhrysalisRuntime.podspec'
   pod "RxCoreLocation", :git => 'https://github.com/RxSwiftCommunity/RxCoreLocation.git', :branch => 'master'
 end
