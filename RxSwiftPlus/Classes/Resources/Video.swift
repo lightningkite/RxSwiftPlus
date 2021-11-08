@@ -38,15 +38,21 @@ public enum Video {
     }
 }
 
+public extension ContainerView {
+    func setVideo(_ video: Video, playWhenReady: Bool = false){
+        if let controller = self.contained as? AVPlayerViewController {
+            controller.setVideo(video, playWhenReady: playWhenReady)
+        } else {
+            let controller = AVPlayerViewController()
+            self.contained = controller
+            controller.setVideo(video, playWhenReady: playWhenReady)
+        }
+    }
+}
 public extension AVPlayerViewController {
     func setVideo(_ video: Video, playWhenReady: Bool = false){
         var player: AVPlayer;
         switch video {
-//        case let video as VideoReference:
-//            player = AVPlayer(url: video.uri)
-//        case let video as VideoRemoteUrl:
-//            guard let url = URL(string: video.url) else { return }
-//            player = AVPlayer(url: url)
         case .localUrl(url: let url):
             player = AVPlayer(url: url)
         case .remoteUrl(url: let url):

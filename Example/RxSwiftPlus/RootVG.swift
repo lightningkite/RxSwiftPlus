@@ -1,13 +1,13 @@
 //
 //  RootVG.swift
-//  RxSwiftProperty_Example
+//  RxSwiftPlus_Example
 //
 //  Created by Joseph Ivie on 8/30/21.
 //  Copyright © 2021 CocoaPods. All rights reserved.
 //
 
 import Foundation
-import RxSwiftProperty
+import RxSwiftPlus
 import RxSwift
 
 //extension UILabel {

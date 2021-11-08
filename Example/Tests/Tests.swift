@@ -1,5 +1,5 @@
 import XCTest
-import RxSwiftProperty
+import RxSwiftPlus
 import RxSwift
 
 class Tests: XCTestCase {

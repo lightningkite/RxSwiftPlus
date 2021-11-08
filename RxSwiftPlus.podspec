@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint RxSwiftProperty.podspec' to ensure this is a
+# Be sure to run `pod lib lint RxSwiftPlus.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'RxSwiftProperty'
+  s.name             = 'RxSwiftPlus'
   s.version          = '0.1.0'
   s.summary          = 'Use Rx to bind data to your views'
 
@@ -16,19 +16,19 @@ Pod::Spec.new do |s|
   Use Rx to bind data to your views.
                        DESC
 
-  s.homepage         = 'https://github.com/UnknownJoe796/RxSwiftProperty'
+  s.homepage         = 'https://github.com/UnknownJoe796/RxSwiftPlus'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'UnknownJoe796' => 'joseph@lightningkite.com' }
-  s.source           = { :git => 'https://github.com/UnknownJoe796/RxSwiftProperty.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/UnknownJoe796/RxSwiftPlus.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '11.0'
 
-  s.source_files = 'RxSwiftProperty/Classes/**/*'
+  s.source_files = 'RxSwiftPlus/Classes/**/*'
   
   # s.resource_bundles = {
-  #   'RxSwiftProperty' => ['RxSwiftProperty/Assets/*.png']
+  #   'RxSwiftPlus' => ['RxSwiftPlus/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
@@ -36,63 +36,63 @@ Pod::Spec.new do |s|
   # s.dependency 'AFNetworking', '~> 2.3'
   
   s.subspec 'Core' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/Core"
+    sub.source_files =  "RxSwiftPlus/Classes/Core"
     sub.dependency 'RxSwift', '~> 6.2.0'
     sub.dependency 'RxCocoa', '~> 6.2.0'
   end
   s.subspec 'Http' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/Http"
+    sub.source_files =  "RxSwiftPlus/Classes/Http"
     sub.dependency 'Starscream'
   end
   s.subspec 'Resources' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/Resources"
-    sub.dependency "RxSwiftProperty/Core"
+    sub.source_files =  "RxSwiftPlus/Classes/Resources"
+    sub.dependency "RxSwiftPlus/Core"
   end
   s.subspec 'Bindings' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/Bindings"
-    sub.dependency "RxSwiftProperty/Core"
+    sub.source_files =  "RxSwiftPlus/Classes/Bindings"
+    sub.dependency "RxSwiftPlus/Core"
     sub.dependency "IBPCollectionViewCompositionalLayout"
   end
   s.subspec 'BindingsCosmo' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/BindingsCosmo"
-    sub.dependency "RxSwiftProperty/Bindings"
+    sub.source_files =  "RxSwiftPlus/Classes/BindingsCosmo"
+    sub.dependency "RxSwiftPlus/Bindings"
     sub.dependency "Cosmos"
   end
   s.subspec 'BindingsXibToXmlRuntime' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/BindingsXibToXmlRuntime"
-    sub.dependency "RxSwiftProperty/Bindings"
+    sub.source_files =  "RxSwiftPlus/Classes/BindingsXibToXmlRuntime"
+    sub.dependency "RxSwiftPlus/Bindings"
     sub.dependency "XmlToXibRuntime"
   end
   s.subspec 'BindingsXibToXmlRuntimeKhrysalis' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/BindingsXibToXmlRuntimeKhrysalis"
-    sub.dependency "RxSwiftProperty/BindingsXibToXmlRuntime"
+    sub.source_files =  "RxSwiftPlus/Classes/BindingsXibToXmlRuntimeKhrysalis"
+    sub.dependency "RxSwiftPlus/BindingsXibToXmlRuntime"
     sub.dependency "KhrysalisRuntime"
   end
   s.subspec 'BindingsSearchTextField' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/BindingsSearchTextField"
-    sub.dependency "RxSwiftProperty/Bindings"
+    sub.source_files =  "RxSwiftPlus/Classes/BindingsSearchTextField"
+    sub.dependency "RxSwiftPlus/Bindings"
     sub.dependency "SearchTextField"
   end
   s.subspec 'ViewGenerator' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/ViewGenerator"
-    sub.dependency "RxSwiftProperty/Resources"
+    sub.source_files =  "RxSwiftPlus/Classes/ViewGenerator"
+    sub.dependency "RxSwiftPlus/Resources"
   end
   s.subspec 'ViewGeneratorCalendar' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/ViewGeneratorCalendar"
-    sub.dependency "RxSwiftProperty/ViewGenerator"
+    sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorCalendar"
+    sub.dependency "RxSwiftPlus/ViewGenerator"
   end
   s.subspec 'ViewGeneratorImage' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/ViewGeneratorImage"
-    sub.dependency "RxSwiftProperty/ViewGenerator"
-    sub.dependency "RxSwiftProperty/Resources"
+    sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorImage"
+    sub.dependency "RxSwiftPlus/ViewGenerator"
+    sub.dependency "RxSwiftPlus/Resources"
     sub.dependency "DKImagePickerController/Core"
     sub.dependency "DKImagePickerController/ImageDataManager"
     sub.dependency "DKImagePickerController/Resource"
     sub.dependency "DKImagePickerController/Camera"
   end
   s.subspec 'ViewGeneratorLocation' do |sub|
-    sub.source_files =  "RxSwiftProperty/Classes/ViewGeneratorLocation"
-    sub.dependency "RxSwiftProperty/ViewGenerator"
+    sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorLocation"
+    sub.dependency "RxSwiftPlus/ViewGenerator"
     sub.dependency "RxCoreLocation"
   end
 end

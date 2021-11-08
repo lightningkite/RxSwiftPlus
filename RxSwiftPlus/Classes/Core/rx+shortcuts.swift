@@ -1,6 +1,6 @@
 //
 //  rx+shortcuts.swift
-//  RxSwiftProperty
+//  RxSwiftPlus
 //
 //  Created by Joseph Ivie on 10/19/21.
 //

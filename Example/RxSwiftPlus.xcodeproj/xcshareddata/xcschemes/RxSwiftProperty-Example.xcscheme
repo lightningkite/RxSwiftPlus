@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "RxSwiftProperty_Example.app"
-               BlueprintName = "RxSwiftProperty_Example"
-               ReferencedContainer = "container:RxSwiftProperty.xcodeproj">
+               BuildableName = "RxSwiftPlus_Example.app"
+               BlueprintName = "RxSwiftPlus_Example"
+               ReferencedContainer = "container:RxSwiftPlus.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "RxSwiftProperty_Tests.xctest"
-               BlueprintName = "RxSwiftProperty_Tests"
-               ReferencedContainer = "container:RxSwiftProperty.xcodeproj">
+               BuildableName = "RxSwiftPlus_Tests.xctest"
+               BlueprintName = "RxSwiftPlus_Tests"
+               ReferencedContainer = "container:RxSwiftPlus.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,9 +48,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "RxSwiftProperty_Tests.xctest"
-               BlueprintName = "RxSwiftProperty_Tests"
-               ReferencedContainer = "container:RxSwiftProperty.xcodeproj">
+               BuildableName = "RxSwiftPlus_Tests.xctest"
+               BlueprintName = "RxSwiftPlus_Tests"
+               ReferencedContainer = "container:RxSwiftPlus.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "RxSwiftProperty_Example.app"
-            BlueprintName = "RxSwiftProperty_Example"
-            ReferencedContainer = "container:RxSwiftProperty.xcodeproj">
+            BuildableName = "RxSwiftPlus_Example.app"
+            BlueprintName = "RxSwiftPlus_Example"
+            ReferencedContainer = "container:RxSwiftPlus.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -82,9 +82,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "RxSwiftProperty_Example.app"
-            BlueprintName = "RxSwiftProperty_Example"
-            ReferencedContainer = "container:RxSwiftProperty.xcodeproj">
+            BuildableName = "RxSwiftPlus_Example.app"
+            BlueprintName = "RxSwiftPlus_Example"
+            ReferencedContainer = "container:RxSwiftPlus.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -101,9 +101,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "RxSwiftProperty_Example.app"
-            BlueprintName = "RxSwiftProperty_Example"
-            ReferencedContainer = "container:RxSwiftProperty.xcodeproj">
+            BuildableName = "RxSwiftPlus_Example.app"
+            BlueprintName = "RxSwiftPlus_Example"
+            ReferencedContainer = "container:RxSwiftPlus.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

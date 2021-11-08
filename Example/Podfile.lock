@@ -23,55 +23,55 @@ PODS:
   - RxRelay (6.2.0):
     - RxSwift (= 6.2.0)
   - RxSwift (6.2.0)
-  - RxSwiftProperty (0.1.0):
-    - RxSwiftProperty/Bindings (= 0.1.0)
-    - RxSwiftProperty/BindingsCosmo (= 0.1.0)
-    - RxSwiftProperty/BindingsSearchTextField (= 0.1.0)
-    - RxSwiftProperty/BindingsXibToXmlRuntime (= 0.1.0)
-    - RxSwiftProperty/BindingsXibToXmlRuntimeKhrysalis (= 0.1.0)
-    - RxSwiftProperty/Core (= 0.1.0)
-    - RxSwiftProperty/Http (= 0.1.0)
-    - RxSwiftProperty/Resources (= 0.1.0)
-    - RxSwiftProperty/ViewGenerator (= 0.1.0)
-    - RxSwiftProperty/ViewGeneratorCalendar (= 0.1.0)
-    - RxSwiftProperty/ViewGeneratorImage (= 0.1.0)
-    - RxSwiftProperty/ViewGeneratorLocation (= 0.1.0)
-  - RxSwiftProperty/Bindings (0.1.0):
+  - RxSwiftPlus (0.1.0):
+    - RxSwiftPlus/Bindings (= 0.1.0)
+    - RxSwiftPlus/BindingsCosmo (= 0.1.0)
+    - RxSwiftPlus/BindingsSearchTextField (= 0.1.0)
+    - RxSwiftPlus/BindingsXibToXmlRuntime (= 0.1.0)
+    - RxSwiftPlus/BindingsXibToXmlRuntimeKhrysalis (= 0.1.0)
+    - RxSwiftPlus/Core (= 0.1.0)
+    - RxSwiftPlus/Http (= 0.1.0)
+    - RxSwiftPlus/Resources (= 0.1.0)
+    - RxSwiftPlus/ViewGenerator (= 0.1.0)
+    - RxSwiftPlus/ViewGeneratorCalendar (= 0.1.0)
+    - RxSwiftPlus/ViewGeneratorImage (= 0.1.0)
+    - RxSwiftPlus/ViewGeneratorLocation (= 0.1.0)
+  - RxSwiftPlus/Bindings (0.1.0):
     - IBPCollectionViewCompositionalLayout
-    - RxSwiftProperty/Core
-  - RxSwiftProperty/BindingsCosmo (0.1.0):
+    - RxSwiftPlus/Core
+  - RxSwiftPlus/BindingsCosmo (0.1.0):
     - Cosmos
-    - RxSwiftProperty/Bindings
-  - RxSwiftProperty/BindingsSearchTextField (0.1.0):
-    - RxSwiftProperty/Bindings
+    - RxSwiftPlus/Bindings
+  - RxSwiftPlus/BindingsSearchTextField (0.1.0):
+    - RxSwiftPlus/Bindings
     - SearchTextField
-  - RxSwiftProperty/BindingsXibToXmlRuntime (0.1.0):
-    - RxSwiftProperty/Bindings
+  - RxSwiftPlus/BindingsXibToXmlRuntime (0.1.0):
+    - RxSwiftPlus/Bindings
     - XmlToXibRuntime
-  - RxSwiftProperty/BindingsXibToXmlRuntimeKhrysalis (0.1.0):
+  - RxSwiftPlus/BindingsXibToXmlRuntimeKhrysalis (0.1.0):
     - KhrysalisRuntime
-    - RxSwiftProperty/BindingsXibToXmlRuntime
-  - RxSwiftProperty/Core (0.1.0):
+    - RxSwiftPlus/BindingsXibToXmlRuntime
+  - RxSwiftPlus/Core (0.1.0):
     - RxCocoa (~> 6.2.0)
     - RxSwift (~> 6.2.0)
-  - RxSwiftProperty/Http (0.1.0):
+  - RxSwiftPlus/Http (0.1.0):
     - Starscream
-  - RxSwiftProperty/Resources (0.1.0):
-    - RxSwiftProperty/Core
-  - RxSwiftProperty/ViewGenerator (0.1.0):
-    - RxSwiftProperty/Resources
-  - RxSwiftProperty/ViewGeneratorCalendar (0.1.0):
-    - RxSwiftProperty/ViewGenerator
-  - RxSwiftProperty/ViewGeneratorImage (0.1.0):
+  - RxSwiftPlus/Resources (0.1.0):
+    - RxSwiftPlus/Core
+  - RxSwiftPlus/ViewGenerator (0.1.0):
+    - RxSwiftPlus/Resources
+  - RxSwiftPlus/ViewGeneratorCalendar (0.1.0):
+    - RxSwiftPlus/ViewGenerator
+  - RxSwiftPlus/ViewGeneratorImage (0.1.0):
     - DKImagePickerController/Camera
     - DKImagePickerController/Core
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-    - RxSwiftProperty/Resources
-    - RxSwiftProperty/ViewGenerator
-  - RxSwiftProperty/ViewGeneratorLocation (0.1.0):
+    - RxSwiftPlus/Resources
+    - RxSwiftPlus/ViewGenerator
+  - RxSwiftPlus/ViewGeneratorLocation (0.1.0):
     - RxCoreLocation
-    - RxSwiftProperty/ViewGenerator
+    - RxSwiftPlus/ViewGenerator
   - SearchTextField (1.2.4)
   - Starscream (4.0.4)
   - XmlToXibRuntime (0.1.0):
@@ -80,7 +80,7 @@ PODS:
 DEPENDENCIES:
   - KhrysalisRuntime (from `../../khrysalis/ios-runtime/KhrysalisRuntime/KhrysalisRuntime.podspec`)
   - RxCoreLocation (from `https://github.com/RxSwiftCommunity/RxCoreLocation.git`, branch `master`)
-  - RxSwiftProperty (from `../`)
+  - RxSwiftPlus (from `../`)
   - XmlToXibRuntime (from `../../XmlToXibRuntime/XmlToXibRuntime.podspec`)
 
 SPEC REPOS:
@@ -102,7 +102,7 @@ EXTERNAL SOURCES:
   RxCoreLocation:
     :branch: master
     :git: https://github.com/RxSwiftCommunity/RxCoreLocation.git
-  RxSwiftProperty:
+  RxSwiftPlus:
     :path: "../"
   XmlToXibRuntime:
     :path: "../../XmlToXibRuntime/XmlToXibRuntime.podspec"
@@ -123,11 +123,11 @@ SPEC CHECKSUMS:
   RxCoreLocation: 5db05ff830a313466a29e82798d983826b93a2f8
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
-  RxSwiftProperty: b99bd7d5444cbfaf8276a9bcb3e7247a523554c7
+  RxSwiftPlus: 71c2cbc4b0f77f28455b851f8e224a9df48dda6a
   SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   XmlToXibRuntime: 544458d25275c4cccc86bc3e959300b886ea3736
 
-PODFILE CHECKSUM: 90c94baed71e30cf31bafcad5e89a07594c89d79
+PODFILE CHECKSUM: 3f900ea493a3e2d60d061ea6c67d9f2e4d30caf7
 
 COCOAPODS: 1.11.2

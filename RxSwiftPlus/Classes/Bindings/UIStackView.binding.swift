@@ -1,6 +1,6 @@
 //
 //  UIStackView.binding.swift
-//  RxSwiftProperty
+//  RxSwiftPlus
 //
 //  Created by Joseph Ivie on 10/14/21.
 //
