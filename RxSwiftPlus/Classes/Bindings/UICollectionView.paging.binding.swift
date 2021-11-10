@@ -64,14 +64,14 @@ protocol HasAtPosition {
     var atPosition: (Int) -> Void { get set }
 }
 
-class CollectionBoundDataSource<T, Observable: ObservableType>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtPosition where Observable.Element == T{
+class SillyDataSource<T>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtPosition {
     var reversedDirection: Bool = false
     
     var data: Array<T> = []
-    let makeView: (Observable) -> UIView
+    let makeView: (T) -> UIView
     let spacing: CGFloat
 
-    init(spacing: CGFloat, makeView: @escaping (Observable) -> UIView) {
+    init(spacing: CGFloat, makeView: @escaping (T) -> UIView) {
         self.spacing = spacing
         self.makeView = makeView
         super.init()
@@ -90,14 +90,10 @@ class CollectionBoundDataSource<T, Observable: ObservableType>: NSObject, UIColl
         }
         let cell: CustomUICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "main-cell", for: indexPath) as! CustomUICollectionViewCell
         cell.spacing = self.spacing
-        if cell.obs == nil {
-            let obs = BehaviorSubject<T>(value: data[indexPath.row])
-            cell.obs = obs
-            let new = makeView(obs as! Observable)
-            cell.contentView.addSubview(new)
-        } else if let obs = cell.obs as? BehaviorSubject<T> {
-            obs.onNext(data[indexPath.row])
+        for sub in cell.contentView.subviews {
+            sub.removeFromSuperview()
         }
+        cell.contentView.addSubview(makeView(data[indexPath.row]))
         return cell
     }
 
@@ -108,17 +104,15 @@ class CollectionBoundDataSource<T, Observable: ObservableType>: NSObject, UIColl
             atPosition(Int(x))
         }
     }
-
 }
 
 
-
-public extension ObservableType where Element: Collection {
+public extension Collection {
     @discardableResult
-    func showIn<Subject: SubjectType, Observable:ObservableType>(_ view: UICollectionView, _ showIndex: Subject = BehaviorSubject(value: 0) as! Subject, makeView: @escaping (Observable) -> UIView) -> Self where Subject.Element == Int, Subject.Observer.Element == Int, Observable.Element == Element.Element{
+    func showIn<Subject: SubjectType>(_ view: UICollectionView, showIndex: Subject = BehaviorSubject(value: 0) as! Subject, makeView: @escaping (Element) -> UIView) -> Self where Subject.Element == Int, Subject.Observer.Element == Int {
         
         view.register(CustomUICollectionViewCell.self, forCellWithReuseIdentifier: "main-cell")
-        let boundDataSource = CollectionBoundDataSource<Element.Element, Observable>(spacing: 0, makeView: makeView)
+        let boundDataSource = SillyDataSource<Element>(spacing: 0, makeView: makeView)
         view.dataSource = boundDataSource
         view.delegate = boundDataSource
         view.retain(item: boundDataSource).disposed(by: view.removed)

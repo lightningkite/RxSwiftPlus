@@ -4,9 +4,6 @@ import RxCocoa
 extension ControlProperty: SubjectType {}
 
 public class ValueSubjectDelegate<Element>: HasValueSubject<Element> {
-    public override func asObserver() -> AnyObserver<Element> {
-        return delegatedToObserver
-    }
     private let delegatedToObserver: Observer
     private let delegatedToObservable: Observable<Element>
     private let onGet: ()->Element
@@ -34,20 +31,19 @@ public class ValueSubjectDelegate<Element>: HasValueSubject<Element> {
         self.delegatedToObservable = values
         self.onGet = onGet
         self.onSet = onSet
+        super.init()
     }
 }
 
-open class HasValueSubject<Element>: SubjectType {
-    public typealias Observer = AnyObserver<Element>
-    public func subscribe<Observer>(_ observer: Observer) -> Disposable where Observer : ObserverType, Element == Observer.Element { fatalError() }
-    public func asObserver() -> AnyObserver<Element> { fatalError() }
-    public var value: Element { get { fatalError() } set { fatalError() }}
+open class HasValueSubject<Element>: Subject<Element> {
+    open var value: Element { get { fatalError() } set { fatalError() }}
+    override public init() { super.init() }
 }
 
 public class ValueSubject<Element> : HasValueSubject<Element> {
     public let behaviorSubject: BehaviorSubject<Element>
-    public override func asObserver() -> AnyObserver<Element> {
-        return behaviorSubject.asObserver()
+    public override func on(_ event: Event<Element>) {
+        behaviorSubject.on(event)
     }
     public override var value: Element {
         get {
@@ -62,13 +58,9 @@ public class ValueSubject<Element> : HasValueSubject<Element> {
         return behaviorSubject.subscribe(observer)
     }
     
-    public init(
-        behaviorSubject: BehaviorSubject<Element>
-    ) {
-        self.behaviorSubject = behaviorSubject
-    }
     public init(_ value: Element) {
         self.behaviorSubject = BehaviorSubject(value: value)
+        super.init()
     }
 }
 

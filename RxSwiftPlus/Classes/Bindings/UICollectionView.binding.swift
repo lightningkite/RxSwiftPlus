@@ -372,9 +372,9 @@ class ObsUICollectionViewCell: UICollectionViewCell {
 //        }
 //    }
     
-    deinit {
-        self.removedDeinitHandler()
-    }
+//    deinit {
+//        self.removedDeinitHandler()
+//    }
 }
 
 public extension UICollectionView {

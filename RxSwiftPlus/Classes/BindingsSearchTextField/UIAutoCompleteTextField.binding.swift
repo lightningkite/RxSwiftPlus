@@ -8,11 +8,11 @@ import RxCocoa
 
 public extension ObservableType where Element: Collection {
     @discardableResult
-    func showIn<Obs: ObserverType>(_ view: SearchTextField, onItemSelected: Obs, toString: @escaping (Element.Element) -> String) -> Self where Obs.Element == Element.Element {
+    func showIn<Obs: ObserverType>(_ view: SearchTextField, onItemSelected: Obs, toString: @escaping (Element.Element) -> String = {"\($0)"}) -> Self where Obs.Element == Element.Element {
         return showIn(view, onItemSelected: { onItemSelected.onNext($0) }, toString: toString)
     }
     @discardableResult
-    func showIn(_ view: SearchTextField, onItemSelected: @escaping (Element.Element) -> Void, toString: @escaping (Element.Element) -> String) -> Self{
+    func showIn(_ view: SearchTextField, onItemSelected: @escaping (Element.Element) -> Void, toString: @escaping (Element.Element) -> String = {"\($0)"}) -> Self{
         if let font = view.font { view.theme.font = font }
         if let textColor = view.textColor { view.theme.fontColor = textColor }
         

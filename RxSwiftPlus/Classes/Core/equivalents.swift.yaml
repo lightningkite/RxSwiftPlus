@@ -1,40 +1,22 @@
 ---
-- type: "call"
-  id: "com.lightningkite.rx.forever"
-  receiver: "io.reactivex.rxjava3.disposables.Disposable"
+
+- type: "type"
+  id: "com.lightningkite.rx.viewgenerators.StackSubject"
   template:
-    pattern: "~this~.forever()"
+    pattern: "ValueSubject<Array<~T0~>>"
     imports: [RxSwiftPlus]
 
 - type: "type"
-  id: "com.lightningkite.rx.HasValueSubject"
+  id: "com.lightningkite.rx.viewgenerators.ViewGeneratorStack"
   template:
-    pattern: "HasValueSubject<~T0~>"
-    imports: [RxSwiftPlus]
-
-- type: "get"
-  id: "com.lightningkite.rx.HasValueSubject.value"
-  template:
-    pattern: "~this~.value"
-    imports: [RxSwiftPlus]
-
-- type: "set"
-  id: "com.lightningkite.rx.HasValueSubject.value"
-  template:
-    pattern: "~this~.value = ~value~"
-    imports: [RxSwiftPlus]
-
-- type: "type"
-  id: "com.lightningkite.rx.ValueSubject"
-  template:
-    pattern: "ValueSubject<~T0~>"
+    pattern: "ValueSubject<Array<ViewGenerator>>"
     imports: [RxSwiftPlus]
 
 - type: "call"
-  id: "com.lightningkite.rx.ValueSubject"
+  id: "io.reactivex.rxjava3.kotlin.addTo"
   template:
-    pattern: "ValueSubject(value: ~value~)"
-    imports: [RxSwiftPlus]
+    pattern: "~this~.disposed(by: ~0~)"
+    imports: [RxSwift]
 
 - type: "call"
   id: "com.lightningkite.rx.makeSubject"
@@ -45,43 +27,6 @@
     pattern: "ValueSubjectDelegate(values: ~observable~, valueSink: ~observer~)"
     imports: [RxSwiftPlus]
 
-- type: "call"
-  id: "com.lightningkite.rx.map"
-  receiver: "io.reactivex.rxjava3.subjects.Subject"
-  arguments:
-    - "kotlin.Function1"
-    - "kotlin.Function1"
-  template:
-    pattern: "~this~.map(read: ~read~, write: ~write~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.mapMaybeWrite"
-  receiver: "io.reactivex.rxjava3.subjects.Subject"
-  arguments:
-    - "kotlin.Function1"
-    - "kotlin.Function1"
-  template:
-    pattern: "~this~.mapMaybeWrite(read: ~read~, write: ~write~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.mapWithExisting"
-  receiver: "com.lightningkite.rx.HasValueSubject"
-  arguments:
-    - "kotlin.Function1"
-    - "kotlin.Function2"
-  template:
-    pattern: "~this~.mapWithExisting(read: ~read~, write: ~write~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.notNull"
-  receiver: "io.reactivex.rxjava3.core.Observable"
-  template:
-    pattern: "~this~.notNull()"
-    imports: [RxSwiftPlus]
-
 - type: "get"
   id: "com.lightningkite.rx.kotlin"
   template: "~this~"
@@ -89,21 +34,6 @@
 - type: "get"
   id: "com.lightningkite.rx.optional"
   template: "~this~"
-
-- type: "call"
-  id: "com.lightningkite.rx.withWrite"
-  receiver: "io.reactivex.rxjava3.core.Observable"
-  arguments:
-    - "kotlin.Function1"
-  template:
-    pattern: "~this~.withWrite(onWrite: ~onWrite~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.switchMapMutable"
-  template:
-    pattern: "~this~.switchMapMutable(~transformation~)" #TODO
-    imports: [RxSwiftPlus]
 
 - type: "call"
   id: "com.lightningkite.rx.subscribeByNullable"
@@ -150,27 +80,6 @@
     imports: [RxSwiftPlus]
 
 - type: "call"
-  id: "com.lightningkite.rx.isEqualToOrNull"
-  template:
-    pattern: "~this~.isEqualToOrNull(~other~)" #TODO
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.notEqualToOrNull"
-  template:
-    pattern: "~this~.notEqualToOrNull(~other~)" #TODO
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.get"
-  receiver: "com.lightningkite.rx.HasValueSubject"
-  arguments:
-    - "kotlin.reflect.KMutableProperty1"
-  template:
-    pattern: "~this~.get(~property~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
   id: "com.lightningkite.rx.isIn"
   receiver: "io.reactivex.rxjava3.core.Observable"
   arguments:
@@ -186,24 +95,6 @@
     - "io.reactivex.rxjava3.core.Observable"
   template:
     pattern: "(!~other~.contains(~this~))"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.contains"
-  receiver: "com.lightningkite.rx.HasValueSubject"
-  arguments:
-    - "com.lightningkite.rx.contains.T"
-  template:
-    pattern: "~this~.contains(~constant~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.doesNotContain"
-  receiver: "com.lightningkite.rx.HasValueSubject"
-  arguments:
-    - "com.lightningkite.rx.doesNotContain.T"
-  template:
-    pattern: "~this~.doesNotContain(~constant~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
@@ -292,30 +183,12 @@
     imports: [RxSwiftPlus]
 
 - type: "call"
-  id: "com.lightningkite.rx.flatMapNotNull"
-  receiver: "io.reactivex.rxjava3.core.Observable"
-  arguments:
-    - "kotlin.Function1"
-  template:
-    pattern: "~this~.flatMapNotNull(~mapper~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
   id: "com.lightningkite.rx.switchMapNotNull"
   receiver: "io.reactivex.rxjava3.core.Observable"
   arguments:
     - "kotlin.Function1"
   template:
     pattern: "~this~.flatMapLatestNotNull(~mapper~)"
-    imports: [RxSwiftPlus]
-
-- type: "call"
-  id: "com.lightningkite.rx.flatMapNotNull"
-  receiver: "io.reactivex.rxjava3.core.Observable"
-  arguments:
-    - "kotlin.Function1"
-  template:
-    pattern: "~this~.flatMapNotNull(~mapper~)"
     imports: [RxSwiftPlus]
 
 - type: "call"

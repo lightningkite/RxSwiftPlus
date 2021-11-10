@@ -211,3 +211,131 @@ func <-> <T, S: SubjectType>(property: ControlProperty<T>, subject: S) -> Dispos
 
     return Disposables.create(bindToUIDisposable, bindToRelay)
 }
+
+
+// TODO: Find a way to remove the below
+public extension Observable {
+
+    func flatMapNR<Destination>(_ conversion: @escaping (Element)->Observable<Destination>) -> Observable<Destination> {
+        return self.flatMap { (it: Element) -> Observable<Destination> in
+            conversion(it)
+        }
+    }
+
+    func switchMap<Destination>(_ conversion: @escaping (Element) -> Observable<Destination>) -> Observable<Destination> {
+        return self.flatMapLatest { (it: Element) -> Observable<Destination> in
+            conversion(it)
+        }
+    }
+
+    func drop(_ count: Int) -> Observable<Element> {
+        return self.skip(count)
+    }
+
+    func doOnComplete(_ action: @escaping () throws -> Void) -> Observable<Element> {
+        return self.do(onCompleted: action)
+    }
+    func doOnError(_ action: @escaping (Error) throws -> Void) -> Observable<Element> {
+        return self.do(onError: action)
+    }
+    func doOnNext(_ action: @escaping (Element) throws -> Void) -> Observable<Element> {
+        return self.do(onNext: action)
+    }
+    func doOnTerminate(_ action: @escaping () -> Void) -> Observable<Element> {
+        return self.do(onDispose: action)
+    }
+
+    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Observable<Element> {
+        return self.do(onSubscribe: { action(placeholderDisposable) })
+    }
+    func doOnDispose(_ action: @escaping () -> Void) -> Observable<Element> {
+        return self.do(onDispose: action)
+    }
+}
+
+private let placeholderDisposable = DisposableLambda {}
+
+public extension PrimitiveSequenceType where Trait == SingleTrait {
+    func toObservable() -> Observable<Element> {
+        return self.primitiveSequence.asObservable()
+    }
+
+    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Single<Element> {
+        return self.do(onSubscribe: { action(placeholderDisposable) })
+    }
+
+    func doFinally(_ action: @escaping () -> Void) -> Single<Element> {
+        return self.do(onSuccess: { _ in action() }, onError: { _ in action() })
+    }
+
+    func doOnSuccess(_ action: @escaping (Element) -> Void) -> Single<Element> {
+        return self.do(onSuccess: action)
+    }
+
+    func doOnError(_ action: @escaping (Swift.Error) -> Void) -> Single<Element> {
+        return self.do(onError: action)
+    }
+}
+public extension PrimitiveSequenceType where Trait == MaybeTrait {
+    func toObservable() -> Observable<Element> {
+        return self.primitiveSequence.asObservable()
+    }
+}
+public typealias Scheduler = RxSwift.SchedulerType
+
+public enum Schedulers {
+
+    public static func newThread() -> Scheduler {
+        return ConcurrentDispatchQueueScheduler(qos: .background)
+    }
+
+    public static func io() -> Scheduler {
+        return ConcurrentDispatchQueueScheduler(qos: .background)
+    }
+
+}
+
+public enum AndroidSchedulers {
+
+    public static func mainThread() -> Scheduler {
+        return MainScheduler.instance
+    }
+
+}
+
+public extension BehaviorSubject {
+    static func create(value: Element) -> BehaviorSubject<Element> {
+        return BehaviorSubject(value: value)
+    }
+}
+public extension PublishSubject {
+    static func create() -> PublishSubject<Element> {
+        return PublishSubject()
+    }
+}
+
+//extension Observable where Observable.Element: OptionalConvertible {
+//    func filterNotNull() -> Observable<Element.Wrapped> {
+//        self.filter { $0.asOptional != nil }.map { $0.asOptional! }
+//    }
+//}
+
+func xListCombineLatest<IN, OUT>(
+    _ self: Array<Observable<IN>>,
+    combine: @escaping (Array<IN>) -> OUT
+) -> Observable<OUT> {
+    return Observable.combineLatest(self, resultSelector: combine)
+}
+func xListCombineLatest<IN>(
+    _ self: Array<Observable<IN>>
+) -> Observable<Array<IN>> {
+    return Observable.combineLatest(self)
+}
+extension Array where Element: ObservableType {
+    func combineLatest<OUT>(combine: @escaping (Array<Element.Element>)->OUT) -> Observable<OUT> {
+        return Observable.combineLatest(self, resultSelector: combine)
+    }
+    func combineLatest() -> Observable<Array<Element.Element>> {
+        return Observable.combineLatest(self)
+    }
+}

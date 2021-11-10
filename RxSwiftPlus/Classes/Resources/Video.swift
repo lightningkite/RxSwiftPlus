@@ -14,7 +14,7 @@ public enum Video {
     case localUrl(_ url: URL)
     case remoteUrl(_ url: URL)
     
-    func thumbnail(timeMs: Int64 = 2000, size: CGPoint? = nil) -> Single<Image> {
+    public func thumbnail(timeMs: Int64 = 2000, size: CGPoint? = nil) -> Single<Image> {
         return Single.create { (em: SingleEmitter<Image>) in
             let vid: AVAsset
             switch self {

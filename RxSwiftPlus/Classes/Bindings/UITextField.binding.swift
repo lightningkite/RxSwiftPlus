@@ -19,3 +19,16 @@ public extension SubjectType where Element == Optional<String>, Observer.Element
         return self
     }
 }
+public extension SubjectType where Element == String, Observer.Element == Element {
+    @discardableResult
+    func bind(_ view: UITextField) -> Self {
+        self.map(read: {$0 as String?}, write: {$0 ?? ""}).bind(view)
+        return self
+    }
+    
+    @discardableResult
+    func bind(_ view: UITextView) -> Self {
+        self.map(read: {$0 as String?}, write: {$0 ?? ""}).bind(view)
+        return self
+    }
+}

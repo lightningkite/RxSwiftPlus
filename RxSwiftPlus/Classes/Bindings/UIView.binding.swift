@@ -116,6 +116,52 @@ public extension ObservableType {
         return self
     }
 }
+public extension ObservableType where Element: OptionalType {
+    @discardableResult
+    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element.Wrapped) -> Void)-> Self{
+        subscribe(
+            onNext: { value in
+                if let value = value.asOptional() {
+                    setter(view, value)
+                }
+            }
+        ).disposed(by: view.removed)
+        return self
+    }
+    @discardableResult
+    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped) -> Void)-> Self{
+        subscribe(
+            onNext: { value in
+                if let value = value.asOptional() {
+                    setter(view)(value)
+                }
+            }
+        ).disposed(by: view.removed)
+        return self
+    }
+    @discardableResult
+    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped, UIControl.State) -> Void)-> Self{
+        subscribe(
+            onNext: { value in
+                if let value = value.asOptional() {
+                    setter(view)(value, .normal)
+                }
+            }
+        ).disposed(by: view.removed)
+        return self
+    }
+    @discardableResult
+    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element.Wrapped>)-> Self{
+        subscribe(
+            onNext: { value in
+                if let value = value.asOptional() {
+                    view[keyPath: setter] = value
+                }
+            }
+        ).disposed(by: view.removed)
+        return self
+    }
+}
 
 private func test(view: UILabel) {
     Observable.just("asdf").subscribeAutoDispose(view, \.text)

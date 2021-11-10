@@ -3,23 +3,44 @@ import XmlToXibRuntime
 import RxSwift
 import RxCocoa
 
+private extension UIResponder {
+    var parentViewController: UIViewController? {
+        return next as? UIViewController ?? next?.parentViewController
+    }
+}
+
+private extension UIView {
+    func launchPickerDialog(makeView: () -> UIView) {
+        let pickerView = makeView()
+        let alertView = UIAlertController(title: "", message: "", preferredStyle: UIAlertController.Style.alert)
+        alertView.view.addSubview(pickerView)
+        let action = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
+        alertView.addAction(action)
+        parentViewController?.present(alertView, animated: true, completion: nil)
+    }
+}
+
 
 public extension ObservableType where Element: Collection, Element.Element: Equatable{
     
     @discardableResult
-    func showIn<Subject: SubjectType>(_ view: InputViewButton, _ selected: Subject, _ toString: @escaping (Element.Element) -> String) -> Self where Subject.Observer.Element == Subject.Element, Subject.Element == Element.Element {
+    func showIn<Subject: SubjectType>(_ view: UIButton, selected: Subject, _ toString: @escaping (Element.Element) -> String = {"\($0)"}) -> Self where Subject.Observer.Element == Subject.Element, Subject.Element == Element.Element {
         
-        let picker = UIPickerView()
-        view.inputView = picker
         let boundDataSource = PickerBoundDataSourceString<Subject>(selected: selected, toString: toString)
-        picker.dataSource = boundDataSource
-        picker.delegate = boundDataSource
         view.retain(item: boundDataSource).disposed(by: view.removed)
+        
+        view.setOnClickListener { v in
+            v.launchPickerDialog {
+                let picker = UIPickerView()
+                picker.dataSource = boundDataSource
+                picker.delegate = boundDataSource
+                return picker
+            }
+        }
 
         subscribe(
             onNext: { value in
                 boundDataSource.data = Array(value)
-                picker.reloadAllComponents()
             },
             onError: nil,
             onCompleted: nil,
@@ -74,13 +95,7 @@ public extension ObservableType where Element: Collection, Element.Element: Equa
 
 public extension SubjectType where Observer.Element == Element, Element == Optional<Date> {
     @discardableResult
-    func bind(_ view: InputViewButton, _ mode:UIDatePicker.Mode, formatter: DateFormatter? = nil, nullText:String) -> Self {
-        let picker = UIDatePicker()
-        if #available(iOS 13.4, *) {
-            picker.preferredDatePickerStyle = .wheels
-        } else {
-            // Fallback on earlier versions
-        }
+    func bind(_ view: UIButton, _ mode:UIDatePicker.Mode, formatter: DateFormatter? = nil, nullText:String) -> Self {
         let formatter = formatter ?? ({
             let newF = DateFormatter()
             switch mode {
@@ -99,21 +114,28 @@ public extension SubjectType where Observer.Element == Element, Element == Optio
             }
             return newF
         }())
-        picker.datePickerMode = mode
-        picker.date = Date()
-        
-        let observer = self.asObserver()
-        picker.addAction(for: .valueChanged, action: {
-            observer.onNext(picker.date)
-        }).disposed(by: view.removed)
-        
-        view.inputView = picker
+        view.onClick(self.asObservable()) { [weak view] date in
+            guard let view = view else { return }
+            view.launchPickerDialog {
+                let picker = UIDatePicker()
+                if #available(iOS 13.4, *) {
+                    picker.preferredDatePickerStyle = .wheels
+                } else {
+                    // Fallback on earlier versions
+                }
+                picker.datePickerMode = mode
+                picker.date = date ?? Date()
+                
+                let observer = self.asObserver()
+                picker.addAction(for: .valueChanged, action: {
+                    observer.onNext(picker.date)
+                }).disposed(by: view.removed)
+                return picker
+            }
+        }
         
         subscribe(
             onNext: { value in
-                if picker.date != value{
-                    picker.date = value ?? Date()
-                }
                 if let value = value {
                     view.setTitle(formatter.string(from: value), for: .normal)
                 } else {
@@ -131,13 +153,7 @@ public extension SubjectType where Observer.Element == Element, Element == Optio
 
 public extension SubjectType where Observer.Element == Element, Element == Date {
     @discardableResult
-    func bind(_ view: InputViewButton, _ mode:UIDatePicker.Mode, formatter: DateFormatter? = nil) -> Self {
-        let picker = UIDatePicker()
-        if #available(iOS 13.4, *) {
-            picker.preferredDatePickerStyle = .wheels
-        } else {
-            // Fallback on earlier versions
-        }
+    func bind(_ view: UIButton, _ mode:UIDatePicker.Mode, formatter: DateFormatter? = nil) -> Self {
         let formatter = formatter ?? ({
             let newF = DateFormatter()
             switch mode {
@@ -156,22 +172,28 @@ public extension SubjectType where Observer.Element == Element, Element == Date 
             }
             return newF
         }())
-        picker.datePickerMode = mode
-        picker.date = Date()
-        
-        
-        let observer = self.asObserver()
-        picker.addAction(for: .valueChanged, action: {
-            observer.onNext(picker.date)
-        }).disposed(by: view.removed)
-        
-        view.inputView = picker
+        view.onClick(self.asObservable()) { [weak view] date in
+            guard let view = view else { return }
+            view.launchPickerDialog {
+                let picker = UIDatePicker()
+                if #available(iOS 13.4, *) {
+                    picker.preferredDatePickerStyle = .wheels
+                } else {
+                    // Fallback on earlier versions
+                }
+                picker.datePickerMode = mode
+                picker.date = date
+                
+                let observer = self.asObserver()
+                picker.addAction(for: .valueChanged, action: {
+                    observer.onNext(picker.date)
+                }).disposed(by: view.removed)
+                return picker
+            }
+        }
         
         subscribe(
             onNext: { value in
-                if picker.date != value{
-                    picker.date = value
-                }
                 view.setTitle(formatter.string(from: value), for: .normal)
             },
             onError: nil,

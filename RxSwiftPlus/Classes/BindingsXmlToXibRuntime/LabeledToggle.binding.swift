@@ -39,4 +39,12 @@ public extension SubjectType where Element == Bool, Observer.Element == Element 
         }).disposed(by: view.removed)
         return self
     }
+    @discardableResult
+    func bind(_ view: LabeledToggle) -> Self{
+        return bind(view.toggle)
+    }
+    @discardableResult
+    func bindNoUncheck(_ view: LabeledToggle) -> Self{
+        return bindNoUncheck(view.toggle)
+    }
 }

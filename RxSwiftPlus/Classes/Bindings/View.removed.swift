@@ -30,12 +30,12 @@ public extension UIView {
         }
     }
     
-    func removedDeinitHandler() {
-        removed = DisposeBag()
-        for view in self.subviews {
-            view.removedDeinitHandler()
-        }
-    }
+//    func removedDeinitHandler() {
+//        removed = DisposeBag()
+//        for view in self.subviews {
+//            view.removedDeinitHandler()
+//        }
+//    }
 
     private func connected() -> Bool {
         return self.window != nil || self.superview?.connected() ?? false

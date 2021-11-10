@@ -2,8 +2,6 @@
 ---
 
 - type: "type"
-  id: "com.lightningkite.rx.android.resources.Data"
-  template: "Data  - type: "type"
   id: "com.lightningkite.rx.android.resources.Image"
   template: "Image"
 
@@ -13,7 +11,7 @@
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.ImageReference"
-  template: "Image.localURL(~uri~)"
+  template: "Image.localUrl(~uri~)"
 
 - type: "get"
   id: "com.lightningkite.rx.android.resources.ImageReference.uri"
@@ -49,7 +47,7 @@
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.ImageRemoteUrl"
-  template: "Image.remoteUrl(~url~)"
+  template: "Image.remoteUrl(URL(string: ~url~)!)"
 
 - type: "get"
   id: "com.lightningkite.rx.android.resources.ImageRemoteUrl.url"
@@ -70,12 +68,12 @@
 - type: "call"
   id: "com.lightningkite.rx.android.resources.asImage"
   receiver: "kotlin.String"
-  template: "Image.remoteUrl(URL(~this~)!)"
+  template: "Image.remoteUrl(URL(string: ~this~)!)"
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.asImage"
   receiver: "android.net.Uri"
-  template: "Image.localUrl(URL(~this~)!)"
+  template: "Image.localUrl(~this~)"
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.asImage"
@@ -93,14 +91,6 @@
 #  arguments:
 #  - "com.lightningkite.rx.android.resources.Video"
 #  template: "~this~.setFromVideoThumbnail(~video~)"
-
-- type: "call"
-  id: "com.lightningkite.rx.android.resources.setVideo"
-  receiver: "com.google.android.exoplayer2.ui.PlayerView"
-  arguments:
-  - "com.lightningkite.rx.android.resources.Video"
-  - "kotlin.Boolean"
-  template: "~this~.setVideo(~video~, playWhenReady: ~playWhenReady~)"
 
 - type: "type"
   id: "com.lightningkite.rx.android.resources.StringResource"
@@ -124,11 +114,23 @@
 - type: "call"
   id: "com.lightningkite.rx.android.resources.thumbnail"
   receiver: "com.lightningkite.rx.android.resources.Video"
-  arguments:
-  - "kotlin.Long"
-  - "android.graphics.PointF"
-  - "android.content.Context"
+  suppliedArguments: [context, timeMs, size]
   template: "~this~.thumbnail(timeMs: ~timeMs~, size: ~size~)"
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.thumbnail"
+  receiver: "com.lightningkite.rx.android.resources.Video"
+  suppliedArguments: [context, size]
+  template: "~this~.thumbnail(size: ~size~)"
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.thumbnail"
+  receiver: "com.lightningkite.rx.android.resources.Video"
+  suppliedArguments: [context, timeMs]
+  template: "~this~.thumbnail(timeMs: ~timeMs~)"
+- type: "call"
+  id: "com.lightningkite.rx.android.resources.thumbnail"
+  receiver: "com.lightningkite.rx.android.resources.Video"
+  suppliedArguments: [context]
+  template: "~this~.thumbnail()"
 
 - type: "type"
   id: "com.lightningkite.rx.android.resources.Video"
@@ -152,7 +154,7 @@
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.VideoRemoteUrl"
-  template: "Video.remoteUrl(URL(~url~)!)"
+  template: "Video.remoteUrl(URL(string: ~url~)!)"
 
 - type: "get"
   id: "com.lightningkite.rx.android.resources.VideoRemoteUrl.url"
@@ -161,7 +163,7 @@
 - type: "call"
   id: "com.lightningkite.rx.android.resources.asVideo"
   receiver: "kotlin.String"
-  template: "Video.remoteUrl(URL(~this~)!)"
+  template: "Video.remoteUrl(URL(string: ~this~)!)"
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.asVideo"
