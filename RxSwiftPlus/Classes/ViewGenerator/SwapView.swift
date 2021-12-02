@@ -16,182 +16,96 @@ open class SwapView: UIView {
         case pop
         case fade
     }
-    struct AnimationGoal {
-        let startedAt: Date
-        let alpha: CGFloat
-        let scaledFrame: CGRect
-        var frame: CGRect?
-        var completion: (UIView)->Void = { _ in }
-    }
-    
-    let animateDestinationExtension = ExtensionProperty<UIView, AnimationGoal>()
     var current: UIView?
-    
-    override public func sizeThatFits(_ size: CGSize) -> CGSize {
-        return current?.sizeThatFits(size) ?? .zero
-    }
-    
-    override public func layoutSubviews() {
-        super.layoutSubviews()
-        updateAnimations()
-    }
-    
-    public override func willRemoveSubview(_ subview: UIView) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.0000001, execute:{
-            subview.refreshLifecycle()
-        })
-    }
-    
-    public override func didAddSubview(_ subview: UIView) {
-        subview.refreshLifecycle()
-    }
+    private var constraintsForView = Dictionary<UIView, Array<NSLayoutConstraint>>()
     
     private var hiding = false
-
-    private func updateAnimations(){
-        for view in subviews {
-            guard var goal = animateDestinationExtension.get(view) else { continue }
-            let toFrame = CGRect(
-                x: goal.scaledFrame.origin.x * self.bounds.width,
-                y: goal.scaledFrame.origin.y * self.bounds.height,
-                width: goal.scaledFrame.size.width * self.bounds.width,
-                height: goal.scaledFrame.size.height * self.bounds.height
-            )
-            guard goal.frame != toFrame else { continue }
-            goal.frame = toFrame
-            animateDestinationExtension.set(view, goal)
-            UIView.animate(
-                withDuration: 0.25,
-                animations: {
-                    view.alpha = goal.alpha
-                    view.frame = toFrame
-                },
-                completion: { done in
-                    view.setNeedsLayout()
-                    goal.completion(view)
-                }
-            )
-        }
-    }
     var swapping = false
     open func swap(dependency: ViewControllerAccess, to: UIView?, animation: Animation){
         if swapping {
             fatalError()
         }
+        let previouslyHiding = self.hiding
+        let hiding = to == nil
+        self.hiding = hiding
         swapping = true
         let previousView = current
         if let old = current {
-            let goal: AnimationGoal
-            if to == nil {
-                goal = AnimationGoal(
-                    startedAt: Date(),
-                    alpha: 0.0,
-                    scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
-                    frame: nil,
-                    completion: { view in view.removeFromSuperview() }
-                )
-            } else {
-                switch animation {
-                case .fade:
-                    goal = AnimationGoal(
-                        startedAt: Date(),
-                        alpha: 0.0,
-                        scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
-                        frame: nil,
-                        completion: { view in view.removeFromSuperview() }
-                    )
-                case .pop:
-                    goal = AnimationGoal(
-                        startedAt: Date(),
-                        alpha: 1.0,
-                        scaledFrame: CGRect(x: 1, y: 0, width: 1, height: 1),
-                        frame: nil,
-                        completion: { view in view.removeFromSuperview() }
-                    )
-                case .push:
-                    goal = AnimationGoal(
-                        startedAt: Date(),
-                        alpha: 1.0,
-                        scaledFrame: CGRect(x: -1, y: 0, width: 1, height: 1),
-                        frame: nil,
-                        completion: { view in view.removeFromSuperview() }
-                    )
-                }
-            }
-            animateDestinationExtension.set(old, goal)
-            updateAnimations()
-        }
-        if let new = to {
-            new.translatesAutoresizingMaskIntoConstraints = true
-            if self.hiding {
-                self.isHidden = false
-                self.hiding = false
-                alpha = 1
-                setNeedsLayout()
-                UIView.animate(withDuration: 0.25, animations: {
-                    self.alpha = 1
-                }, completion: { _ in
-                })
-                UIView.performWithoutAnimation {
-                    new.frame = CGRect(
-                        x: 0,
-                        y: 0,
-                        width: self.bounds.width,
-                        height: self.bounds.height
-                    )
-                    new.setNeedsLayout()
-                    new.layoutIfNeeded()
-                    self.addSubview(new)
-                }
-            } else {
-                UIView.performWithoutAnimation {
+            UIView.animate(withDuration: 0.25, animations: { [weak self] in
+                if hiding {
+                    old.alpha = 0
+                    self?.isHidden = true
+                } else {
                     switch animation {
                     case .fade:
-                        new.frame = CGRect(
-                            x: 0,
-                            y: 0,
-                            width: self.bounds.width,
-                            height: self.bounds.height
-                        )
-                        new.alpha = 0.0
+                        old.alpha = 0
                     case .pop:
-                        new.frame = CGRect(
-                            x: -self.bounds.width,
-                            y: 0,
-                            width: self.bounds.width,
-                            height: self.bounds.height
-                        )
+                        old.transform = CGAffineTransform.init(translationX: old.frame.width, y: 0)
                     case .push:
-                        new.frame = CGRect(
-                            x: self.bounds.width,
-                            y: 0,
-                            width: self.bounds.width,
-                            height: self.bounds.height
-                        )
+                        old.transform = CGAffineTransform.init(translationX: -old.frame.width, y: 0)
                     }
                 }
-                new.setNeedsLayout()
-                new.layoutIfNeeded()
+            }, completion: { _ in
+                old.removeFromSuperview()
+            })
+        }
+        if let new = to {
+            UIView.performWithoutAnimation {
+                self.isHidden = false
                 self.addSubview(new)
+                new.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+                self.rightAnchor.constraint(equalTo: new.rightAnchor).isActive = true
+                new.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+                self.bottomAnchor.constraint(equalTo: new.bottomAnchor).isActive = true
+                
+//                new.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+////                self.rightAnchor.constraint(equalTo: new.rightAnchor).isActive = true
+//                new.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+////                self.bottomAnchor.constraint(equalTo: new.bottomAnchor).isActive = true
+//                let huggingConstraints = [
+////                    new.leftAnchor.constraint(equalTo: self.leftAnchor),
+//                    self.rightAnchor.constraint(equalTo: new.rightAnchor),
+////                    new.topAnchor.constraint(equalTo: self.topAnchor),
+//                    self.bottomAnchor.constraint(equalTo: new.bottomAnchor)
+//                ]
+//                let compressingConstraints = [
+////                    new.leftAnchor.constraint(greaterThanOrEqualTo: self.leftAnchor),
+//                    self.rightAnchor.constraint(lessThanOrEqualTo: new.rightAnchor),
+////                    new.topAnchor.constraint(greaterThanOrEqualTo: self.topAnchor),
+//                    self.bottomAnchor.constraint(lessThanOrEqualTo: new.bottomAnchor)
+//                ]
+//                for c in huggingConstraints {
+//                    c.priority = .defaultLow
+//                    c.isActive = true
+//                }
+//                for c in compressingConstraints {
+//                    c.priority = .defaultHigh
+//                    c.isActive = true
+//                }
+                
+                self.layoutIfNeeded()
+                if previouslyHiding {
+                    new.alpha = 0
+                } else {
+                    switch animation {
+                    case .fade:
+                        new.alpha = 0
+                    case .pop:
+                        new.transform = CGAffineTransform.init(translationX: -self.frame.width, y: 0)
+                    case .push:
+                        new.transform = CGAffineTransform.init(translationX: self.frame.width, y: 0)
+                    }
+                }
             }
-            animateDestinationExtension.set(new, AnimationGoal(
-                startedAt: Date(),
-                alpha: 1.0,
-                scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
-                frame: nil,
-                completion: { _ in }
-            ))
-            updateAnimations()
+            UIView.animate(withDuration: 0.25, animations: { [self] in
+                new.transform = .identity
+                new.alpha = 1
+            }, completion: { _ in
+                // yahoo!
+            })
             current = new
         } else {
             current = nil
-            hiding = true
-            if self.hiding {
-                self.isHidden = true
-            } else {
-                self.alpha = 1
-                self.isHidden = false
-            }
         }
         dependency.runKeyboardUpdate(root: to, discardingRoot: previousView)
         swapping = false

@@ -62,7 +62,7 @@ public extension URL {
                         } else if let error = error {
                             em.onFailure(error)
                         } else {
-                            em.onFailure(HttpError.response(response: HttpResponse(response: response, data: data ?? Data())))
+                            em.onFailure(HttpResponseException(response: HttpResponse(response: response, data: data ?? Data())))
                         }
                     } else if let response = response {
                         if let data = data {
@@ -139,12 +139,12 @@ public extension Image {
     func toHttpBodyRaw() -> Single<HttpBody> {
         
         switch(self){
-        case .localUrl(url: let url):
-            return url.toRequestBody()
-        case .raw(raw: let raw):
-            return Single.just(HttpBody(mediaType: "image/*", data: raw))
-        case .remoteUrl(url: let url):
-            return url.toRequestBody()
+        case let self as ImageLocalUrl:
+            return self.url.toRequestBody()
+        case let self as ImageRaw:
+            return Single.just(HttpBody(mediaType: "image/*", data: self.raw))
+        case let self as ImageRemoteUrl:
+            return self.url.toRequestBody()
         default:
             return self.load().map { uiImage in
                 if let rep = uiImage.pngData() {
@@ -165,10 +165,7 @@ public enum MultipartBody {
         case value(name: String, value: String)
     }
     
-    static func from(parts: Part...) -> HttpBody {
-        return from(parts)
-    }
-    static func from(_ parts: Array<Part>) -> HttpBody {
+    public static func from(_ parts: Part...) -> HttpBody {
         var body = Data()
         #if DEBUG
         var stringBody = ""

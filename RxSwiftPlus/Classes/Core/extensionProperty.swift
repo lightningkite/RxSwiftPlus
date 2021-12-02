@@ -15,6 +15,9 @@ private class WeakObject<T: AnyObject>: Equatable, Hashable, CustomStringConvert
         self.object = object
         self.identifierNumber = Int(bitPattern: ObjectIdentifier(object)) >> 2
     }
+    init(noRef object: T) {
+        self.identifierNumber = Int(bitPattern: ObjectIdentifier(object)) >> 2
+    }
     init(identifier: ObjectIdentifier) {
         self.identifierNumber = Int(bitPattern: identifier) >> 2
     }
@@ -86,8 +89,13 @@ internal class ExtensionProperty<On: AnyObject, T> {
             return table[key]
         }
     }
-    internal func remove(_ from: ObjectIdentifier) -> T? {
-        return table.removeValue(forKey: WeakObject(identifier: from))
+    internal func remove(_ from: On) {
+        checkClean()
+        lock.run {
+            let key = WeakObject(noRef: from)
+            cleanKey(key)
+            table.removeValue(forKey: WeakObject(noRef: from))
+        }
     }
     internal func get(_ from: On) -> T? {
         checkClean()

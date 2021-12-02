@@ -14,5 +14,5 @@ public class ApplicationAccess {
             .distinctUntilChanged()
     }
     
-    public let softInputActive = BehaviorSubject<Bool>(value: false)
+    public let softInputActive = ValueSubject<Bool>(false)
 }

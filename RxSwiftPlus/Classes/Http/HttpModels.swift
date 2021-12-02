@@ -45,12 +45,12 @@ public class HttpProgress<T> {
 }
 
 public struct HttpOptions: Equatable, Hashable {
-    public var callTimeout: Int64?
-    public var writeTimeout: Int64?
-    public var readTimeout: Int64?
-    public var connectTimeout: Int64?
+    public var callTimeout: Int?
+    public var writeTimeout: Int?
+    public var readTimeout: Int?
+    public var connectTimeout: Int?
     public var cacheMode: HttpCacheMode
-    public init(callTimeout: Int64? = nil, writeTimeout: Int64? = 10000, readTimeout: Int64? = 10000, connectTimeout: Int64? = 10000, cacheMode: HttpCacheMode = HttpCacheMode.Default) {
+    public init(callTimeout: Int? = nil, writeTimeout: Int? = 10000, readTimeout: Int? = 10000, connectTimeout: Int? = 10000, cacheMode: HttpCacheMode = HttpCacheMode.Default) {
         self.callTimeout = callTimeout
         self.writeTimeout = writeTimeout
         self.readTimeout = readTimeout

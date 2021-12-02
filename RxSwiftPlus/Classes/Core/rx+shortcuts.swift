@@ -19,8 +19,8 @@ public extension ObservableType where Element: Collection, Element.Element: Equa
     }
 }
 public extension SubjectType where Element: Equatable, Observer.Element == Element {
-    static func ==(self: Self, const: Element) -> ControlProperty<Bool> { self.map { $0 == const }.withWrite { if $0 { self.asObserver().onNext(const) } } }
-    static func !=(self: Self, const: Element) -> ControlProperty<Bool> { self.map { $0 != const }.withWrite { if !$0 { self.asObserver().onNext(const) } } }
+    static func ==(self: Self, const: Element) -> Subject<Bool> { self.map { $0 == const }.withWrite { if $0 { self.asObserver().onNext(const) } } }
+    static func !=(self: Self, const: Element) -> Subject<Bool> { self.map { $0 != const }.withWrite { if !$0 { self.asObserver().onNext(const) } } }
 }
 
 public protocol CollectionWithAdd: Collection {
@@ -38,13 +38,13 @@ extension Set: CollectionWithAdd {
 }
 
 public extension HasValueSubject where Element: CollectionWithAdd, Observer.Element.Element: Equatable {
-    func contains(_ const: Element.Element) -> ControlProperty<Bool> {
+    func contains(_ const: Element.Element) -> Subject<Bool> {
         return map { $0.contains { $0 == const } }.withWrite {
             if $0 { self.asObserver().onNext(self.value + const) }
             else { self.asObserver().onNext(self.value - const) }
         }
     }
-    func doesNotContain(_ const: Element.Element) -> ControlProperty<Bool> {
+    func doesNotContain(_ const: Element.Element) -> Subject<Bool> {
         return map { $0.contains { $0 == const } }.withWrite {
             if $0 { self.asObserver().onNext(self.value - const) }
             else { self.asObserver().onNext(self.value + const) }
@@ -55,6 +55,8 @@ public extension HasValueSubject where Element: CollectionWithAdd, Observer.Elem
 public protocol OptionalType {
     associatedtype Wrapped
     func asOptional() -> Optional<Wrapped>
+    init(_ value: Wrapped)
+    init(nilLiteral: ())
 }
 extension Optional: OptionalType {
     public func asOptional() -> Optional<Wrapped> {
@@ -76,10 +78,10 @@ public extension HasValueSubject {
 }
 
 public extension SubjectType where Element: OptionalType, Element.Wrapped: Equatable, Observer.Element == Element {
-    func isEqualToOrNull(_ const: Element) -> ControlProperty<Bool> {
+    func isEqualToOrNull(_ const: Element) -> Subject<Bool> {
         return map { $0.asOptional() == const.asOptional() }.withWrite { if $0 { self.asObserver().onNext(const) } }
     }
-    func notEqualToOrNull(_ const: Element) -> ControlProperty<Bool> {
+    func notEqualToOrNull(_ const: Element) -> Subject<Bool> {
         return map { $0.asOptional() != const.asOptional() }.withWrite { if !$0 { self.asObserver().onNext(const) } }
     }
 }
@@ -117,12 +119,20 @@ public extension SubjectType where Element == Float, Observer.Element == Element
     func toSubjectString() -> ControlProperty<String> { mapMaybeWrite(read: {String($0)}, write: {Float($0)}) }
 }
 
+public extension SubjectType where Element == Double, Observer.Element == Element {
+    func toSubjectString() -> ControlProperty<String> { mapMaybeWrite(read: {String($0)}, write: {Double($0)}) }
+}
+
 public extension SubjectType where Element == Optional<Int>, Observer.Element == Element {
     func toSubjectString() -> ControlProperty<String> { map(read: {$0.map{String($0)} ?? ""}, write: {Int($0)}) }
 }
 
 public extension SubjectType where Element == Optional<Float>, Observer.Element == Element {
     func toSubjectString() -> ControlProperty<String> { map(read: {$0.map{String($0)} ?? ""}, write: {Float($0)}) }
+}
+
+public extension SubjectType where Element == Optional<Double>, Observer.Element == Element {
+    func toSubjectString() -> ControlProperty<String> { map(read: {$0.map{String($0)} ?? ""}, write: {Double($0)}) }
 }
 
 public extension SubjectType where Element == Int8, Observer.Element == Element {

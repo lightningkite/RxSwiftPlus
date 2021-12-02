@@ -52,6 +52,7 @@ Pod::Spec.new do |s|
     sub.source_files =  "RxSwiftPlus/Classes/Bindings"
     sub.dependency "RxSwiftPlus/Core"
     sub.dependency "IBPCollectionViewCompositionalLayout"
+    sub.dependency 'LifecycleHooks'
   end
   s.subspec 'BindingsCosmo' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/BindingsCosmo"

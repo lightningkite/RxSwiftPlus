@@ -85,13 +85,20 @@
 - id: com.lightningkite.rx.viewgenerators.popToPredicate
   type: call
   template:
-    pattern: '~this~.popToPredicate(predicate: ~0~)'
+    pattern: '~this~.popTo(predicate: ~0~)'
     imports: [RxSwiftPlus]
 
 - id: com.lightningkite.rx.viewgenerators.root
   type: call
   template:
     pattern: ~this~.root(~0~)
+    imports: [RxSwiftPlus]
+
+- id: com.lightningkite.rx.viewgenerators.root
+  type: call
+  arguments: []
+  template:
+    pattern: ~this~.root()
     imports: [RxSwiftPlus]
 
 - id: com.lightningkite.rx.viewgenerators.reset
@@ -102,8 +109,24 @@
 
 - id: com.lightningkite.rx.viewgenerators.delay
   type: call
-  template: 'DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(~0~), execute: ~1~)'
+  template: 'DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(Int(~0~)), execute: ~1~)'
 
 - id: com.lightningkite.rx.viewgenerators.post
   type: call
   template: 'DispatchQueue.main.async(execute: ~0~)'
+
+- id: com.lightningkite.rx.viewgenerators.displayMetrics
+  type: get
+  template: '()'
+
+- id: android.util.DisplayMetrics
+  type: type
+  template: 'Void'
+
+- { id: android.util.DisplayMetrics.widthPixels, type: get, template: { pattern: 'Int(UIScreen.main.bounds.width * UIScreen.main.scale)', imports: [UIKit] } }
+- { id: android.util.DisplayMetrics.heightPixels, type: get, template: { pattern: 'Int(UIScreen.main.bounds.height * UIScreen.main.scale)', imports: [UIKit] } }
+- { id: android.util.DisplayMetrics.density, type: get, template: { pattern: 'UIScreen.main.scale', imports: [UIKit] } }
+- { id: android.util.DisplayMetrics.densityDpi, type: get, template: { pattern: 'UIScreen.main.scale', imports: [UIKit] } }
+- { id: android.util.DisplayMetrics.scaledDensity, type: get, template: { pattern: 'UIScreen.main.scale', imports: [UIKit] } }
+- { id: android.util.DisplayMetrics.xdpi, type: get, template: { pattern: 'UIScreen.main.scale', imports: [UIKit] } }
+- { id: android.util.DisplayMetrics.ydpi, type: get, template: { pattern: 'UIScreen.main.scale', imports: [UIKit] } }

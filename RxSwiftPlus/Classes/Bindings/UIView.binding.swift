@@ -24,43 +24,35 @@ public extension UIView {
         }
     }
     
-    fileprivate static var loadCountExtension: ExtensionProperty<UIView, Int> = ExtensionProperty()
-    fileprivate var loadCount: Int {
-        get {
-            return UIView.loadCountExtension.getOrPut(self){ 0 }
-        }
-        set(value) {
-            UIView.loadCountExtension.set(self, value)
-            if(value > 0){
-                self.setSpinnerVisible()
-            }else{
-                self.setSpinnerInVisible()
+    @discardableResult fileprivate func createSpinner(_ color: UIColor? = nil) -> UIActivityIndicatorView {
+        if let x = self.subviews.lazy.compactMap({ $0 as? UIActivityIndicatorView }).first {
+            return x
+        } else {
+            let spinner = UIActivityIndicatorView(frame: .zero)
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            if let color = color {
+                spinner.color = color
             }
+            addSubview(spinner)
+            spinner.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            return spinner
         }
     }
-    
-    fileprivate static var spinnerExtension: ExtensionProperty<UIView, UIActivityIndicatorView> = ExtensionProperty()
-    
-    fileprivate func createSpinner(_ color:UIColor?){
-        let spinner = UIActivityIndicatorView(frame: .zero)
-        if let color = color {
-            spinner.color = color
-        }
-        UIView.spinnerExtension.set(self, spinner)
-    }
+    fileprivate var mySpinner: UIActivityIndicatorView { return createSpinner() }
     
     fileprivate func setSpinnerVisible(){
-        let spinner = UIView.spinnerExtension.getOrPut(self) {UIActivityIndicatorView(frame: .zero)}
+        let spinner = mySpinner
         spinner.startAnimating()
-        self.addSubview(spinner)
-        self.subviews.forEach({subView in subView.alpha = 0})
+//        self.subviews.forEach({subView in subView.alpha = 0})
+        spinner.alpha = 1
     }
     
     fileprivate func setSpinnerInVisible(){
-        let spinner = UIView.spinnerExtension.getOrPut(self) {UIActivityIndicatorView(frame: .zero)}
+        let spinner = mySpinner
         spinner.stopAnimating()
-        spinner.removeFromSuperview()
-        self.subviews.forEach({subView in subView.alpha = 1})
+//        self.subviews.forEach({subView in subView.alpha = 1})
+        spinner.alpha = 0
     }
 }
 
@@ -163,21 +155,15 @@ public extension ObservableType where Element: OptionalType {
     }
 }
 
-private func test(view: UILabel) {
-    Observable.just("asdf").subscribeAutoDispose(view, \.text)
-}
-
 
 public extension ObservableType where Element == Bool {
-    func showLoading(_ view: UIView, _ color: UIColor? = nil) -> Void {
-        
+    func showLoading(_ view: UIView, color: UIColor? = nil) -> Void {
         view.createSpinner(color)
-        
         subscribe(
             onNext: { value in
-                if(value){
+                if (value) {
                     view.setSpinnerVisible()
-                }else{
+                } else {
                     view.setSpinnerInVisible()
                 }
             }
@@ -197,14 +183,15 @@ public extension PrimitiveSequence where Trait == SingleTrait {
     
     
     @discardableResult
-    func showLoading(_ view: UIView, _ color: UIColor? = nil) -> Self {
+    func showLoading(_ view: UIView, color: UIColor? = nil) -> Self {
         
-        view.createSpinner(color)
-        
-        return self.do(
-            onSubscribe: { view.loadCount += 1 },
-            onDispose: { view.loadCount -= 1 }
-        )
+//        view.createSpinner(color)
+//
+//        return self.do(
+//            onSubscribe: { view.setSpinnerVisible() },
+//            onDispose: { view.setSpinnerInVisible() }
+//        )
+        return self
     }
 }
 
@@ -219,14 +206,15 @@ public extension PrimitiveSequence where Trait == MaybeTrait {
     
     
     @discardableResult
-    func showLoading(_ view: UIView, _ color: UIColor? = nil) -> Self {
+    func showLoading(_ view: UIView, color: UIColor? = nil) -> Self {
         
-        view.createSpinner(color)
-        
-        return self.do(
-            onSubscribe: { view.loadCount += 1 },
-            onDispose: { view.loadCount -= 1 }
-        )
+//        view.createSpinner(color)
+//
+//        return self.do(
+//            onSubscribe: { view.setSpinnerVisible() },
+//            onDispose: { view.setSpinnerInVisible() }
+//        )
+        return self
     }
 }
 

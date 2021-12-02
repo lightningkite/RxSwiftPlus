@@ -120,7 +120,7 @@ public extension UICollectionView {
             }
         }
     }
-    fileprivate func refreshData(){
+    internal func refreshData(){
         self.retainPositionTargetIndex {
             self.reloadData()
         }
@@ -233,7 +233,6 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         } else {
             cell.contentView.transform = .identity
         }
-        cell.setNeedsDisplay()
 
         if cell.obs == nil {
             let obs = BehaviorSubject(value: item)
@@ -247,16 +246,21 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
             cell.obs = obs
         }
         if let obs = cell.obs as? BehaviorSubject<T> {
-            obs.onNext(item)
+            if cell.indexPath == indexPath {
+                obs.onNext(item)
+                cell.setNeedsLayout()
+            } else {
+                UIView.performWithoutAnimation {
+                    obs.onNext(item)
+                    cell.setNeedsLayout()
+                    cell.layoutIfNeeded()
+                }
+            }
         } else {
             fatalError("Could not find cell observable")
         }
 //        cell.absorbCaps(collectionView: collectionView)
-        cell.setNeedsLayout()
 //        cell.resizeEnabled = true
-        post {
-            cell.refreshLifecycle()
-        }
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -274,9 +278,6 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
 
         if let cell = cell as? ObsUICollectionViewCell {
             cell.indexPath = nil
-            post {
-                cell.refreshLifecycle()
-            }
         }
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -297,19 +298,40 @@ class ObsUICollectionViewCell: UICollectionViewCell {
 //    var heightSetSize: CGFloat? = nil
 //    var widthSetSize: CGFloat? = nil
 //
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//        commonInit()
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//        commonInit()
-//    }
-//
-//    private func commonInit(){
-//        self.translatesAutoresizingMaskIntoConstraints = false
-//    }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+
+    private func commonInit(){
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.contentView.translatesAutoresizingMaskIntoConstraints = false
+        ({ () -> Void in
+            let c = contentView.topAnchor.constraint(equalTo: self.topAnchor)
+            c.priority = UILayoutPriority(999)
+            c.isActive = true
+        })()
+        ({ () -> Void in
+            let c = contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor)
+            c.priority = UILayoutPriority(999)
+            c.isActive = true
+        })()
+        ({ () -> Void in
+            let c = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+            c.priority = UILayoutPriority(999)
+            c.isActive = true
+        })()
+        ({ () -> Void in
+            let c = contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            c.priority = UILayoutPriority(999)
+            c.isActive = true
+        })()
+    }
 //
 //    override func layoutSubviews() {
 //        contentView.frame = self.bounds
@@ -416,13 +438,15 @@ public extension ObservableType where Element: Collection {
             view.dataSource = dg
             
             var updateQueued = false
+            var latestInQueue: Array<Element.Element> = []
             self.subscribe(
                 onNext: { it in
+                    latestInQueue = Array(it)
                     guard !updateQueued else { return }
                     updateQueued = true
                     post {
                         updateQueued = false
-                        dg.items = Array<Element.Element>(it)
+                        dg.items = latestInQueue
                         view.refreshData()
                     }
                 },
@@ -446,13 +470,15 @@ public extension ObservableType where Element: Collection {
             view.delegate = dg
             view.dataSource = dg
             var updateQueued = false
+            var latestInQueue: Array<Element.Element> = []
             self.subscribe(
                 onNext: { it in
+                    latestInQueue = Array(it)
                     guard !updateQueued else { return }
                     updateQueued = true
                     post {
                         updateQueued = false
-                        dg.items = Array<Element.Element>(it)
+                        dg.items = latestInQueue
                         view.refreshData()
                     }
                 },

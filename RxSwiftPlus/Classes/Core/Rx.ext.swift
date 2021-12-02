@@ -179,37 +179,26 @@ public extension ConnectableObservableType {
     }
 }
 
-
-infix operator <-> : DefaultPrecedence
-infix operator <- : DefaultPrecedence
-
-func <- <T, O:ObservableType>(binder: Binder<T>, observer: O) -> Disposable where O.Element == T{
-    
-    return observer.subscribe(
-        onNext: {value in binder.onNext(value)}
-    )
-    
-}
-
-func <-> <T, S: SubjectType>(property: ControlProperty<T>, subject: S) -> Disposable where S.Element == T, S.Observer.Element == T {
-    var fromOther = false
-    let bindToUIDisposable = subject.subscribe(onNext: { it in
-        if !fromOther {
-            fromOther = true
-            property.onNext(it)
-            fromOther = false
-        }
-    })
-    let bindToRelay = property
-        .subscribe(onNext: { n in
-            if !fromOther {
-                fromOther = true
-                subject.asObserver().onNext(n)
-                fromOther = false
-            }
-        })
-
-    return Disposables.create(bindToUIDisposable, bindToRelay)
+extension SubjectType {
+    func bind<Other: SubjectType>(_ other: Other) -> Disposable where Other.Observer.Element == Element, Other.Element == Observer.Element {
+        var suppress = false
+        return Disposables.create(
+            self.subscribe(onNext: { it in
+                if !suppress {
+                    suppress = true
+                    other.asObserver().onNext(it)
+                    suppress = false
+                }
+            }),
+            other.subscribe(onNext: { it in
+                if !suppress {
+                    suppress = true
+                    self.asObserver().onNext(it)
+                    suppress = false
+                }
+            })
+        )
+    }
 }
 
 
@@ -275,10 +264,35 @@ public extension PrimitiveSequenceType where Trait == SingleTrait {
     func doOnError(_ action: @escaping (Swift.Error) -> Void) -> Single<Element> {
         return self.do(onError: action)
     }
+    
+    func onErrorComplete(_ action: @escaping (Swift.Error) -> Bool) -> Maybe<Element> {
+        return self.asMaybe().catch { error in
+            if action(error) {
+                return Maybe.empty()
+            } else {
+                return Maybe.error(error)
+            }
+        }
+    }
 }
 public extension PrimitiveSequenceType where Trait == MaybeTrait {
     func toObservable() -> Observable<Element> {
         return self.primitiveSequence.asObservable()
+    }
+    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Maybe<Element> {
+        return self.do(onSubscribe: { action(placeholderDisposable) })
+    }
+
+    func doFinally(_ action: @escaping () -> Void) -> Maybe<Element> {
+        return self.do(onCompleted: action)
+    }
+
+    func doOnSuccess(_ action: @escaping (Element) -> Void) -> Maybe<Element> {
+        return self.do(onNext: action)
+    }
+
+    func doOnError(_ action: @escaping (Swift.Error) -> Void) -> Maybe<Element> {
+        return self.do(onError: action)
     }
 }
 public typealias Scheduler = RxSwift.SchedulerType
@@ -320,18 +334,18 @@ public extension PublishSubject {
 //    }
 //}
 
-func xListCombineLatest<IN, OUT>(
+public func xListCombineLatest<IN, OUT>(
     _ self: Array<Observable<IN>>,
     combine: @escaping (Array<IN>) -> OUT
 ) -> Observable<OUT> {
     return Observable.combineLatest(self, resultSelector: combine)
 }
-func xListCombineLatest<IN>(
+public func xListCombineLatest<IN>(
     _ self: Array<Observable<IN>>
 ) -> Observable<Array<IN>> {
     return Observable.combineLatest(self)
 }
-extension Array where Element: ObservableType {
+public extension Array where Element: ObservableType {
     func combineLatest<OUT>(combine: @escaping (Array<Element.Element>)->OUT) -> Observable<OUT> {
         return Observable.combineLatest(self, resultSelector: combine)
     }

@@ -36,47 +36,84 @@
   template: "~this~"
 
 - type: "call"
+  id: "com.lightningkite.rx.get"
+  template: "~this~.get(~0~)"
+
+- type: "call"
   id: "com.lightningkite.rx.subscribeByNullable"
-  receiver: "io.reactivex.rxjava3.core.Observable"
-  arguments:
-    - "kotlin.Function1"
-    - "kotlin.Function0"
-    - "kotlin.Function1"
+  suppliedArguments: [onError, onComplete, onNext]
   template:
-    pattern: "~this~.subscribeByNullable(~onError~, ~onComplete~, ~onNext~)"
+    pattern: "~this~.subscribe(onNext: ~onNext~, onError: ~onError~, onCompleted: ~onComplete~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
   id: "com.lightningkite.rx.subscribeByNullable"
-  receiver: "io.reactivex.rxjava3.core.Single"
-  arguments:
-    - "kotlin.Function1"
-    - "kotlin.Function1"
+  suppliedArguments: [onError, onComplete]
   template:
-    pattern: "~this~.subscribeByNullable(~onError~, ~onSuccess~)"
+    pattern: "~this~.subscribe(onError: ~onError~, onCompleted: ~onComplete~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
   id: "com.lightningkite.rx.subscribeByNullable"
-  receiver: "io.reactivex.rxjava3.core.Maybe"
-  arguments:
-    - "kotlin.Function1"
-    - "kotlin.Function0"
-    - "kotlin.Function1"
+  suppliedArguments: [onError, onNext]
   template:
-    pattern: "~this~.subscribeByNullable(~onError~, ~onComplete~, ~onSuccess~)"
+    pattern: "~this~.subscribe(onNext: ~onNext~, onError: ~onError~)"
     imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.subscribeByNullable"
+  suppliedArguments: [onError]
+  template:
+    pattern: "~this~.subscribe(onError: ~onError~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.subscribeByNullable"
+  suppliedArguments: [onComplete, onNext]
+  template:
+    pattern: "~this~.subscribe(onNext: ~onNext~, onCompleted: ~onComplete~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.subscribeByNullable"
+  suppliedArguments: [onError, onNext]
+  template:
+    pattern: "~this~.subscribe(onNext: ~onNext~, onError: ~onError~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.subscribeByNullable"
+  suppliedArguments: [onNext]
+  template:
+    pattern: "~this~.subscribe(onNext: ~onNext~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.subscribeByNullable"
+  suppliedArguments: [onError, onSuccess]
+  template:
+    pattern: "~this~.subscribe(onError: ~onError~, onSuccess: ~onSuccess~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.subscribeByNullable"
+  suppliedArguments: [onSuccess]
+  template:
+    pattern: "~this~.subscribe(onSuccess: ~onSuccess~)"
+    imports: [RxSwiftPlus]
+
+
 
 - type: "call"
   id: "com.lightningkite.rx.isEqualTo"
   template:
-    pattern: "(~this~ == ~other~)"
+    pattern: "(~this~ == ~0~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
   id: "com.lightningkite.rx.notEqualTo"
   template:
-    pattern: "(~this~ != ~other~)"
+    pattern: "(~this~ != ~0~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
@@ -95,6 +132,18 @@
     - "io.reactivex.rxjava3.core.Observable"
   template:
     pattern: "(!~other~.contains(~this~))"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.contains"
+  template:
+    pattern: "~this~.contains(~0~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.doesNotContain"
+  template:
+    pattern: "~this~.doesNotContain(~0~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
@@ -249,5 +298,12 @@
     - "io.reactivex.rxjava3.subjects.Subject"
   template:
     pattern: "~this~.working(~property~)"
+    imports: [RxSwiftPlus]
+
+
+- type: "call"
+  id: "com.lightningkite.rx.toSubjectString"
+  template:
+    pattern: "~this~.toSubjectString()"
     imports: [RxSwiftPlus]
 

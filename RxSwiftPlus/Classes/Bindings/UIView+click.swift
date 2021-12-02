@@ -70,7 +70,7 @@ public extension UIView {
             .disposed(by: removed)
     }
 
-    func onClick(disabledMilliseconds: Int64 = 500, action: @escaping ()->Void) {
+    func onClick(disabledMilliseconds: Int = 500, action: @escaping ()->Void) {
         rx.click.throttle(.milliseconds(Int(disabledMilliseconds)), latest: false, scheduler: MainScheduler.instance)
             .subscribe(onNext: action)
             .disposed(by: removed)
@@ -80,7 +80,7 @@ public extension UIView {
             .subscribe(onNext: action)
             .disposed(by: removed)
     }
-    func onClick<T>(_ observable: Observable<T>, disabledMilliseconds: Int64 = 500, action: @escaping (T)->Void) {
+    func onClick<T>(_ observable: Observable<T>, disabledMilliseconds: Int = 500, action: @escaping (T)->Void) {
         rx.click.throttle(.milliseconds(Int(disabledMilliseconds)), latest: false, scheduler: MainScheduler.instance)
             .flatMap { _ in observable.take(1) }
             .subscribe(onNext: action)

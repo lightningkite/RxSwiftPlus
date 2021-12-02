@@ -1,43 +1,80 @@
 import RxSwift
 import UIKit
+import LifecycleHooks
 import RxCocoa
 
 public extension UIView {
-    private static var disposablesAssociationKey: UInt8 = 0
-    private static var disposablesExtension: ExtensionProperty<UIView, DisposeBag> = ExtensionProperty()
-    private static var beenActiveExtension: ExtensionProperty<UIView, Bool> = ExtensionProperty()
-    var removed: DisposeBag {
-        get {
-            return UIView.disposablesExtension.getOrPut(self) {DisposeBag() }
+//    static private let bag = DisposeBag()
+//    var removed: DisposeBag { UIView.bag }
+    private var detectorView: RemovedDetectorView  {
+        if let observer = (subviews.lazy.compactMap { $0 as? RemovedDetectorView }.first) {
+            return observer
         }
-        set(value) {
-            UIView.disposablesExtension.set(self, value)
-        }
+        let observer = RemovedDetectorView()
+        addSubview(observer)
+        return observer
     }
 
-    func refreshLifecycle() {
-
-        let previouslyActive = UIView.beenActiveExtension.get(self) == true
-        if !previouslyActive && window != nil {
-            UIView.beenActiveExtension.set(self, true)
+    var removed: DisposeBag {
+        get {
+            assert(Thread.isMainThread)
+            return detectorView.disposeBag!
         }
-        if previouslyActive && window == nil {
-            removed = DisposeBag()
-        }
-
-        for view in self.subviews {
-            view.refreshLifecycle()
+        set(value) {
+            detectorView.disposeBagOverridden = true
+            detectorView.disposeBag = value
         }
     }
     
-//    func removedDeinitHandler() {
-//        removed = DisposeBag()
-//        for view in self.subviews {
-//            view.removedDeinitHandler()
-//        }
-//    }
+}
 
-    private func connected() -> Bool {
-        return self.window != nil || self.superview?.connected() ?? false
+private class RemovedDetectorView: UIView {
+
+    var disposeBag: DisposeBag? = DisposeBag()
+    var disposeBagOverridden = false
+    var hasBeenActive = false
+    
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        isHidden = true
+    }
+    
+    override func didMoveToWindow() {
+        guard !disposeBagOverridden else { return }
+        if window != nil {
+            hasBeenActive = true
+        } else if hasBeenActive {
+            hasBeenActive = false
+            disposeBag = nil
+        }
+    }
+
+    override var isHidden: Bool {
+        get {
+            return super.isHidden
+        }
+        set {
+            precondition(newValue == true)
+            super.isHidden = newValue
+        }
+    }
+
+    override var isUserInteractionEnabled: Bool {
+        get {
+            return super.isHidden
+        }
+        set {
+            precondition(newValue == false)
+            super.isHidden = newValue
+        }
+    }
+
+    func hide() {
+        isHidden = true
+        isUserInteractionEnabled = false
+    }
+    
+    override var debugDescription: String {
+        return "\(super.debugDescription) (hidden? \(isHidden))"
     }
 }

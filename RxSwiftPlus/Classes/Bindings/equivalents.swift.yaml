@@ -15,13 +15,13 @@
 - id: com.lightningkite.rx.android.onClickNullable
   type: call
   template:
-    pattern: '~this~.onClick(~0~, action: ~1~)'
+    pattern: '~this~.onClick(~0~, action: ~2~)'
     imports: [RxSwiftPlus]
 
 - id: com.lightningkite.rx.android.onLongClickNullable
   type: call
   template:
-    pattern: '~this~.onLongClick(~0~, action: ~1~)'
+    pattern: '~this~.onLongClick(~0~, action: ~2~)'
     imports: [RxSwiftPlus]
 
 - id: com.jakewharton.rxbinding4.view.clicks

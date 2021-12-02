@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class ContainerView: UIView {
+public class VCContainerView: UIView {
     public var contained: UIViewController? {
         didSet {
             containedView?.removeFromSuperview()

@@ -43,9 +43,14 @@ open class ViewGeneratorAppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
         let nav = SpecialNavController()
-        let vc = makeViewController()
-        nav.viewControllers = [vc]
-        viewController = vc
+        if let vc = viewController {
+            nav.viewControllers = [vc]
+            viewController = vc
+        } else {
+            let vc = makeViewController()
+            nav.viewControllers = [vc]
+            viewController = vc
+        }
         window?.rootViewController = nav
         window?.makeKeyAndVisible()
         

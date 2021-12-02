@@ -174,7 +174,7 @@
 - id: io.reactivex.rxjava3.core.Observable.interval
   type: call
   template:
-    pattern: "Observable<Int64>.interval(RxTimeInterval.milliseconds(Int(~0~)), scheduler: ~2~)"
+    pattern: "Observable<Int>.interval(RxTimeInterval.milliseconds(Int(~0~)), scheduler: ~2~)"
     imports: [RxSwift]
 
 #- id: io.reactivex.rxjava3.core.Observable.map
@@ -398,6 +398,8 @@
 
 - id: io.reactivex.rxjava3.core.Single
   type: type
+  typeArgumentNames: [Element]
+  constraintTemplate: 'PrimitiveSequenceType where Trait == SingleTrait'
   template:
     pattern: Single<~T0~>
     imports:
@@ -454,6 +456,21 @@
   template:
     pattern: '~this~.zip(~0~, resultSelector: ~1~)'
     imports: [RxSwift]
+
+- id: io.reactivex.rxjava3.core.Single.zip
+  type: call
+  arguments: [SingleSource, SingleSource, BiFunction]
+  template:
+    pattern: '~this~.zip(~0~, ~1~, resultSelector: ~2~)'
+    imports: [RxSwift]
+
+- id: io.reactivex.rxjava3.core.Single.zip
+  type: call
+  arguments: [SingleSource, SingleSource, SingleSource, BiFunction]
+  template:
+    pattern: '~this~.zip(~0~, ~1~, ~2~, resultSelector: ~3~)'
+    imports: [RxSwift]
+
 #- id: io.reactivex.rxjava3.core.Single.map
 #  type: call
 #  template:
@@ -553,6 +570,13 @@
 
 # Maybe
 
+- id: io.reactivex.rxjava3.core.Maybe
+  type: type
+  constraintTemplate: 'PrimitiveSequenceType where Trait == MaybeTrait'
+  template:
+    pattern: Maybe<~T0~>
+    imports: [RxSwift]
+
 - id: io.reactivex.rxjava3.core.Maybe.subscribe
   type: call
   arguments: [io.reactivex.rxjava3.functions.Consumer]
@@ -609,6 +633,24 @@
     imports:
       - RxSwift
 
+- id: io.reactivex.rxjava3.disposables.CompositeDisposable
+  type: type
+  template:
+    pattern: DisposeBag
+    imports:
+      - RxSwift
+
+- id: io.reactivex.rxjava3.disposables.CompositeDisposable.add
+  type: call
+  template: ~this~.insert(~0~)
+
+- id: io.reactivex.rxjava3.disposables.Disposable.fromAction
+  type: call
+  template:
+    pattern: 'Disposables.create(with: ~0~)'
+    imports:
+      - RxSwift
+
 #- id: io.reactivex.rxjava3.disposables.Disposable.dispose
 #  type: call
 #  template: ~this~.unsubscribe()
@@ -625,11 +667,13 @@
 
 - id: io.reactivex.rxjava3.subjects.Subject
   type: type
+  typeArgumentNames: [Element]
   template:
     pattern: Subject<~T0~>
     imports: [RxSwift]
 - id: io.reactivex.rxjava3.subjects.PublishSubject
   type: type
+  typeArgumentNames: [Element]
   template:
     pattern: PublishSubject<~T0~>
     imports: [RxSwift]
@@ -642,6 +686,7 @@
 
 - id: io.reactivex.rxjava3.subjects.BehaviorSubject
   type: type
+  typeArgumentNames: [Element]
   template:
     pattern: BehaviorSubject<~T0~>
     imports: [ RxSwift ]

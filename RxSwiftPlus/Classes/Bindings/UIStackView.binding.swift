@@ -12,19 +12,21 @@ import RxSwift
 
 public extension ObservableType where Element: Collection {
     @discardableResult
-    func showIn(_ view: UIStackView, _ makeView: @escaping (Observable<Element.Element>) -> UIView) -> Self{
+    func showIn(_ view: UIStackView, makeView: @escaping (Observable<Element.Element>) -> UIView) -> Self{
         var existingViews: Array<(UIView,BehaviorSubject<Element.Element>)> = []
         subscribe(
             onNext: {items in
                 let countDiff = existingViews.count - items.count
                 if(countDiff > 0) {
                     for _ in 1...countDiff{
-                        existingViews.remove(at: existingViews.count - 1)
+                        let removedView = existingViews.remove(at: existingViews.count - 1)
+                        view.removeArrangedSubview(removedView.0)
+                        removedView.0.removeFromSuperview()
                     }
                 } else if countDiff < 0 {
                     let itemsArray: Array<Element.Element> = Array(items)
-                    for index in existingViews.count...items.count {
-                        let prop = BehaviorSubject<Element.Element>(value: itemsArray[index - 1])
+                    for index in existingViews.count...itemsArray.count - 1 {
+                        let prop = BehaviorSubject<Element.Element>(value: itemsArray[index])
                         let cellView = makeView(prop)
                         view.addArrangedSubview(cellView)
                         existingViews.append((cellView, prop))

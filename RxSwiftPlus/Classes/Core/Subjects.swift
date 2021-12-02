@@ -16,6 +16,9 @@ public class ValueSubjectDelegate<Element>: HasValueSubject<Element> {
             onSet(value)
         }
     }
+    public override func on(_ event: Event<Element>) {
+        delegatedToObserver.on(event)
+    }
     public typealias Observer = AnyObserver<Element>
     public override func subscribe<Observer>(_ observer: Observer) -> Disposable where Observer : ObserverType, Element == Observer.Element {
         return delegatedToObservable.subscribe(observer)
@@ -108,11 +111,26 @@ public extension HasValueSubject {
     }
 }
 
+public class DelegateSubject<Element>: Subject<Element> {
+    let values: Observable<Element>
+    let valueSink: AnyObserver<Element>
+    public init(values: Observable<Element>, valueSink: AnyObserver<Element>) {
+        self.values = values
+        self.valueSink = valueSink
+    }
+    public override func subscribe<Observer>(_ observer: Observer) -> Disposable where Observer : ObserverType, Element == Observer.Element {
+        return values.subscribe(observer)
+    }
+    public override func on(_ event: Event<Element>) {
+        valueSink.on(event)
+    }
+}
+
 public extension ObservableType {
-    func withWrite(onWrite: @escaping (Element)->Void) -> ControlProperty<Element> {
-        return ControlProperty(
-            values: self,
-            valueSink: NextOnlyObserver(onWrite)
+    func withWrite(onWrite: @escaping (Element)->Void) -> Subject<Element> {
+        return DelegateSubject(
+            values: self.asObservable(),
+            valueSink: NextOnlyObserver(onWrite).asObserver()
         )
     }
 }

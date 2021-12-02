@@ -5,27 +5,38 @@ import Foundation
 import RxSwift
 import UIKit
 
-public enum Image {
-    case localUrl(_ url: URL)
-    case ui(_ uiImage: UIImage)
-    case raw(_ raw: Data)
-    case remoteUrl(_ url: URL)
-    case layer(_ maker: ()->CALayer)
-    
-    func load() -> Single<UIImage> {
-        switch self {
-        case .localUrl(url: let url):
-            return loadImage(uri: url)
-        case .ui(uiImage: let uiImage):
-            return Single.just(uiImage)
-        case .raw(raw: let raw):
-            return UIImage(data: raw).map { Single.just($0) } ?? Single.error(ImageLoadError.notImage)
-        case .remoteUrl(url: let url):
-            return loadImage(uri: url)
-        case .layer(maker: let maker):
-            return maker().toImage().map { Single.just($0) } ?? Single.error(ImageLoadError.notImage)
-        }
+public protocol Image { func load() -> Single<UIImage> }
+public struct ImageLocalUrl: Image, Hashable {
+    var url: URL
+    public init(_ url: URL) { self.url = url }
+    public func load() -> Single<UIImage> { loadImage(uri: url) }
+}
+public struct ImageUI: Image, Hashable {
+    var uiImage: UIImage
+    public init(_ uiImage: UIImage) { self.uiImage = uiImage }
+    public func load() -> Single<UIImage> { Single.just(uiImage) }
+}
+public struct ImageRaw: Image, Hashable {
+    var raw: Data
+    public init(_ raw: Data) { self.raw = raw }
+    public func load() -> Single<UIImage> { UIImage(data: raw).map { Single.just($0) } ?? Single.error(ImageLoadError.notImage) }
+}
+public struct ImageRemoteUrl: Image, Hashable {
+    var url: URL
+    public init(_ url: URL) { self.url = url }
+    public func load() -> Single<UIImage> { loadImage(uri: url) }
+}
+public struct ImageLayer: Image, Hashable {
+    public static func == (lhs: ImageLayer, rhs: ImageLayer) -> Bool {
+        return lhs.identifier == rhs.identifier
     }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+    var identifier = arc4random()
+    var maker: () -> CALayer
+    public init(_ maker: @escaping () -> CALayer) { self.maker = maker }
+    public func load() -> Single<UIImage> { maker().toImage().map { Single.just($0) } ?? Single.error(ImageLoadError.notImage) }
 }
 
 public enum ImageLoadError: Error {
@@ -73,26 +84,28 @@ private func loadImage(uri: URL, maxDimension: Int32 = 2048) -> Single<UIImage> 
 }
 
 public extension UIImageView {
-    func setImage(_ image: Image) {
+    func setImage(_ image: Image?) {
         self.image = nil
-        switch image {
-        case .localUrl(url: let url):
-            setImageFromUrl(url: url)
-        case .ui(uiImage: let uiImage):
-            self.image = uiImage
-        case .remoteUrl(url: let url):
-            setImageFromUrl(url: url)
-        default:
-            let activityIndicatorView = UIActivityIndicatorView(style: .gray)
-            activityIndicatorView.startAnimating()
-            activityIndicatorView.center.x = self.frame.size.width / 2
-            activityIndicatorView.center.y = self.frame.size.height / 2
-            self.addSubview(activityIndicatorView)
-            weak var weakAIV = activityIndicatorView
-            image.load()
-                .do(onSuccess: { self.image = $0 }, onSubscribe: {  }, onDispose: { weakAIV?.removeFromSuperview() })
-                .subscribe()
-                .disposed(by: self.removed)
+        if let image = image {
+            switch image {
+            case let image as ImageLocalUrl:
+                setImageFromUrl(url: image.url)
+            case let image as ImageUI:
+                self.image = image.uiImage
+            case let image as ImageRemoteUrl:
+                setImageFromUrl(url: image.url)
+            default:
+                let activityIndicatorView = UIActivityIndicatorView(style: .gray)
+                activityIndicatorView.startAnimating()
+                activityIndicatorView.center.x = self.frame.size.width / 2
+                activityIndicatorView.center.y = self.frame.size.height / 2
+                self.addSubview(activityIndicatorView)
+                weak var weakAIV = activityIndicatorView
+                image.load()
+                    .do(onSuccess: { self.image = $0 }, onSubscribe: {  }, onDispose: { weakAIV?.removeFromSuperview() })
+                    .subscribe()
+                    .disposed(by: self.removed)
+            }
         }
     }
     

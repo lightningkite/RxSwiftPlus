@@ -213,7 +213,7 @@ public enum HttpClient {
         return obs.share(replay: 1)
     }
 
-    public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, callTimeout:Int64? = nil, writeTimeout:Int64? = nil, readTimeout:Int64?=nil,connectTimeout:Int64?=nil) -> Single<HttpResponse> {
+    public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, callTimeout:Int? = nil, writeTimeout:Int? = nil, readTimeout:Int?=nil,connectTimeout:Int?=nil) -> Single<HttpResponse> {
         return call(url: url, method: method, headers: headers, body: body, options: HttpOptions(
             callTimeout: callTimeout,
             writeTimeout: writeTimeout,
