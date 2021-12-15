@@ -43,16 +43,20 @@ public extension UIView {
     
     fileprivate func setSpinnerVisible(){
         let spinner = mySpinner
-        spinner.startAnimating()
-//        self.subviews.forEach({subView in subView.alpha = 0})
-        spinner.alpha = 1
+        UIView.animate(withDuration: 0.25, animations: {
+            spinner.startAnimating()
+            self.subviews.forEach({subView in subView.alpha = 0})
+            spinner.alpha = 1
+        })
     }
     
     fileprivate func setSpinnerInVisible(){
         let spinner = mySpinner
-        spinner.stopAnimating()
-//        self.subviews.forEach({subView in subView.alpha = 1})
-        spinner.alpha = 0
+        UIView.animate(withDuration: 0.25, animations: {
+            spinner.stopAnimating()
+            self.subviews.forEach({subView in subView.alpha = 1})
+            spinner.alpha = 0
+        })
     }
 }
 

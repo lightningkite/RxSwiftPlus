@@ -202,7 +202,7 @@ public extension UICollectionView {
         
 }
 
-class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollectionViewDataSource {
+class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollectionViewDataSource, HasAtPosition {
     var items: Array<T> = []
     let makeView: (Observable<T>, Int) -> UIView
     let getType: (T) -> Int
@@ -313,22 +313,22 @@ class ObsUICollectionViewCell: UICollectionViewCell {
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         ({ () -> Void in
             let c = contentView.topAnchor.constraint(equalTo: self.topAnchor)
-            c.priority = UILayoutPriority(999)
+//            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
         ({ () -> Void in
             let c = contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor)
-            c.priority = UILayoutPriority(999)
+//            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
         ({ () -> Void in
             let c = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
-            c.priority = UILayoutPriority(999)
+//            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
         ({ () -> Void in
             let c = contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-            c.priority = UILayoutPriority(999)
+//            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
     }

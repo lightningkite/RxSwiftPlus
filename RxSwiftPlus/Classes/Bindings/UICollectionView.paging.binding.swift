@@ -133,13 +133,19 @@ public extension ObservableType where Element: Collection {
         view.retain(item: boundDataSource).disposed(by: view.removed)
         
         var suppress = false
+        var positioned = false
         showIndex.subscribe(onNext: { value in
             guard !suppress else { return }
-            view.scrollToItem(at: IndexPath(row: value, section: 0), at: .centeredHorizontally, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
+                view.scrollToItem(at: IndexPath(row: value, section: 0), at: .centeredHorizontally, animated: positioned)
+                positioned = true
+                print("Scrolling to \(value)")
+            })
         }).disposed(by: view.removed)
         let observer = showIndex.asObserver()
         view.whenScrolled { newIndex in
             suppress = true
+            print("Scrolled to \(newIndex)")
             observer.onNext(newIndex)
             suppress = false
         }
@@ -159,9 +165,6 @@ public extension ObservableType where Element: Collection {
             onDisposed: nil
         ).disposed(by: view.removed)
         
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-//            view.scrollToItem(at: IndexPath(row: Int(showIndex.value), section: 0), at: .centeredHorizontally, animated: false)
-//        })
         
         return self
     }
