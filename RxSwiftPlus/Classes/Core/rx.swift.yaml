@@ -23,6 +23,10 @@
 #  arguments: [io.reactivex.rxjava3.core.Observer]
 #  template: ~this~.subscribe(~0~)
 
+- id: io.reactivex.rxjava3.core.Observable.mergeWith
+  type: call
+  template: 'Observable.merge(~this~, ~0~)'
+
 - id: io.reactivex.rxjava3.core.Observable.subscribe
   type: call
   arguments: [io.reactivex.rxjava3.functions.Consumer]
@@ -83,12 +87,17 @@
 - id: io.reactivex.rxjava3.core.Observable.delay
   type: call
   template:
-    pattern: '~this~.delay(.milliseconds(Int(~0~)), scheduler: MainScheduler.instance)'
+    pattern: '~this~.delay(.milliseconds(~0~), scheduler: MainScheduler.instance)'
+    imports: [RxSwift]
+- id: io.reactivex.rxjava3.core.Observable.timeout
+  type: call
+  template:
+    pattern: '~this~.timeout(.milliseconds(~0~), scheduler: MainScheduler.instance)'
     imports: [RxSwift]
 - id: io.reactivex.rxjava3.core.Observable.debounce
   type: call
   template:
-    pattern: '~this~.debounce(.milliseconds(Int(~0~)), scheduler: MainScheduler.instance)'
+    pattern: '~this~.debounce(.milliseconds(~0~), scheduler: MainScheduler.instance)'
     imports: [RxSwift]
 - id: io.reactivex.rxjava3.core.Observable.distinctUntilChanged
   type: call
@@ -365,13 +374,12 @@
 #  template: ~this~
 
 # Observer
-#- id: io.reactivex.rxjava3.core.Observer
-#  type: type
-#  template:
-#    pattern: Observer<~T0~>
-#    imports:
-#      Observer: rxjs
-#
+- id: io.reactivex.rxjava3.core.Observer
+  type: type
+  template:
+    pattern: AnyObserver<~T0~>
+    imports: [RxSwift]
+
 - id: io.reactivex.rxjava3.core.Observer.onNext
   type: call
   template: ~this~.onNext(~0~)

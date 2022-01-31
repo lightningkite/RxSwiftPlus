@@ -47,7 +47,13 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             }
         }
     }
-    public func readJson<T: Codable>(_ type: T.Type) -> Single<T> {
+    public func readJson<T: Codable>(serializer: T.Type) -> Single<T> {
+        return readJson()
+    }
+    public func readJsonDebug<T: Codable>(serializer: T.Type) -> Single<T> {
+        return readJson()
+    }
+    public func readJson<T: AltCodable>() -> Single<T> {
         return self.flatMap { (it) in
             if it.isSuccessful {
                 return it.readJson()
@@ -55,6 +61,21 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
                 return Single.error(HttpResponseException(response: it))
             }
         }
+    }
+    public func readJsonDebug<T: AltCodable>() -> Single<T> {
+        return self.flatMap { (it) in
+            if it.isSuccessful {
+                return it.readJsonDebug()
+            } else {
+                return Single.error(HttpResponseException(response: it))
+            }
+        }
+    }
+    public func readJson<T: AltCodable>(serializer: T.Type) -> Single<T> {
+        return readJson()
+    }
+    public func readJsonDebug<T: AltCodable>(serializer: T.Type) -> Single<T> {
+        return readJson()
     }
     public func readText() -> Single<String> {
         return self.flatMap { (it) in

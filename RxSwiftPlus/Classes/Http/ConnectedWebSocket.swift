@@ -2,9 +2,38 @@ import RxSwift
 import RxRelay
 import Starscream
 
-public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
+public protocol WebSocketInterface: Disposable {
+    var write: AnyObserver<WebSocketFrame> { get }
+    var read: Observable<WebSocketFrame> { get }
+    var ownConnection: Observable<ConnectedWebSocket> { get }
+}
 
-    public var ownConnection = PublishSubject<ConnectedWebSocket>()
+public final class ConnectedWebSocket: WebSocketInterface, WebSocketDelegate, Disposable, ObserverType {
+    public typealias Element = WebSocketFrame
+    public var write: AnyObserver<WebSocketFrame> { return AnyObserver(self) }
+    
+    public var ownConnection: Observable<ConnectedWebSocket> {
+        return _ownConnection
+    }
+    
+    public func on(_ event: Event<WebSocketFrame>) {
+        switch event {
+        case let .next(value):
+            if let text = value.text {
+                underlyingSocket?.write(string: text, completion: nil)
+            }
+            if let binary = value.binary {
+                underlyingSocket?.write(data: binary, completion: nil)
+            }
+        case .error(_):
+            underlyingSocket?.disconnect(closeCode: 1011)
+        case .completed:
+            underlyingSocket?.disconnect(closeCode: 1000)
+        }
+    }
+    
+
+    private let _ownConnection = PublishSubject<ConnectedWebSocket>()
     var underlyingSocket: WebSocket?
     var url: String
     private let _read: PublishSubject<WebSocketFrame> = PublishSubject()
@@ -12,23 +41,6 @@ public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
 
     init(url: String) {
         self.url = url
-    }
-
-    public func onComplete() -> Void {
-        underlyingSocket?.disconnect(closeCode: 1000)
-    }
-
-    public func onNext(_ t: WebSocketFrame) -> Void {
-        if let text = t.text {
-            underlyingSocket?.write(string: text, completion: nil)
-        }
-        if let binary = t.binary {
-            underlyingSocket?.write(data: binary, completion: nil)
-        }
-    }
-
-    public func onError(_ error: Error) -> Void {
-        underlyingSocket?.disconnect(closeCode: 1011)
     }
 
     public func didReceive(event: WebSocketEvent, client: WebSocket) {
@@ -43,21 +55,21 @@ public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
             break
         case .connected(let headers):
             print("Socket to \(url) opened successfully with \(headers).")
-            ownConnection.onNext(self)
+            _ownConnection.onNext(self)
             break
         case .disconnected(let reason, let code):
             print("Socket to \(url) disconnecting with code \(code). Reason: \(reason)")
-            ownConnection.onCompleted()
+            _ownConnection.onCompleted()
             _read.onCompleted()
             break
         case .error(let error):
             print("Socket to \(url) failed with error \(String(describing: error))")
-            ownConnection.onError(error ?? HttpError.unknown)
+            _ownConnection.onError(error ?? HttpError.unknown)
             _read.onError(error ?? HttpError.unknown)
             break
         case .cancelled:
             print("Socket to \(url) cancelled")
-            ownConnection.onError(HttpError.cancelled)
+            _ownConnection.onError(HttpError.cancelled)
             _read.onCompleted()
             break
         default:
@@ -68,7 +80,7 @@ public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
     public func dispose() {
         print("Socket to \(url) was disposed, closing with OK code.")
         underlyingSocket?.disconnect(closeCode: 1000)
-        ownConnection.onCompleted()
+        _ownConnection.onCompleted()
         _read.onCompleted()
     }
 

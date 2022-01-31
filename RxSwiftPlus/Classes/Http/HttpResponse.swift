@@ -42,7 +42,7 @@ public struct HttpResponse {
         return Single.just(data)
     }
     
-
+    
     public func readJson<T: Codable>() -> Single<T> {
         do {
             return Single.just(try T.fromJsonData(data))
@@ -52,6 +52,58 @@ public struct HttpResponse {
     }
 
     public func readJsonDebug<T: Codable>() -> Single<T> {
+        do {
+            print("Got response \(String(data: data, encoding: .utf8)!)")
+            return Single.just(try T.fromJsonData(data))
+        } catch {
+            return Single.error(error)
+        }
+    }
+    
+    public func readJson<T: Codable>(serializer: T.Type) -> Single<T> {
+        do {
+            return Single.just(try T.fromJsonData(data))
+        } catch {
+            return Single.error(error)
+        }
+    }
+
+    public func readJsonDebug<T: Codable>(serializer: T.Type) -> Single<T> {
+        do {
+            print("Got response \(String(data: data, encoding: .utf8)!)")
+            return Single.just(try T.fromJsonData(data))
+        } catch {
+            return Single.error(error)
+        }
+    }
+    
+    
+    public func readJson<T: AltCodable>() -> Single<T> {
+        do {
+            return Single.just(try T.fromJsonData(data))
+        } catch {
+            return Single.error(error)
+        }
+    }
+
+    public func readJsonDebug<T: AltCodable>() -> Single<T> {
+        do {
+            print("Got response \(String(data: data, encoding: .utf8)!)")
+            return Single.just(try T.fromJsonData(data))
+        } catch {
+            return Single.error(error)
+        }
+    }
+    
+    public func readJson<T: AltCodable>(serializer: T.Type) -> Single<T> {
+        do {
+            return Single.just(try T.fromJsonData(data))
+        } catch {
+            return Single.error(error)
+        }
+    }
+
+    public func readJsonDebug<T: AltCodable>(serializer: T.Type) -> Single<T> {
         do {
             print("Got response \(String(data: data, encoding: .utf8)!)")
             return Single.just(try T.fromJsonData(data))
