@@ -114,17 +114,6 @@ public extension ObservableType {
 }
 public extension ObservableType where Element: OptionalType {
     @discardableResult
-    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element.Wrapped) -> Void)-> Self{
-        subscribe(
-            onNext: { value in
-                if let value = value.asOptional() {
-                    setter(view, value)
-                }
-            }
-        ).disposed(by: view.removed)
-        return self
-    }
-    @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped) -> Void)-> Self{
         subscribe(
             onNext: { value in

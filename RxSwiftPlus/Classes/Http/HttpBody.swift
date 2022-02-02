@@ -17,6 +17,11 @@ public extension Encodable {
         return HttpBody(mediaType: MediaTypes.JSON, data: self.toJsonData())
     }
 }
+public extension AltCodable {
+    func toJsonRequestBody() -> HttpBody {
+        return HttpBody(mediaType: MediaTypes.JSON, data: self.toJsonData())
+    }
+}
 
 public extension Dictionary where Key == String, Value == Any {
     func toJsonRequestBody() -> HttpBody {
@@ -166,6 +171,10 @@ public enum MultipartBody {
     }
     
     public static func from(_ parts: Part...) -> HttpBody {
+        return from(parts: parts)
+    }
+    
+    public static func from(parts: Array<Part>) -> HttpBody {
         var body = Data()
         #if DEBUG
         var stringBody = ""

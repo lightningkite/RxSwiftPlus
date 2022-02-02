@@ -6,6 +6,7 @@
 
 - id: io.reactivex.rxjava3.core.Observable
   type: type
+  typeArgumentNames: [Element]
   template:
     pattern: Observable<~T0~>
     imports:
@@ -23,6 +24,10 @@
 #  arguments: [io.reactivex.rxjava3.core.Observer]
 #  template: ~this~.subscribe(~0~)
 
+- id: io.reactivex.rxjava3.core.Observable.mergeWith
+  type: call
+  template: 'Observable.merge(~this~, ~0~)'
+
 - id: io.reactivex.rxjava3.core.Observable.subscribe
   type: call
   arguments: [io.reactivex.rxjava3.functions.Consumer]
@@ -35,7 +40,7 @@
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Observable
-  suppliedArguments: [onNext, onError, onCompleted]
+  suppliedArguments: [onNext, onError, onComplete]
   template: '~this~.subscribe(onNext: ~onNext~, onError: ~onError~, onCompleted: ~onComplete~)'
 
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
@@ -47,13 +52,13 @@
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Observable
-  suppliedArguments: [onNext, onCompleted]
+  suppliedArguments: [onNext, onComplete]
   template: '~this~.subscribe(onNext: ~onNext~, onCompleted: ~onComplete~)'
 
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Observable
-  suppliedArguments: [onError, onCompleted]
+  suppliedArguments: [onError, onComplete]
   template: '~this~.subscribe(onError: ~onError~, onCompleted: ~onComplete~)'
 
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
@@ -71,7 +76,7 @@
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Observable
-  suppliedArguments: [onCompleted]
+  suppliedArguments: [onComplete]
   template: '~this~.subscribe(onCompleted: ~onComplete~)'
 
 ## Operators
@@ -83,12 +88,17 @@
 - id: io.reactivex.rxjava3.core.Observable.delay
   type: call
   template:
-    pattern: '~this~.delay(.milliseconds(Int(~0~)), scheduler: MainScheduler.instance)'
+    pattern: '~this~.delay(.milliseconds(~0~), scheduler: MainScheduler.instance)'
+    imports: [RxSwift]
+- id: io.reactivex.rxjava3.core.Observable.timeout
+  type: call
+  template:
+    pattern: '~this~.timeout(.milliseconds(~0~), scheduler: MainScheduler.instance)'
     imports: [RxSwift]
 - id: io.reactivex.rxjava3.core.Observable.debounce
   type: call
   template:
-    pattern: '~this~.debounce(.milliseconds(Int(~0~)), scheduler: MainScheduler.instance)'
+    pattern: '~this~.debounce(.milliseconds(~0~), scheduler: MainScheduler.instance)'
     imports: [RxSwift]
 - id: io.reactivex.rxjava3.core.Observable.distinctUntilChanged
   type: call
@@ -165,7 +175,7 @@
     pattern: ~this~.publish()
     imports: [RxSwift]
 
-- id: io.reactivex.rxjava3.core.subjects.Subject.hasObservers
+- id: io.reactivex.rxjava3.subjects.Subject.hasObservers
   type: call
   template:
     pattern: ~this~.hasObservers
@@ -346,7 +356,7 @@
 #    imports:
 #      rxPublishReplay: publishReplay from rxjs/operators
 #
-#- id: io.reactivex.rxjava3.core.observables.ConnectableObservable.refCount
+#- id: io.reactivex.rxjava3.observables.ConnectableObservable.refCount
 #  type: call
 #  template:
 #    pattern: ~this~.pipe(rxRefCount())
@@ -365,13 +375,12 @@
 #  template: ~this~
 
 # Observer
-#- id: io.reactivex.rxjava3.core.Observer
-#  type: type
-#  template:
-#    pattern: Observer<~T0~>
-#    imports:
-#      Observer: rxjs
-#
+- id: io.reactivex.rxjava3.core.Observer
+  type: type
+  template:
+    pattern: AnyObserver<~T0~>
+    imports: [RxSwift]
+
 - id: io.reactivex.rxjava3.core.Observer.onNext
   type: call
   template: ~this~.onNext(~0~)
@@ -585,7 +594,7 @@
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Maybe
-  suppliedArguments: [onSuccess, onError, onCompleted]
+  suppliedArguments: [onSuccess, onError, onComplete]
   template: '~this~.subscribe(onSuccess: ~onSuccess~, onError: ~onError~, onCompleted: ~onComplete~)'
 
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
@@ -597,13 +606,13 @@
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Maybe
-  suppliedArguments: [onSuccess, onCompleted]
+  suppliedArguments: [onSuccess, onComplete]
   template: '~this~.subscribe(onSuccess: ~onSuccess~, onCompleted: ~onComplete~)'
 
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Maybe
-  suppliedArguments: [onError, onCompleted]
+  suppliedArguments: [onError, onComplete]
   template: '~this~.subscribe(onError: ~onError~, onCompleted: ~onComplete~)'
 
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
@@ -621,7 +630,7 @@
 - id: io.reactivex.rxjava3.kotlin.subscribeBy
   type: call
   receiver: io.reactivex.rxjava3.core.Maybe
-  suppliedArguments: [onCompleted]
+  suppliedArguments: [onComplete]
   template: '~this~.subscribe(onCompleted: ~onComplete~)'
 
 # Disposable
@@ -700,3 +709,16 @@
   template:
     pattern: 'BehaviorSubject(value: ~0~)'
     imports: [ RxSwift ]
+
+
+- id: io.reactivex.rxjava3.schedulers.Schedulers.io
+  type: call
+  template:
+    pattern: 'ConcurrentDispatchQueueScheduler.init(qos: .background)'
+    imports: [RxSwift]
+
+- id: io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread
+  type: call
+  template:
+    pattern: 'MainScheduler.instance'
+    imports: [RxSwift]

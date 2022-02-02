@@ -117,17 +117,12 @@
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.setText"
-  receiver: "android.widget.TextView"
-  arguments:
-  - "com.lightningkite.rx.android.resources.ViewString"
   reflectiveName: "\\UILabel.text"
   template: "~this~.text = ~0~"
 
 - type: "call"
   id: "com.lightningkite.rx.android.resources.setText"
   actualReceiver: "android.widget.Button"
-  arguments:
-  - "com.lightningkite.rx.android.resources.ViewString"
   reflectiveName: "\\UIButton.setTitle"
   template: "~this~.setTitle(~0~, for: .normal)"
 
@@ -291,3 +286,8 @@
 - id: com.lightningkite.rx.android.ColorResource
   type: type
   template: 'UIColor'
+
+- id: com.lightningkite.rx.android.resources.load
+  type: call
+  reciever: Image
+  template: '~this~.load()'

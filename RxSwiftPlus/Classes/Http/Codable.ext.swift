@@ -205,6 +205,30 @@ public extension Encodable {
             return ""
         }
     }
+    func toJsonString(serializer: Self.Type, coder: JSONEncoder = encoder) -> String {
+        return toJsonString(coder: coder)
+    }
+}
+public extension AltCodable {
+    func toJsonData(coder: JSONEncoder = encoder) -> Data {
+        if let result = try? coder.encode(self) {
+            return result
+        }
+        let result = try? coder.encode([self])
+        let string = String(data: result!, encoding: .utf8)!
+        return string.substring(1, string.count - 1).data(using: .utf8)!
+    }
+    func toJsonString(coder: JSONEncoder = encoder) -> String {
+        let data = toJsonData(coder: coder)
+        if let stringRep = String(data: data, encoding: .utf8) {
+            return stringRep
+        } else {
+            return ""
+        }
+    }
+    func toJsonString(serializer: Self.Type, coder: JSONEncoder = encoder) -> String {
+        return toJsonString(coder: coder)
+    }
 }
 
 public extension Dictionary where Key == String, Value == Any {
@@ -224,7 +248,39 @@ public extension String {
         let obj = try? JSONSerialization.jsonObject(with: self.data(using: .utf8)!, options: .allowFragments)
         return obj
     }
+    func fromJsonString<T>(serializer: T.Type) -> T? where T : Decodable {
+        return fromJsonString()
+    }
     func fromJsonString<T>() -> T? where T : Decodable {
+        if let data = self.data(using: .utf8) {
+            var err: Error? = nil
+            do {
+                let result = try decoder.decode(T.self, from: data)
+                return result
+            } catch {
+                //Check error here
+                err = error
+            }
+            let dataString = String(data: data, encoding: .utf8)!
+            let fixedData = ("[" + dataString + "]").data(using: .utf8)!
+            do {
+                let result = try decoder.decode(Array<T>.self, from: fixedData)
+                return result[0]
+            } catch {
+                err = error
+            }
+            if let err = err {
+                print("Error decoding JSON into \(T.self): \(err)")
+            }
+            return nil
+        }
+        print("Error reading JSON into UTF8")
+        return nil
+    }
+    func fromJsonString<T>(serializer: T.Type) -> T? where T : AltCodable {
+        return fromJsonString()
+    }
+    func fromJsonString<T>() -> T? where T : AltCodable {
         if let data = self.data(using: .utf8) {
             var err: Error? = nil
             do {
@@ -256,6 +312,40 @@ public extension String {
 public enum DecodingError2: Error { case wrongFormat }
 
 public extension Decodable {
+    static func fromJsonData(_ data: Data, coder: JSONDecoder = decoder) throws -> Self {
+        var err: Error? = nil
+        do {
+            let result = try decoder.decode(Self.self, from: data)
+            return result
+        } catch {
+            //Check error here
+            err = error
+        }
+        let dataString = String(data: data, encoding: .utf8)!
+        let fixedData = ("[" + dataString + "]").data(using: .utf8)!
+        let result = try decoder.decode(Array<Self>.self, from: fixedData)
+        return result[0]
+    }
+    static func fromJsonString(_ string: String, coder: JSONDecoder = decoder) throws -> Self {
+        if let data = string.data(using: .utf8) {
+            var err: Error? = nil
+            do {
+                let result = try decoder.decode(Self.self, from: data)
+                return result
+            } catch {
+                //Check error here
+                err = error
+            }
+            let dataString = String(data: data, encoding: .utf8)!
+            let fixedData = ("[" + dataString + "]").data(using: .utf8)!
+            let result = try decoder.decode(Array<Self>.self, from: fixedData)
+            return result[0]
+        }
+        throw DecodingError2.wrongFormat
+    }
+}
+
+public extension AltCodable {
     static func fromJsonData(_ data: Data, coder: JSONDecoder = decoder) throws -> Self {
         var err: Error? = nil
         do {
@@ -347,5 +437,125 @@ private struct PrimitiveCodableBox: Codable {
             var svc = encoder.singleValueContainer()
             try svc.encodeNil()
         }
+    }
+}
+
+
+public protocol AltCodable {
+    static func encode(_ value: Self, to encoder: Encoder) throws
+    static func decode(from decoder: Decoder) throws -> Self
+}
+
+extension Array: AltCodable where Element: AltCodable {
+    public static func encode(_ value: Array<Element>, to encoder: Encoder) throws {
+        try value.map { AltCodableWrapper(value: $0) }.encode(to: encoder)
+    }
+    
+    public static func decode(from decoder: Decoder) throws -> Array<Element> {
+        return try Array<AltCodableWrapper<Element>>(from: decoder).map { $0.value }
+    }
+}
+
+extension Dictionary: AltCodable where Key: Codable, Value: AltCodable {
+    public static func encode(_ value: Dictionary<Key, Value>, to encoder: Encoder) throws {
+        try value.mapValues { AltCodableWrapper(value: $0) }.encode(to: encoder)
+    }
+    
+    public static func decode(from decoder: Decoder) throws -> Dictionary<Key, Value> {
+        return try Dictionary<Key, AltCodableWrapper<Value>>(from: decoder).mapValues { $0.value }
+    }
+}
+
+fileprivate struct AltCodableWrapper<T: AltCodable>: Codable {
+    var value: T
+    init(value: T) { self.value = value }
+    init(from decoder: Decoder) throws {
+        self.value = try T.decode(from: decoder)
+    }
+    func encode(to encoder: Encoder) throws {
+        try T.encode(self.value, to: encoder)
+    }
+}
+
+public extension JSONDecoder {
+    func decode<T: AltCodable>(_ type: T.Type, from: Data) throws -> T {
+        return try self.decode(AltCodableWrapper<T>.self, from: from).value
+    }
+}
+
+public extension JSONEncoder {
+    func encode<T: AltCodable>(_ value: T) throws -> Data {
+        return try self.encode(AltCodableWrapper(value: value))
+    }
+    func encodeAlt<T: AltCodable>(_ value: T) throws -> Data {
+        return try self.encode(value)
+    }
+    func encodeCodable<T: Encodable>(_ value: T) throws -> Data {
+        return try self.encode(value)
+    }
+}
+
+public extension KeyedEncodingContainer {
+    mutating func encode<T: AltCodable>(_ value: T, forKey key: KeyedEncodingContainer<K>.Key) throws {
+        try self.encode(AltCodableWrapper(value: value), forKey: key)
+    }
+    mutating func encodeCodable<T: Encodable>(_ value: T, forKey key: KeyedEncodingContainer<K>.Key) throws {
+        try self.encode(value, forKey: key)
+    }
+    mutating func encodeAlt<T: AltCodable>(_ value: T, forKey key: KeyedEncodingContainer<K>.Key) throws {
+        try self.encode(value, forKey: key)
+    }
+}
+
+public extension KeyedDecodingContainer {
+    func decode<T: AltCodable>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> T {
+        return try self.decode(AltCodableWrapper<T>.self, forKey: key).value
+    }
+    func decodeIfPresent<T: AltCodable>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> T? {
+        return try self.decodeIfPresent(AltCodableWrapper<T>.self, forKey: key)?.value
+    }
+    func decodeAlt<T: AltCodable>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> T {
+        return try self.decode(T.self, forKey: key)
+    }
+    func decodeIfPresentAlt<T: AltCodable>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> T? {
+        return try self.decodeIfPresent(T.self, forKey: key)
+    }
+    func decodeCodable<T: Decodable>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> T {
+        return try self.decode(T.self, forKey: key)
+    }
+    func decodeIfPresentCodable<T: Decodable>(_ type: T.Type, forKey key: KeyedDecodingContainer<K>.Key) throws -> T? {
+        return try self.decodeIfPresent(T.self, forKey: key)
+    }
+}
+
+public extension UnkeyedEncodingContainer {
+    mutating func encode<T: AltCodable>(_ value: T) throws {
+        try self.encode(AltCodableWrapper(value: value))
+    }
+    mutating func encodeAlt<T: AltCodable>(_ value: T) throws {
+        try self.encode(value)
+    }
+    mutating func encodeCodable<T: Encodable>(_ value: T) throws {
+        try self.encode(value)
+    }
+}
+public extension UnkeyedDecodingContainer {
+    mutating func decode<T: AltCodable>(_ type: T.Type) throws -> T {
+        return try self.decode(AltCodableWrapper<T>.self).value
+    }
+    mutating func decodeIfPresent<T: AltCodable>(_ type: T.Type) throws -> T? {
+        return try self.decodeIfPresent(AltCodableWrapper<T>.self)?.value
+    }
+    mutating func decodeAlt<T: AltCodable>(_ type: T.Type) throws -> T {
+        return try self.decode(T.self)
+    }
+    mutating func decodeIfPresentAlt<T: AltCodable>(_ type: T.Type) throws -> T? {
+        return try self.decodeIfPresent(T.self)
+    }
+    mutating func decodeCodable<T: Decodable>(_ type: T.Type) throws -> T {
+        return try self.decode(T.self)
+    }
+    mutating func decodeIfPresentCodable<T: Decodable>(_ type: T.Type) throws -> T? {
+        return try self.decodeIfPresent(T.self)
     }
 }

@@ -307,3 +307,17 @@
     pattern: "~this~.toSubjectString()"
     imports: [RxSwiftPlus]
 
+
+- type: "get"
+  id: "com.lightningkite.rx.valueNullable"
+  template:
+    pattern: "~this~.value"
+    imports: [RxSwiftPlus]
+
+
+- type: "set"
+  id: "com.lightningkite.rx.valueNullable"
+  template:
+    pattern: "~this~.value = ~value~"
+    imports: [RxSwiftPlus]
+

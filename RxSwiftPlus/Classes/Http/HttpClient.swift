@@ -222,7 +222,7 @@ public enum HttpClient {
         ))
     }
 
-    static public func webSocket(url: String) -> Observable<ConnectedWebSocket> {
+    static public func webSocket(url: String) -> Observable<WebSocketInterface> {
         return Observable.using({ () -> ConnectedWebSocket in
             let out = ConnectedWebSocket(url: url)
             let request = URLRequest(url: URL(string: cleanURL(url))!)
@@ -231,7 +231,7 @@ public enum HttpClient {
             out.underlyingSocket = socket
             socket.connect()
             return out
-        }, observableFactory: { $0.ownConnection })
+        }, observableFactory: { $0.ownConnection }).map { $0 }
     }
 
 }

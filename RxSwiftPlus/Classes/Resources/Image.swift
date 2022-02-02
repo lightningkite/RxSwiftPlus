@@ -7,22 +7,22 @@ import UIKit
 
 public protocol Image { func load() -> Single<UIImage> }
 public struct ImageLocalUrl: Image, Hashable {
-    var url: URL
+    public var url: URL
     public init(_ url: URL) { self.url = url }
     public func load() -> Single<UIImage> { loadImage(uri: url) }
 }
 public struct ImageUI: Image, Hashable {
-    var uiImage: UIImage
+    public var uiImage: UIImage
     public init(_ uiImage: UIImage) { self.uiImage = uiImage }
     public func load() -> Single<UIImage> { Single.just(uiImage) }
 }
 public struct ImageRaw: Image, Hashable {
-    var raw: Data
+    public var raw: Data
     public init(_ raw: Data) { self.raw = raw }
     public func load() -> Single<UIImage> { UIImage(data: raw).map { Single.just($0) } ?? Single.error(ImageLoadError.notImage) }
 }
 public struct ImageRemoteUrl: Image, Hashable {
-    var url: URL
+    public var url: URL
     public init(_ url: URL) { self.url = url }
     public func load() -> Single<UIImage> { loadImage(uri: url) }
 }
@@ -33,9 +33,14 @@ public struct ImageLayer: Image, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
-    var identifier = arc4random()
-    var maker: () -> CALayer
+    public var identifier = arc4random()
+    public var maker: () -> CALayer
     public init(_ maker: @escaping () -> CALayer) { self.maker = maker }
+    public init(_ color: UIColor) { self.maker = {
+        let newLayer = CALayer()
+        newLayer.backgroundColor = color.cgColor
+        return newLayer
+    } }
     public func load() -> Single<UIImage> { maker().toImage().map { Single.just($0) } ?? Single.error(ImageLoadError.notImage) }
 }
 
