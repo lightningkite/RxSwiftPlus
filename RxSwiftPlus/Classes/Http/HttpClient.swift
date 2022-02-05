@@ -26,14 +26,14 @@ public enum HttpClient {
     public static func cleanURL(_ url:String)->String{
         if let q = url.range(of: "?") {
             let front = url[...q.lowerBound]
-            let back = url[q.upperBound...]
+            let back:String.SubSequence = url[q.upperBound...]
             let backParts = back.split(separator: "&")
             let fixedBack = backParts.map {
                 $0.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.union( CharacterSet(charactersIn: "%"))) ?? String($0)
             }.joined()
-            return "\(front)?\(fixedBack)"
+            return "\(front)\(fixedBack)".replace(" ", "%20")
         } else {
-        return url
+            return url.replace(" ", "%20")
         }
     }
 
@@ -41,8 +41,10 @@ public enum HttpClient {
     public static var concurrentRequests = 0
     public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, options: HttpOptions = HttpClient.defaultOptions) -> Single<HttpResponse> {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
-        print(cleanURL(url))
-        let urlObj = URL(string: cleanURL(url))!
+        guard let urlObj = URL(string: cleanURL(url)) else {
+            print("Invalid URL found: \(cleanURL(url))")
+            return Single.error(HttpError.invalidUrl)
+        }
         var single = Single.create { (emitter: SingleEmitter<HttpResponse>) in
             
             var cachePolicy = URLRequest.CachePolicy.reloadIgnoringCacheData
@@ -221,7 +223,7 @@ public enum HttpClient {
             connectTimeout: connectTimeout
         ))
     }
-
+    
     static public func webSocket(url: String) -> Observable<WebSocketInterface> {
         return Observable.using({ () -> ConnectedWebSocket in
             let out = ConnectedWebSocket(url: url)

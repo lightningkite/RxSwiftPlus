@@ -8,7 +8,7 @@ private extension Date {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         return formatter.string(from: self)
     }
 }
@@ -108,23 +108,62 @@ private extension Character{
     }
 }
 
-private func dateFromIso(iso8601: String) -> Date? {
-    //2020-12-17T22:35:25.727503
-    let dateParts = iso8601.substringBefore(delimiter: "T").split(separator: "-")
-    let timeParts = iso8601.substringAfter(delimiter: "T").split(separator: ":")
-    let secondPart = (timeParts.getOrNull(index: 2)?.prefix(while: { $0.isDigit() || $0 == "." })).flatMap { Double($0) }
-    let components = DateComponents(
-        year: Int(dateParts[0]),
-        month: Int(dateParts[1]),
-        day: Int(dateParts[2]),
-        hour: Int(timeParts[0]),
-        minute: Int(timeParts[1]),
-        second: secondPart.map { Int($0) },
-        nanosecond: secondPart.map { Int($0.truncatingRemainder(dividingBy: 1.0) / 0.000000001) }
-    )
-    var cal = Calendar(identifier: .iso8601)
-    cal.timeZone = TimeZone(secondsFromGMT: 0)!
-    return cal.date(from: components)
+private extension TimeZone{
+    init?(iso8601:String){
+        guard iso8601.count > 0 else { return nil }
+        
+        if(iso8601 == "Z"){
+            self.init(secondsFromGMT: 0)
+            return
+        }
+        
+        let sign =  iso8601[0]
+        guard sign == "-" || sign == "+" else { return nil }
+        var direction = 1
+        if (sign == "-") { direction = -1 }
+        
+        let timePart = iso8601.substring(1)
+        if(timePart.count == 4){
+            guard let hours = Int(timePart.substring(0, 2)) else {return nil}
+            guard let minutes = Int(timePart.substring(2, 5)) else {return nil}
+            self.init(secondsFromGMT: direction * (hours * 3600 + minutes * 60))
+            return
+        }else{
+            let parts = timePart.split(separator:":")
+            guard let hours = Int(parts[0]) else { return nil }
+            let minutes = Int(parts.getOrNull(index: 1) ?? "0") ?? 0
+            self.init(secondsFromGMT: direction * (hours * 3600 + minutes * 60))
+            return
+        }
+    }
+}
+
+private func dateFromIso(iso8601 str: String) -> Date? {
+    let majorParts = str.split(separator: "T")
+    let date = majorParts[0]
+    var time = String(majorParts[1])
+    var timeZone: TimeZone? = nil
+    if(time.contains("+")){
+        let index = time.indexOf( "+")
+        timeZone = TimeZone.init(iso8601:time.substring(index))
+        time = time.substring(startIndex: 0, endIndex:index)
+    } else if (time.contains("-")){
+        let index = time.indexOf( "-")
+        timeZone = TimeZone.init(iso8601:time.substring(index))
+        time = time.substring(startIndex: 0, endIndex:index)
+    } else if(time.contains("Z")){
+        timeZone = TimeZone.init(iso8601: "Z")
+        time = time.substring(startIndex: 0, endIndex:time.count - 1)
+    }
+    let dateParts = date.split(separator: "-")
+    let timeParts = time.split(separator: ":")
+    guard let year = Int(dateParts[0]) else { return nil }
+    guard let month = Int(dateParts[1]) else { return nil }
+    guard let day = Int(dateParts[2]) else { return nil }
+    guard let hour = Int(timeParts[0]) else { return nil }
+    guard let minute = Int(timeParts[1]) else { return nil }
+    guard let second = timeParts.count >= 2 ? Double(timeParts[2]) : 0 else { return nil }
+    return DateComponents(calendar: Calendar.current, timeZone: timeZone, year: year, month: month, day: day, hour: hour, minute: minute, second: Int(second), nanosecond: Int(second.truncatingRemainder(dividingBy: 1) * 1000000000)).date
 }
 
 

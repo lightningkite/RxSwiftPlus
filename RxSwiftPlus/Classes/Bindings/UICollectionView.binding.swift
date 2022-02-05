@@ -192,7 +192,7 @@ public extension UICollectionView {
     //--- RecyclerView.bind(Property<List<T>>, T, (Property<T>)->UIView)
     fileprivate func setupDefault() {
         let current = self.collectionViewLayout
-        if current is ReversibleFlowLayout || current is UICollectionViewFlowLayout {
+        if current is UICollectionViewFlowLayout {
             self.collectionViewLayout = QuickCompositionalLayout.list()
         }
         if let current = current as? UICollectionViewCompositionalLayout {

@@ -7,4 +7,5 @@ public struct HttpResponseException: Error {
 public enum HttpError: Error {
     case unknown
     case cancelled
+    case invalidUrl
 }

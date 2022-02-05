@@ -12,7 +12,8 @@ import RxSwift
 
 public extension ObservableType where Element: Collection {
     @discardableResult
-    func showIn(_ view: UIStackView, makeView: @escaping (Observable<Element.Element>) -> UIView) -> Self{
+    func showIn(_ view: UIStackView, makeView: @escaping (Observable<Element.Element>) -> UIView) -> Self {
+        view.alignment = .fill
         var existingViews: Array<(UIView,BehaviorSubject<Element.Element>)> = []
         subscribe(
             onNext: {items in

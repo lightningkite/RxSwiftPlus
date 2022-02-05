@@ -185,7 +185,7 @@ public enum MultipartBody {
             #endif
             body.append(string.data(using: .utf8)!)
         }
-        let boundary = "\(arc4random())-\(arc4random())--"
+        let boundary = UUID.randomUUID().uuidString.replace("-", "")
         for part in parts {
             emitText("\r\n--" + boundary + "\r\n")
             switch part {
@@ -201,7 +201,7 @@ public enum MultipartBody {
                 emitText(value)
             }
         }
-        emitText("\r\n--" + boundary + "\r\n")
+        emitText("\r\n--" + boundary + "--\r\n")
         #if DEBUG
         print("Made multipart: \(stringBody)")
         #endif

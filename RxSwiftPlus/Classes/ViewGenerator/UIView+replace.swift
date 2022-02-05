@@ -17,7 +17,12 @@ extension UIView {
             } else {
                 guard let index = (superview.subviews.firstIndex { $0 == self }) else { return }
                 self.removeFromSuperview()
+                //TODO: Actually copy the old constraints.
                 superview.insertSubview(other, at: index)
+                other.leftAnchor.constraint(equalTo: superview.leftAnchor).isActive = true
+                other.rightAnchor.constraint(equalTo: superview.rightAnchor).isActive = true
+                other.topAnchor.constraint(equalTo: superview.topAnchor).isActive = true
+                other.bottomAnchor.constraint(equalTo: superview.bottomAnchor).isActive = true
             }
         }
     }

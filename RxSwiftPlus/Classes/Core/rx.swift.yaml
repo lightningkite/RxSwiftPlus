@@ -223,19 +223,6 @@
 #    imports:
 #      rxFilter: filter from rxjs/operators
 #
-#- id: com.lightningkite.butterfly.rx.combineLatest
-#  type: call
-#  template:
-#    pattern: rxCombineLatest([~this~, ~0~]).pipe(rxMap(x => (~1~)(x[0], x[1])))
-#    imports:
-#      rxMap: map from rxjs/operators
-#      rxCombineLatest: combineLatest from rxjs
-#
-- id: com.lightningkite.butterfly.rx.zip
-  type: call
-  template:
-    pattern: Single.zip(~this~)
-    imports: [RxSwift]
 #
 #- id: io.reactivex.rxjava3.core.Observable.skip
 #  type: call
@@ -531,12 +518,6 @@
 #    imports:
 #      of: rxjs as rxOf
 #
-#- id: io.reactivex.rxjava3.core.Single.doOnSubscribe
-#  type: call
-#  template:
-#    pattern: doOnSubscribe(~this~, ~0~)
-#    imports:
-#      doOnSubscribe: butterfly/dist/Kotlin
 #
 #- id: io.reactivex.rxjava3.core.Single.doFinally
 #  type: call

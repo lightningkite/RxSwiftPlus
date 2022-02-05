@@ -9,7 +9,13 @@ public protocol Image { func load() -> Single<UIImage> }
 public struct ImageLocalUrl: Image, Hashable {
     public var url: URL
     public init(_ url: URL) { self.url = url }
-    public func load() -> Single<UIImage> { loadImage(uri: url) }
+    public func load() -> Single<UIImage> {
+        if let image = UIImage(fileURLWithPath: url) {
+            return Single.just(image)
+        } else {
+            return Single.error(HttpError.invalidUrl)
+        }
+    }
 }
 public struct ImageUI: Image, Hashable {
     public var uiImage: UIImage
@@ -94,11 +100,11 @@ public extension UIImageView {
         if let image = image {
             switch image {
             case let image as ImageLocalUrl:
-                setImageFromUrl(url: image.url)
+                setImageFromLocalUrl(url: image.url)
             case let image as ImageUI:
                 self.image = image.uiImage
             case let image as ImageRemoteUrl:
-                setImageFromUrl(url: image.url)
+                setImageFromRemoteUrl(url: image.url)
             default:
                 let activityIndicatorView = UIActivityIndicatorView(style: .gray)
                 activityIndicatorView.startAnimating()
@@ -114,14 +120,18 @@ public extension UIImageView {
         }
     }
     
-    private func setImageFromUrl(url: URL) {
+    private func setImageFromLocalUrl(url: URL) {
+        self.image = UIImage(fileURLWithPath: url)
+    }
+    
+    private func setImageFromRemoteUrl(url: URL) {
         let activityIndicatorView = UIActivityIndicatorView(style: .gray)
         activityIndicatorView.startAnimating()
         activityIndicatorView.center.x = self.frame.size.width / 2
         activityIndicatorView.center.y = self.frame.size.height / 2
         self.addSubview(activityIndicatorView)
         weak var weakAIV = activityIndicatorView
-        URLSession.shared.dataTask(with: URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 30)){ [weak self] data, response, error in
+        URLSession.shared.dataTask(with: URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 30)){ [weak self] data, response, error in
             guard
                 let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
                 let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
