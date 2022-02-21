@@ -240,6 +240,46 @@ public extension ObservableType where Element: OptionalType {
             }
         }
     }
+    func flatMapLatestNotNull2<Source: ObservableConvertibleType>(_ selector: @escaping (Element.Wrapped) -> Source)
+    -> Observable<Source.Element.Wrapped?> where Source.Element: OptionalType {
+        return flatMapLatest { (wrapped: Element) -> Observable<Source.Element.Wrapped?> in
+            if let x = wrapped.asOptional() {
+                return selector(x).asObservable().map { $0.asOptional() }
+            } else {
+                return Observable.just(nil)
+            }
+        }
+    }
+    func flatMapLatestNotNull2<Source: ObservableConvertibleType>(_ selector: @escaping (Element.Wrapped) -> Source?)
+        -> Observable<Source.Element.Wrapped?> where Source.Element: OptionalType {
+        return flatMapLatest { (wrapped: Element) -> Observable<Source.Element.Wrapped?> in
+            if let x = wrapped.asOptional() {
+                return selector(x)?.asObservable().map { $0.asOptional() } ?? Observable.just(nil)
+            } else {
+                return Observable.just(nil)
+            }
+        }
+    }
+    func flatMapNotNull2<Source: ObservableConvertibleType>(_ selector: @escaping (Element.Wrapped) -> Source)
+        -> Observable<Source.Element.Wrapped?> where Source.Element: OptionalType {
+        return flatMap { (wrapped: Element) -> Observable<Source.Element.Wrapped?> in
+            if let x = wrapped.asOptional() {
+                return selector(x).asObservable().map { $0.asOptional() }
+            } else {
+                return Observable.just(nil)
+            }
+        }
+    }
+    func flatMapNotNull2<Source: ObservableConvertibleType>(_ selector: @escaping (Element.Wrapped) -> Source?)
+        -> Observable<Source.Element.Wrapped?> where Source.Element: OptionalType {
+        return flatMap { (wrapped: Element) -> Observable<Source.Element.Wrapped?> in
+            if let x = wrapped.asOptional() {
+                return selector(x)?.asObservable().map { $0.asOptional() } ?? Observable.just(nil)
+            } else {
+                return Observable.just(nil)
+            }
+        }
+    }
 }
 
 public extension PrimitiveSequenceType where Trait == SingleTrait {

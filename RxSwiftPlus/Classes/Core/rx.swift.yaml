@@ -554,9 +554,9 @@
 #  type: call
 #  template: ~this~.next(~0~); ~this~.complete()
 #
-#- id: io.reactivex.rxjava3.core.SingleEmitter.onError
-#  type: call
-#  template: ~this~.error(~0~)
+- id: io.reactivex.rxjava3.core.SingleEmitter.onError
+  type: call
+  template: ~this~.onFailure(~0~)
 
 # Maybe
 
