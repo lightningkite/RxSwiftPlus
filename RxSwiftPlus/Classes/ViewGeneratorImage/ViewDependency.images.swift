@@ -407,7 +407,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if #available(iOS 11.0, *) {
             if let image = info[.imageURL] as? URL ?? info[.mediaURL] as? URL {
-                print("Image retrieved directly using .imageURL")
+//                 print("Image retrieved directly using .imageURL")
                 DispatchQueue.main.async {
                     picker.dismiss(animated: true, completion: {
                         self.onImagePicked?(image)
@@ -418,13 +418,13 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
             }
         }
         if let originalImage = info[.editedImage] as? UIImage, let url = originalImage.saveTemp() {
-            print("Image retrieved using save as backup")
+//             print("Image retrieved using save as backup")
             picker.dismiss(animated: true, completion: {
                 self.onImagePicked?(url)
                 self.onImagePicked = nil
             })
         } else if let originalImage = info[.originalImage] as? UIImage, let url = originalImage.saveTemp() {
-            print("Image retrieved using save as backup")
+//             print("Image retrieved using save as backup")
             picker.dismiss(animated: true, completion: {
                 self.onImagePicked?(url)
                 self.onImagePicked = nil
@@ -446,7 +446,7 @@ extension UIImage {
         guard let url2 = self.save(at: tempDirectoryUrl) else {
             return nil
         }
-        print(url2)
+//         print(url2)
         return url2
     }
 
