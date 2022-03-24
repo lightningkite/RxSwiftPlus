@@ -26,6 +26,7 @@ open class ViewGeneratorViewController: UIViewController, UINavigationController
         
     weak var backgroundLayerBottom: UIView!
     weak var innerView: UIView!
+    static public var refreshViewOnRotate: Bool = false
     private let bag = DisposeBag()
     
     open var defaultBackgroundColor: UIColor = .white
@@ -86,6 +87,19 @@ open class ViewGeneratorViewController: UIViewController, UINavigationController
     override open func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeKeyboardObservers()
+    }
+    
+    var previouslyLandscape: Bool?
+    open override func viewWillLayoutSubviews() {
+        if ViewGeneratorViewController.refreshViewOnRotate {
+            let newLandscape = UIScreen.main.bounds.width > UIScreen.main.bounds.height
+            if previouslyLandscape != newLandscape {
+                previouslyLandscape = newLandscape
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
+                    self.rerender()
+                })
+            }
+        }
     }
     
     /// Asks the system to resign all first responders (usually input fields), which effectively

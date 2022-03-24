@@ -59,14 +59,14 @@ Pod::Spec.new do |s|
     sub.dependency "RxSwiftPlus/Bindings"
     sub.dependency "Cosmos"
   end
-  s.subspec 'BindingsXibToXmlRuntime' do |sub|
-    sub.source_files =  "RxSwiftPlus/Classes/BindingsXibToXmlRuntime"
+  s.subspec 'BindingsXmlToXibRuntime' do |sub|
+    sub.source_files =  "RxSwiftPlus/Classes/BindingsXmlToXibRuntime"
     sub.dependency "RxSwiftPlus/Bindings"
     sub.dependency "XmlToXibRuntime"
   end
-  s.subspec 'BindingsXibToXmlRuntimeKhrysalis' do |sub|
-    sub.source_files =  "RxSwiftPlus/Classes/BindingsXibToXmlRuntimeKhrysalis"
-    sub.dependency "RxSwiftPlus/BindingsXibToXmlRuntime"
+  s.subspec 'BindingsXmlToXibRuntimeKhrysalis' do |sub|
+    sub.source_files =  "RxSwiftPlus/Classes/BindingsXmlToXibRuntimeKhrysalis"
+    sub.dependency "RxSwiftPlus/BindingsXmlToXibRuntime"
     sub.dependency "KhrysalisRuntime"
   end
   s.subspec 'BindingsSearchTextField' do |sub|
