@@ -203,7 +203,7 @@ public enum MultipartBody {
         }
         emitText("\r\n--" + boundary + "--\r\n")
         #if DEBUG
-        print("Made multipart: \(stringBody)")
+//         print("Made multipart: \(stringBody)")
         #endif
         return HttpBody(mediaType: "multipart/form-data; boundary=\(boundary)", data: body)
     }

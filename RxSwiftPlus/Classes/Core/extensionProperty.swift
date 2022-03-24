@@ -55,14 +55,14 @@ internal class ExtensionProperty<On: AnyObject, T> {
                     assert(newVal == i)
                 }
                 if i % 100 == 0 {
-                    print("Running checks...")
+//                     print("Running checks...")
                     for check in delayedChecks {
                         check()
                     }
                     delayedChecks = []
                 }
             }
-            print("Count is \(ext.count).")
+//             print("Count is \(ext.count).")
         }
 
         ext.set(exampleItem, 1)

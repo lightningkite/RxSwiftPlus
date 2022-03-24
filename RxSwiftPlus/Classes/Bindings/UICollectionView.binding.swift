@@ -100,7 +100,7 @@ public extension UICollectionView {
         if itemsToReloadSoon.isEmpty {
             post {
                 let itemsToReload = self.itemsToReloadSoon.filter { $0.section < self.numberOfSections && $0.row < self.numberOfItems(inSection: $0.section) }
-                print(itemsToReload)
+//                 print(itemsToReload)
                 self.reloadItems(at: Array(itemsToReload))
                 self.itemsToReloadSoon = []
             }
@@ -167,7 +167,7 @@ public extension UICollectionView {
         guard let centerId = self.indexPathForItem(at: CGPoint(x: self.contentOffset.x + self.frame.midX, y: self.contentOffset.y)) else { around(); return }
         guard let oldCenterPos = self.collectionViewLayout.layoutAttributesForItem(at: centerId)?.frame.origin else { around(); return }
         let oldScreenY = oldCenterPos.y - self.contentOffset.y
-        print("Cell \(centerId) was at \(oldScreenY)")
+//         print("Cell \(centerId) was at \(oldScreenY)")
         around()
         while true {
             let newCenterPos = self.collectionViewLayout.layoutAttributesForItem(at: centerId)?.frame.origin ?? oldCenterPos
@@ -175,13 +175,13 @@ public extension UICollectionView {
             let offset = newScreenY - oldScreenY
             self.contentOffset.y += offset
             self.layoutIfNeeded()
-            print("Cell \(centerId) is now at \(newScreenY) after moving \(offset)")
+//             print("Cell \(centerId) is now at \(newScreenY) after moving \(offset)")
             if abs(offset) < 4 { break }
         }
         post {
             let newCenterPos = self.collectionViewLayout.layoutAttributesForItem(at: centerId)?.frame.origin ?? oldCenterPos
             let newScreenY = newCenterPos.y - self.contentOffset.y
-            print("Cell \(centerId) is now at \(newScreenY) after a post")
+//             print("Cell \(centerId) is now at \(newScreenY) after a post")
         }
     }
     internal static let atEndExtension = ExtensionProperty<UICollectionView, ()->Void>()
@@ -268,7 +268,7 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if(indexPath.row >= items.count - 1 && items.count > 1){
-            print("Triggered end with \(indexPath.row) size \(items.count)")
+//             print("Triggered end with \(indexPath.row) size \(items.count)")
             if let atEnd = UICollectionView.atEndExtension.get(collectionView) {
                 atEnd()
             }

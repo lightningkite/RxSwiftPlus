@@ -232,12 +232,12 @@
     imports: [RxSwiftPlus]
 
 - type: "call"
-  id: "com.lightningkite.rx.switchMapNotNull"
+  id: "com.lightningkite.rx.flatMapNotNull"
   receiver: "io.reactivex.rxjava3.core.Observable"
   arguments:
     - "kotlin.Function1"
   template:
-    pattern: "~this~.flatMapLatestNotNull(~mapper~)"
+    pattern: "~this~.flatMapNotNull(~mapper~)"
     imports: [RxSwiftPlus]
 
 - type: "call"
@@ -247,6 +247,24 @@
     - "kotlin.Function1"
   template:
     pattern: "~this~.flatMapLatestNotNull(~mapper~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.flatMapNotNull2"
+  receiver: "io.reactivex.rxjava3.core.Observable"
+  arguments:
+    - "kotlin.Function1"
+  template:
+    pattern: "~this~.flatMapNotNull2(~mapper~)"
+    imports: [RxSwiftPlus]
+
+- type: "call"
+  id: "com.lightningkite.rx.switchMapNotNull2"
+  receiver: "io.reactivex.rxjava3.core.Observable"
+  arguments:
+    - "kotlin.Function1"
+  template:
+    pattern: "~this~.flatMapLatestNotNull2(~mapper~)"
     imports: [RxSwiftPlus]
 
 - type: "call"

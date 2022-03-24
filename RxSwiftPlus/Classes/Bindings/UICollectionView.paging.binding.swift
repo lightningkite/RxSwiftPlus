@@ -139,13 +139,13 @@ public extension ObservableType where Element: Collection {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
                 view.scrollToItem(at: IndexPath(row: value, section: 0), at: .centeredHorizontally, animated: positioned)
                 positioned = true
-                print("Scrolling to \(value)")
+//                 print("Scrolling to \(value)")
             })
         }).disposed(by: view.removed)
         let observer = showIndex.asObserver()
         view.whenScrolled { newIndex in
             suppress = true
-            print("Scrolled to \(newIndex)")
+//             print("Scrolled to \(newIndex)")
             observer.onNext(newIndex)
             suppress = false
         }

@@ -40,7 +40,7 @@ public enum HttpClient {
     public static var defaultOptions = HttpOptions()
     public static var concurrentRequests = 0
     public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, options: HttpOptions = HttpClient.defaultOptions) -> Single<HttpResponse> {
-        print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
+//         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
         guard let urlObj = URL(string: cleanURL(url)) else {
             print("Invalid URL found: \(cleanURL(url))")
             return Single.error(HttpError.invalidUrl)
@@ -90,13 +90,13 @@ public enum HttpClient {
             request.httpMethod = method
 
             concurrentRequests += 1
-            print("HttpClient: concurrentRequests = \(concurrentRequests)")
+//             print("HttpClient: concurrentRequests = \(concurrentRequests)")
             let completionHandler = { [session] (data:Data?, response:URLResponse?, error:Error?) in
                 let _ = session //We hold on this to ensure it doesn't get deinited
                 concurrentRequests -= 1
-                print("HttpClient: concurrentRequests = \(concurrentRequests)")
+//                 print("HttpClient: concurrentRequests = \(concurrentRequests)")
                 if let casted = response as? HTTPURLResponse, let data = data {
-                    print("HttpClient: Response from \(method) request to \(urlObj) with headers \(headers): \(casted.statusCode)")
+//                     print("HttpClient: Response from \(method) request to \(urlObj) with headers \(headers): \(casted.statusCode)")
                     emitter.on(.success(HttpResponse(response: casted, data: data)))
                 } else if let error = error {
                     emitter.onFailure(error)
@@ -122,14 +122,14 @@ public enum HttpClient {
     }
 
     public static func callWithProgress<T>(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, options: HttpOptions = HttpClient.defaultOptions, parse: @escaping (HttpResponse) -> Single<T>) -> Observable<HttpProgress<T>> {
-        print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
+//         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
         let toHold: Box<Array<Any>> = Box([])
         let urlObj = URL(string: cleanURL(url))!
         var obs = Observable.create { (emitter: ObservableEmitter<HttpProgress<T>>) in
             let completionHandler = { [toHold] (data:Data?, response:URLResponse?, error:Error?) in
                 let _ = toHold //Holding to ensure it doesn't get cleaned up
                 if let casted = response as? HTTPURLResponse, let data = data {
-                    print("HttpClient: Response from \(method) request to \(url) with headers \(headers): \(casted.statusCode)")
+//                     print("HttpClient: Response from \(method) request to \(url) with headers \(headers): \(casted.statusCode)")
                     emitter.onNext(HttpProgress(phase: .Read, ratio: 1))
                     parse(HttpResponse(response: casted, data: data)).subscribe(onSuccess: { (result: T) in
                         emitter.onNext(HttpProgress(phase: .Done, ratio: 1, response: result))

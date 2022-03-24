@@ -60,15 +60,16 @@ private extension CALayer {
         if CFGetTypeID(self.contents as CFTypeRef) == CGImage.typeID {
             return UIImage(cgImage: self.contents as! CGImage)
         } else {
-            setNeedsDisplay()
             UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.isOpaque, 0.0)
             guard let ctx = UIGraphicsGetCurrentContext() else {
                 print("WARNING!  NO CURRENT CONTEXT!")
+                UIGraphicsEndImageContext()
                 return nil
             }
             self.render(in: ctx)
             let img = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
+            setNeedsDisplay()
             return img
         }
     }

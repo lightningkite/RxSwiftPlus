@@ -46,29 +46,29 @@ public final class ConnectedWebSocket: WebSocketInterface, WebSocketDelegate, Di
     public func didReceive(event: WebSocketEvent, client: WebSocket) {
         switch event {
         case .binary(let data):
-            print("Socket to \(url) got binary message of length '\(data.count)'")
+//            print("Socket to \(url) got binary message of length '\(data.count)'")
             _read.onNext(WebSocketFrame(binary: data))
             break
         case .text(let string):
-            print("Socket to \(url) got message '\(string)'")
+//            print("Socket to \(url) got message '\(string)'")
             _read.onNext(WebSocketFrame(text: string))
             break
         case .connected(let headers):
-            print("Socket to \(url) opened successfully with \(headers).")
+//            print("Socket to \(url) opened successfully with \(headers).")
             _ownConnection.onNext(self)
             break
         case .disconnected(let reason, let code):
-            print("Socket to \(url) disconnecting with code \(code). Reason: \(reason)")
+//            print("Socket to \(url) disconnecting with code \(code). Reason: \(reason)")
             _ownConnection.onCompleted()
             _read.onCompleted()
             break
         case .error(let error):
-            print("Socket to \(url) failed with error \(String(describing: error))")
+//            print("Socket to \(url) failed with error \(String(describing: error))")
             _ownConnection.onError(error ?? HttpError.unknown)
             _read.onError(error ?? HttpError.unknown)
             break
         case .cancelled:
-            print("Socket to \(url) cancelled")
+//            print("Socket to \(url) cancelled")
             _ownConnection.onError(HttpError.cancelled)
             _read.onCompleted()
             break
@@ -78,7 +78,7 @@ public final class ConnectedWebSocket: WebSocketInterface, WebSocketDelegate, Di
     }
     
     public func dispose() {
-        print("Socket to \(url) was disposed, closing with OK code.")
+//        print("Socket to \(url) was disposed, closing with OK code.")
         underlyingSocket?.disconnect(closeCode: 1000)
         _ownConnection.onCompleted()
         _read.onCompleted()
