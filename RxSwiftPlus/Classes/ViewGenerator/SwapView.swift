@@ -61,7 +61,9 @@ open class SwapView: UIView {
                     newView.transform = .identity
                     newView.alpha = 1
                 },
-                completion: { _ in}
+                completion: { [weak self] _ in
+                    self?.visible = true
+                }
             )
         }
         

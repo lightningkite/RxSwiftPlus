@@ -68,7 +68,6 @@ public extension ObservableType where Element : Collection, Element.Element == V
         var lastCount = 0
         var currentGenerator: ViewGenerator? = nil
         self
-            .debounce(RxTimeInterval.milliseconds(50), scheduler: MainScheduler.instance)
             .subscribeAutoDispose(view){ view, value in
                 let newCount = value.count
                 var transition:TransitionTriple
