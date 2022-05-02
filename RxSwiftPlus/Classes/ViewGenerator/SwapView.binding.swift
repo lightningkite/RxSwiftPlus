@@ -36,28 +36,30 @@ public extension ObservableType where Element : Collection, Element.Element: Vie
     @discardableResult
     func showIn(_ view: SwapView, dependency: ViewControllerAccess, stackTransition: StackTransition = StackTransition.Companion.INSTANCE.PUSH_POP) -> Self {
         var lastCount = 0
-        subscribeAutoDispose(view){ view, value in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
-                let newCount = value.count
-                var transition:TransitionTriple
-                let newGenerator = value.lastOrNull()
-                
-                if(lastCount == 0){
-                    transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
-                } else if (newCount == 0) {
-                    transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
-                } else if (newCount > lastCount) {
-                    transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
-                } else if (newCount < lastCount) {
-                    transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
-                } else {
-                    transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
-                }
-                
-                lastCount = newCount
-                view.swap(dependency: dependency, to: newGenerator?.generate(dependency: dependency), transition: transition)
-            })
-        }
+        self
+            .debounce(RxTimeInterval.milliseconds(50), scheduler: MainScheduler.instance)
+            .subscribeAutoDispose(view){ view, value in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
+                    let newCount = value.count
+                    var transition:TransitionTriple
+                    let newGenerator = value.lastOrNull()
+                    
+                    if(lastCount == 0){
+                        transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
+                    } else if (newCount == 0) {
+                        transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
+                    } else if (newCount > lastCount) {
+                        transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
+                    } else if (newCount < lastCount) {
+                        transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
+                    } else {
+                        transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
+                    }
+                    
+                    lastCount = newCount
+                    view.swap(dependency: dependency, to: newGenerator?.generate(dependency: dependency), transition: transition)
+                })
+            }
         return self
     }
 }
@@ -68,6 +70,7 @@ public extension ObservableType where Element : Collection, Element.Element == V
         var lastCount = 0
         var currentGenerator: ViewGenerator? = nil
         self
+            .debounce(RxTimeInterval.milliseconds(10), scheduler: MainScheduler.instance)
             .subscribeAutoDispose(view){ view, value in
                 let newCount = value.count
                 var transition:TransitionTriple
