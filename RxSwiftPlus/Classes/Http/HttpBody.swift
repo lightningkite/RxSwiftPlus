@@ -3,7 +3,7 @@ import RxSwift
 
 //--- HttpBody
 public struct HttpBody {
-    public let mediaType: String
+    public let mediaType: String?
     public let data: Data
     public init(mediaType: String, data: Data){
         self.mediaType = mediaType
@@ -108,37 +108,62 @@ fileprivate extension UIImage {
         self.draw(in: CGRect(origin: .zero, size: newSize))
         return UIGraphicsGetImageFromCurrentImageContext()
     }
+    
+    func toRequestBody(maxDimension: Int = 2048, maxBytes:Int = 10_000_000, format:MediaType) -> Single<HttpBody> {
+        return Single.create { (em: SingleEmitter<HttpBody>) in
+            
+            var quality:CGFloat = 1.0
+            var data:Data?
+            var realDimension = min(max(self.size.height, self.size.width), CGFloat(maxDimension))
+            var scaledBmp = self.resize(maxDimension: Int(realDimension))
+            repeat{
+                switch(format){
+                case MediaTypes.JPEG:
+                    data = scaledBmp?.jpegData(compressionQuality: quality)
+                    quality -= 0.05
+                default:
+                    scaledBmp = self.resize(maxDimension: Int(realDimension))
+                    data = scaledBmp?.pngData()
+                    realDimension *= 0.95
+                }
+            }while (data == nil || data?.count ?? Int.max > maxBytes)
+
+            if let rep = data {
+                em.onSuccess(HttpBody(mediaType: format == MediaTypes.JPEG ? format : MediaTypes.PNG, data: rep))
+            } else {
+                em.onFailure(ImageLoadError.notImage)
+            }
+        }
+    }
 }
+
+fileprivate func stringToMediaType(_ value:String) -> MediaType{
+    switch(value){
+    case "png":
+        return MediaTypes.PNG
+    case "jpg", "jpeg":
+        return MediaTypes.JPEG
+    case "webp":
+        return MediaTypes.WEBP
+    default:
+        return MediaTypes.PNG
+    }
+}
+
 public extension Image {
     func toRequestBody(maxDimension: Int = 2048, maxBytes:Int = 10_000_000) -> Single<HttpBody> {
+        var type: MediaType
+        switch(self){
+        case let self as ImageLocalUrl:
+            type = stringToMediaType(self.url.lastPathComponent.substringAfterLast(delimiter: "."))
+        case let self as ImageRemoteUrl:
+            type = stringToMediaType(self.url.lastPathComponent.substringAfterLast(delimiter: "."))
+        default:
+            type = MediaTypes.PNG
+        }
+        
         return self.load().flatMap { bmp in
-            return Single.create { (em: SingleEmitter<HttpBody>) in
-                
-                let scaledBmp = bmp.size.width * bmp.scale <= CGFloat(maxDimension) && bmp.size.height * bmp.scale <= CGFloat(maxDimension) ? bmp : bmp.resize(maxDimension: maxDimension)
-                var quality:CGFloat = 1.0
-                var finalJpg:Data? = nil
-                var failed = false
-                while (finalJpg == nil && !failed){
-                    if let jpg = scaledBmp?.jpegData(compressionQuality: quality){
-                        if jpg.count > maxBytes {
-                            quality -= 0.05
-                            if quality <= 0.0{
-                                failed = true
-                            }
-                        }else{
-                            finalJpg = jpg
-                        }
-                    } else {
-                        failed = true
-                    }
-                }
-                
-                if let rep = finalJpg {
-                    em.onSuccess(HttpBody(mediaType: "image/jpeg", data: rep))
-                } else {
-                    em.onFailure(ImageLoadError.notImage)
-                }
-            }
+            return bmp.toRequestBody(maxDimension: maxDimension, maxBytes: maxBytes, format: type)
         }
     }
     func toHttpBodyRaw() -> Single<HttpBody> {
@@ -147,13 +172,13 @@ public extension Image {
         case let self as ImageLocalUrl:
             return self.url.toRequestBody()
         case let self as ImageRaw:
-            return Single.just(HttpBody(mediaType: "image/*", data: self.raw))
+            return Single.just(HttpBody(mediaType: MediaTypes.IMAGE_ANY, data: self.raw))
         case let self as ImageRemoteUrl:
             return self.url.toRequestBody()
         default:
             return self.load().map { uiImage in
                 if let rep = uiImage.pngData() {
-                    return HttpBody(mediaType: "image/png", data: rep)
+                    return HttpBody(mediaType: MediaTypes.PNG, data: rep)
                 } else {
                     throw ImageLoadError.notImage
                 }
@@ -191,7 +216,7 @@ public enum MultipartBody {
             switch part {
             case .file(let name, let filename, let subBody):
                 emitText("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename ?? "file")\"\r\n")
-                emitText("Content-Type: \(subBody.mediaType)\r\n\r\n")
+                emitText("Content-Type: \(subBody.mediaType ?? "*/*")\r\n\r\n")
                 body.append(subBody.data)
                 #if DEBUG
                 stringBody += "<binary data>"
@@ -203,7 +228,6 @@ public enum MultipartBody {
         }
         emitText("\r\n--" + boundary + "--\r\n")
         #if DEBUG
-//         print("Made multipart: \(stringBody)")
         #endif
         return HttpBody(mediaType: "multipart/form-data; boundary=\(boundary)", data: body)
     }
