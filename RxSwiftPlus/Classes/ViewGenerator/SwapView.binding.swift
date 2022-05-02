@@ -37,7 +37,7 @@ public extension ObservableType where Element : Collection, Element.Element: Vie
     func showIn(_ view: SwapView, dependency: ViewControllerAccess, stackTransition: StackTransition = StackTransition.Companion.INSTANCE.PUSH_POP) -> Self {
         var lastCount = 0
         self
-            .debounce(RxTimeInterval.milliseconds(50), scheduler: MainScheduler.instance)
+            .debounce(RxTimeInterval.milliseconds(10), scheduler: MainScheduler.instance)
             .subscribeAutoDispose(view){ view, value in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
                     let newCount = value.count
