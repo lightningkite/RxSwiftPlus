@@ -6,10 +6,8 @@ import RxSwift
 public extension ObservableType{
     @discardableResult
     func showIn(_ view: SwapView, transition: TransitionTriple = TransitionTriple.Companion.INSTANCE.FADE, makeView: @escaping (Element) -> UIView) -> Self {
-        var currentValue: Element? = nil
         subscribe(onNext: { newValue in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
-                currentValue = newValue
                 view.swap(dependency: nil, to: makeView(newValue), transition: transition)
             })
         }).disposed(by: view.removed)
@@ -36,6 +34,7 @@ public extension ObservableType where Element : Collection, Element.Element: Vie
     @discardableResult
     func showIn(_ view: SwapView, dependency: ViewControllerAccess, stackTransition: StackTransition = StackTransition.Companion.INSTANCE.PUSH_POP) -> Self {
         var lastCount = 0
+        var currentGenerator: Element.Element? = nil
         self
             .debounce(RxTimeInterval.milliseconds(10), scheduler: MainScheduler.instance)
             .subscribeAutoDispose(view){ view, value in
@@ -43,6 +42,10 @@ public extension ObservableType where Element : Collection, Element.Element: Vie
                     let newCount = value.count
                     var transition:TransitionTriple
                     let newGenerator = value.lastOrNull()
+                    
+                    let newGeneratorObj = newGenerator as? AnyObject
+                    let currentGeneratorObj = currentGenerator as? AnyObject
+                    if currentGeneratorObj === newGeneratorObj { return }
                     
                     if(lastCount == 0){
                         transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
@@ -56,6 +59,7 @@ public extension ObservableType where Element : Collection, Element.Element: Vie
                         transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
                     }
                     
+                    currentGenerator = newGenerator
                     lastCount = newCount
                     view.swap(dependency: dependency, to: newGenerator?.generate(dependency: dependency), transition: transition)
                 })
@@ -75,6 +79,10 @@ public extension ObservableType where Element : Collection, Element.Element == V
                 let newCount = value.count
                 var transition:TransitionTriple
                 let newGenerator = value.lastOrNull()
+                
+                let newGeneratorObj = newGenerator as? AnyObject
+                let currentGeneratorObj = currentGenerator as? AnyObject
+                if currentGeneratorObj === newGeneratorObj { return }
                 
                 if(lastCount == 0){
                     transition = (newGenerator as? UsesCustomTransition)?.transition.neutral ?? stackTransition.neutral
