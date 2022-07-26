@@ -16,98 +16,59 @@ open class SwapView: UIView {
         case pop
         case fade
     }
+    
     var current: UIView?
     private var constraintsForView = Dictionary<UIView, Array<NSLayoutConstraint>>()
-    
-    private var hiding = false
     var swapping = false
-    open func swap(dependency: ViewControllerAccess, to: UIView?, animation: Animation){
+    
+    open func swap(dependency: ViewControllerAccess?, to: UIView?, transition: TransitionTriple){
         if swapping {
             fatalError()
         }
-        let previouslyHiding = self.hiding
-        let hiding = to == nil
-        self.hiding = hiding
         swapping = true
-        let previousView = current
+        
+        //animate out
         if let old = current {
-            UIView.animate(withDuration: 0.25, animations: { [weak self] in
-                if hiding {
-                    old.alpha = 0
-                    self?.isHidden = true
-                } else {
-                    switch animation {
-                    case .fade:
-                        old.alpha = 0
-                    case .pop:
-                        old.transform = CGAffineTransform.init(translationX: old.frame.width, y: 0)
-                    case .push:
-                        old.transform = CGAffineTransform.init(translationX: -old.frame.width, y: 0)
-                    }
-                }
-            }, completion: { _ in
+            UIView.animate(withDuration: 0.25, animations: {
+                transition.exit(old)
+            }, completion: { [weak self] _ in
                 old.removeFromSuperview()
+                if(to == nil){
+                    self?.visible = false
+                }
             })
         }
-        if let new = to {
+        
+        
+        if let newView = to{
+            self.visible = true
             UIView.performWithoutAnimation {
                 self.isHidden = false
-                self.addSubview(new)
-                new.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-                self.rightAnchor.constraint(equalTo: new.rightAnchor).isActive = true
-                new.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-                self.bottomAnchor.constraint(equalTo: new.bottomAnchor).isActive = true
-                
-//                new.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-////                self.rightAnchor.constraint(equalTo: new.rightAnchor).isActive = true
-//                new.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-////                self.bottomAnchor.constraint(equalTo: new.bottomAnchor).isActive = true
-//                let huggingConstraints = [
-////                    new.leftAnchor.constraint(equalTo: self.leftAnchor),
-//                    self.rightAnchor.constraint(equalTo: new.rightAnchor),
-////                    new.topAnchor.constraint(equalTo: self.topAnchor),
-//                    self.bottomAnchor.constraint(equalTo: new.bottomAnchor)
-//                ]
-//                let compressingConstraints = [
-////                    new.leftAnchor.constraint(greaterThanOrEqualTo: self.leftAnchor),
-//                    self.rightAnchor.constraint(lessThanOrEqualTo: new.rightAnchor),
-////                    new.topAnchor.constraint(greaterThanOrEqualTo: self.topAnchor),
-//                    self.bottomAnchor.constraint(lessThanOrEqualTo: new.bottomAnchor)
-//                ]
-//                for c in huggingConstraints {
-//                    c.priority = .defaultLow
-//                    c.isActive = true
-//                }
-//                for c in compressingConstraints {
-//                    c.priority = .defaultHigh
-//                    c.isActive = true
-//                }
+                self.addSubview(newView)
+                newView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+                self.rightAnchor.constraint(equalTo: newView.rightAnchor).isActive = true
+                newView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+                self.bottomAnchor.constraint(equalTo: newView.bottomAnchor).isActive = true
                 
                 self.layoutIfNeeded()
-                if previouslyHiding {
-                    new.alpha = 0
-                } else {
-                    switch animation {
-                    case .fade:
-                        new.alpha = 0
-                    case .pop:
-                        new.transform = CGAffineTransform.init(translationX: -self.frame.width, y: 0)
-                    case .push:
-                        new.transform = CGAffineTransform.init(translationX: self.frame.width, y: 0)
-                    }
-                }
+                transition.enter(newView)
             }
-            UIView.animate(withDuration: 0.25, animations: { [self] in
-                new.transform = .identity
-                new.alpha = 1
-            }, completion: { _ in
-                // yahoo!
-            })
-            current = new
-        } else {
-            current = nil
+            
+            //animate in
+            UIView.animate(
+                withDuration: 0.25,
+                animations: {
+                    newView.transform = .identity
+                    newView.alpha = 1
+                },
+                completion: { [weak self] _ in
+                    self?.visible = true
+                }
+            )
         }
-        dependency.runKeyboardUpdate(root: to, discardingRoot: previousView)
+        
+        current = to
+        dependency?.runKeyboardUpdate(root: to, discardingRoot: current)
         swapping = false
     }
     
@@ -127,5 +88,6 @@ open class SwapView: UIView {
             }
         }
         return nil
-    }}
+    }
+}
 

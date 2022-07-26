@@ -30,7 +30,7 @@ public enum HttpClient {
             let backParts = back.split(separator: "&")
             let fixedBack = backParts.map {
                 $0.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.union( CharacterSet(charactersIn: "%"))) ?? String($0)
-            }.joined()
+            }.joined(separator: "&")
             return "\(front)\(fixedBack)".replace(" ", "%20")
         } else {
             return url.replace(" ", "%20")

@@ -24,7 +24,6 @@ open class ViewGeneratorViewController: UIViewController, UINavigationController
         super.init(coder: coder)
     }
         
-    weak var backgroundLayerBottom: UIView!
     weak var innerView: UIView!
     static public var refreshViewOnRotate: Bool = false
     private let bag = DisposeBag()

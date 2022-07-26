@@ -111,7 +111,37 @@ public extension ObservableType {
         ).disposed(by: view.removed)
         return self
     }
+    
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element, UIControl.State) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element?) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element?, UIControl.State) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element>)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element?>)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
 }
+
 public extension ObservableType where Element: OptionalType {
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped) -> Void)-> Self{
@@ -146,6 +176,20 @@ public extension ObservableType where Element: OptionalType {
         ).disposed(by: view.removed)
         return self
     }
+    
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped, UIControl.State) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element.Wrapped>)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
+
 }
 
 
@@ -174,6 +218,10 @@ public extension PrimitiveSequence where Trait == SingleTrait {
         return self
     }
     
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
     
     @discardableResult
     func showLoading(_ view: UIView, color: UIColor? = nil) -> Self {
@@ -197,6 +245,10 @@ public extension PrimitiveSequence where Trait == MaybeTrait {
         return self
     }
     
+//    @discardableResult
+//    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
+//        return subscribeAutoDispose(view, setter)
+//    }
     
     @discardableResult
     func showLoading(_ view: UIView, color: UIColor? = nil) -> Self {
