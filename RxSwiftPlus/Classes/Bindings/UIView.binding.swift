@@ -270,9 +270,9 @@ public extension UIView {
         }
         set(value) {
             if (value) {
-                view.setSpinnerVisible()
+                self.setSpinnerVisible()
             } else {
-                view.setSpinnerInVisible()
+                self.setSpinnerInVisible()
             }
         }
     }
