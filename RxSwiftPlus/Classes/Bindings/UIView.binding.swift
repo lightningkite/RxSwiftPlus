@@ -211,3 +211,17 @@ public extension PrimitiveSequence where Trait == MaybeTrait {
     }
 }
 
+public extension UIView {
+    var showLoading: Bool {
+        get {
+            return mySpinner.alpha > 0.5
+        }
+        set(value) {
+            if (value) {
+                view.setSpinnerVisible()
+            } else {
+                view.setSpinnerInVisible()
+            }
+        }
+    }
+}

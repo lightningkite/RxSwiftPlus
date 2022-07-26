@@ -1,6 +1,10 @@
 import RxSwift
 import RxCocoa
 
+enum ObservableExtensionError: Error {
+    case NoItemReceived
+}
+
 public extension Observable {
 
     static func create(_ action: @escaping (ObservableEmitter<Element>) -> Void) -> Observable<Element> {
@@ -13,6 +17,16 @@ public extension Observable {
 
     static func just(_ items: Element...) -> Observable<Element> {
         return Observable<Element>.from(items)
+    }
+    
+    func firstOrError() -> Single<Element> {
+        return self.first().map { x in
+            if let x = x {
+                return x
+            } else {
+                throw ObservableExtensionError.NoItemReceived
+            }
+        }
     }
 }
 
