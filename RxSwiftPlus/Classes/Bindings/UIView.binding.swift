@@ -61,52 +61,52 @@ public extension UIView {
 }
 
 
-public extension ObservableType {
+public extension ObservableConvertibleType {
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in setter(view, value) }
         ).disposed(by: view.removed)
         return self
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in setter(view)(value) }
         ).disposed(by: view.removed)
         return self
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element, UIControl.State) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in setter(view)(value, .normal) }
         ).disposed(by: view.removed)
         return self
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element?) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in setter(view)(value) }
         ).disposed(by: view.removed)
         return self
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element?, UIControl.State) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in setter(view)(value, .normal) }
         ).disposed(by: view.removed)
         return self
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element>)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in view[keyPath: setter] = value }
         ).disposed(by: view.removed)
         return self
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element?>)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in view[keyPath: setter] = value }
         ).disposed(by: view.removed)
         return self
@@ -142,10 +142,10 @@ public extension ObservableType {
 //    }
 }
 
-public extension ObservableType where Element: OptionalType {
+public extension ObservableConvertibleType where Element: OptionalType {
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in
                 if let value = value.asOptional() {
                     setter(view)(value)
@@ -156,7 +156,7 @@ public extension ObservableType where Element: OptionalType {
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW) -> (Element.Wrapped, UIControl.State) -> Void)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in
                 if let value = value.asOptional() {
                     setter(view)(value, .normal)
@@ -167,7 +167,7 @@ public extension ObservableType where Element: OptionalType {
     }
     @discardableResult
     func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: ReferenceWritableKeyPath<VIEW, Element.Wrapped>)-> Self{
-        subscribe(
+        asObservable().subscribe(
             onNext: { value in
                 if let value = value.asOptional() {
                     view[keyPath: setter] = value
@@ -210,13 +210,6 @@ public extension ObservableType where Element == Bool {
 
 
 public extension PrimitiveSequence where Trait == SingleTrait {
-    @discardableResult
-    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
-        subscribe(
-            onSuccess: { value in setter(view, value) }
-        ).disposed(by: view.removed)
-        return self
-    }
     
 //    @discardableResult
 //    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
@@ -237,13 +230,6 @@ public extension PrimitiveSequence where Trait == SingleTrait {
 }
 
 public extension PrimitiveSequence where Trait == MaybeTrait {
-    @discardableResult
-    func subscribeAutoDispose<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
-        subscribe(
-            onSuccess: { value in setter(view, value) }
-        ).disposed(by: view.removed)
-        return self
-    }
     
 //    @discardableResult
 //    func into<VIEW: UIView>(_ view: VIEW, _ setter: @escaping (VIEW, Element) -> Void)-> Self{
