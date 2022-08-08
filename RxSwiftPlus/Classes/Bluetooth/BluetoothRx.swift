@@ -9,10 +9,12 @@ public struct BleScanResult {
     public let name: String?
     public let rssi: Int
     public let id: String
-    public init(name: String?, rssi: Int, id: String) {
+    public let services: Dictionary<UUID, Data>
+    public init(name: String?, rssi: Int, id: String, services: Dictionary<UUID, Data>) {
         self.name = name
         self.rssi = rssi
         self.id = id
+        self.services = services
     }
 }
 public struct BleCharacteristic: CharacteristicIdentifier {
@@ -48,8 +50,20 @@ private let requireBle = manager.observeStateWithInitialValue()
 
 public extension ViewControllerAccess {
     func bleScan(lowPower: Bool = false, filterForService: UUID? = nil) -> Observable<BleScanResult> {
-        return manager.scanForPeripherals(withServices: filterForService.map { [CBUUID(nsuuid: $0)] }, options: nil).map {
-            BleScanResult(name: $0.advertisementData.localName ?? "", rssi: Int(truncating: $0.rssi), id: $0.peripheral.identifier.uuidString)
+        return manager.scanForPeripherals(withServices: filterForService.map { [CBUUID(nsuuid: $0)] }, options: nil).map { it in
+            var serviceData = Dictionary<UUID, Data>()
+            for entry in it.advertisementData.serviceData ?? [:] {
+                serviceData[UUID(uuidString: entry.key.uuidString)!] = entry.value
+            }
+            for service in it.advertisementData.serviceUUIDs ?? [] {
+                serviceData[UUID(uuidString: service.uuidString)!] = Data()
+            }
+            return BleScanResult(
+                name: it.advertisementData.localName ?? "",
+                rssi: Int(truncating: it.rssi),
+                id: it.peripheral.identifier.uuidString,
+                services: serviceData
+            )
         }
     }
     func bleDevice(id: String, requiresBond: Bool) -> BleDevice {
