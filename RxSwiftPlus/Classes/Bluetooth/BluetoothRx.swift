@@ -41,15 +41,21 @@ public protocol BleDevice {
     func notify(characteristic: BleCharacteristic) -> Observable<Data>
 }
 
-private let manager = CentralManager(queue: .main)
+private let manager = CentralManager(queue: .main, options:[CBCentralManagerOptionRestoreIdentifierKey:"abcdef" as AnyObject])
 private let requireBle = manager.observeStateWithInitialValue()
+    .doOnNext { print("Got \($0)") }
     .filter { $0 == .poweredOn }
+    .doOnError { print("Err: \($0)") }
     .firstOrError()
+
+
 
 public extension ViewControllerAccess {
     func bleScan(lowPower: Bool = false, filterForService: UUID? = nil) -> Observable<BleScanResult> {
-        return manager.scanForPeripherals(withServices: filterForService.map { [CBUUID(nsuuid: $0)] }, options: nil).map {
-            BleScanResult(name: $0.advertisementData.localName ?? "", rssi: Int(truncating: $0.rssi), id: $0.peripheral.identifier.uuidString)
+        return requireBle.toObservable().flatMap {_ in
+            manager.scanForPeripherals(withServices: filterForService.map { [CBUUID(nsuuid: $0)] }, options: nil).map {
+                BleScanResult(name: $0.advertisementData.localName ?? "", rssi: Int(truncating: $0.rssi), id: $0.peripheral.identifier.uuidString)
+            }
         }
     }
     func bleDevice(id: String, requiresBond: Bool) -> BleDevice {
@@ -70,8 +76,12 @@ private class CoreBleDevice: BleDevice {
     }
     
     lazy var connected = {
-        peripheral.establishConnection()
-            .retry { $0.delay(.seconds(1), scheduler: MainScheduler.instance) }
+        requireBle.toObservable().switchMap { [weak self] _ -> Observable<Peripheral> in
+            guard let self = self else { return Observable.never() }
+            return self.peripheral.establishConnection()
+                .doOnError { print("Connection error: \($0)") }
+                .retry { $0.delay(.seconds(1), scheduler: MainScheduler.instance) }
+        }
             .share(replay: 1, scope: .whileConnected)
     }()
     
@@ -89,7 +99,11 @@ private class CoreBleDevice: BleDevice {
     
     func read(characteristic: BleCharacteristic) -> Single<Data> {
         return connected.firstOrError()
-            .flatMap { $0.readValue(for: characteristic) }
+            .doOnError { print("Failed a read \(characteristic.uuid) with connection issue \($0)") }
+            .flatMap {
+                $0.readValue(for: characteristic)
+                    .doOnError { print("Failed a read \(characteristic.uuid) with readValue issue \($0)") }
+            }
             .map { $0.value ?? Data() }
     }
     
@@ -97,10 +111,12 @@ private class CoreBleDevice: BleDevice {
         return connected.firstOrError()
             .flatMap { $0.writeValue(value, for: characteristic, type: .withResponse) }
             .map { _ in () }
+            .doOnError { print("Failed a write \(characteristic.uuid) with \($0)") }
     }
     
     func notify(characteristic: BleCharacteristic) -> Observable<Data> {
-        return connected.switchMap { $0.observeValueUpdateAndSetNotification(for: characteristic) }.compactMap { $0.value }.retry { $0.delay(.seconds(1), scheduler: MainScheduler.instance) }
+        return connected.switchMap { $0.observeValueUpdateAndSetNotification(for: characteristic) }.compactMap { $0.value }
+            .doOnError { print("Failed a notify \(characteristic.uuid) with \($0)") }.retry { $0.delay(.seconds(1), scheduler: MainScheduler.instance) }
     }
 }
 
