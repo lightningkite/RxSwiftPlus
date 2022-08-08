@@ -54,20 +54,27 @@ private let requireBle = manager.observeStateWithInitialValue()
 
 public extension ViewControllerAccess {
     func bleScan(lowPower: Bool = false, filterForService: UUID? = nil) -> Observable<BleScanResult> {
-        return manager.scanForPeripherals(withServices: filterForService.map { [CBUUID(nsuuid: $0)] }, options: nil).map { it in
-            var serviceData = Dictionary<UUID, Data>()
-            for entry in it.advertisementData.serviceData ?? [:] {
-                serviceData[UUID(uuidString: entry.key.uuidString)!] = entry.value
+        return requireBle.asObservable().flatMap { _ in
+            manager.scanForPeripherals(withServices: filterForService.map { [CBUUID(nsuuid: $0)] }, options: nil).map { it in
+                var serviceData = Dictionary<UUID, Data>()
+                for entry in it.advertisementData.serviceData ?? [:] {
+                    print("Found uuid \(entry.key.uuidString)")
+                    if let uuid = UUID(uuidString: entry.key.uuidString) {
+                        serviceData[uuid] = entry.value
+                    }
+                }
+                for service in it.advertisementData.serviceUUIDs ?? [] {
+                    if let uuid = UUID(uuidString: service.uuidString) {
+                        serviceData[uuid] = Data()
+                    }
+                }
+                return BleScanResult(
+                    name: it.advertisementData.localName ?? "",
+                    rssi: Int(truncating: it.rssi),
+                    id: it.peripheral.identifier.uuidString,
+                    services: serviceData
+                )
             }
-            for service in it.advertisementData.serviceUUIDs ?? [] {
-                serviceData[UUID(uuidString: service.uuidString)!] = Data()
-            }
-            return BleScanResult(
-                name: it.advertisementData.localName ?? "",
-                rssi: Int(truncating: it.rssi),
-                id: it.peripheral.identifier.uuidString,
-                services: serviceData
-            )
         }
     }
     func bleDevice(id: String, requiresBond: Bool) -> BleDevice {
