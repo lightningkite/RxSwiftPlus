@@ -212,7 +212,7 @@ public enum HttpClient {
         if let resp = responseScheduler {
             obs = obs.observe(on: resp)
         }
-        return obs.share(replay: 1)
+        return obs.replay(1).autoConnect()
     }
 
     public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, callTimeout:Int? = nil, writeTimeout:Int? = nil, readTimeout:Int?=nil,connectTimeout:Int?=nil) -> Single<HttpResponse> {
