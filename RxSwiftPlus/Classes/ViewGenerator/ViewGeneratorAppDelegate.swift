@@ -41,6 +41,7 @@ open class ViewGeneratorAppDelegate: UIResponder, UIApplicationDelegate {
 
     open func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+
         window = UIWindow(frame: UIScreen.main.bounds)
         let nav = SpecialNavController()
         if let vc = viewController {
@@ -78,5 +79,14 @@ open class ViewGeneratorAppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
+    
+    public func applicationDidBecomeActive(_ application: UIApplication) {
+        ApplicationAccess.INSTANCE.applicationIsActiveEvent.onNext(true)
+    }
+    
+    public func applicationDidEnterBackground(_ application: UIApplication) {
+        ApplicationAccess.INSTANCE.applicationIsActiveEvent.onNext(false)
+    }
+    
 }
 

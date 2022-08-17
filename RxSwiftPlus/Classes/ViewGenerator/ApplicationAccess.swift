@@ -5,7 +5,7 @@ public class ApplicationAccess {
     public static let INSTANCE = ApplicationAccess()
 
     //--- _applicationIsActive
-    public let applicationIsActiveEvent = PublishSubject<Bool>()
+    public let applicationIsActiveEvent = ValueSubject<Bool>(true)
     public let foreground: Observable<Bool>
     
     init() {
