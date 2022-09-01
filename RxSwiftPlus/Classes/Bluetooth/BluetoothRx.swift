@@ -61,10 +61,14 @@ public extension ViewControllerAccess {
                     print("Found uuid \(entry.key.uuidString)")
                     if let uuid = UUID(uuidString: entry.key.uuidString) {
                         serviceData[uuid] = entry.value
+                    } else if let uuid = UUID(uuidString: "0000\(entry.key.uuidString)-0000-1000-8000-00805F9B34FB") {
+                        serviceData[uuid] = entry.value
                     }
                 }
                 for service in it.advertisementData.serviceUUIDs ?? [] {
                     if let uuid = UUID(uuidString: service.uuidString) {
+                        serviceData[uuid] = Data()
+                    } else if let uuid = UUID(uuidString: "0000\(service.uuidString)-0000-1000-8000-00805F9B34FB") {
                         serviceData[uuid] = Data()
                     }
                 }
@@ -77,18 +81,16 @@ public extension ViewControllerAccess {
             }
         }
     }
-    func bleDevice(id: String, requiresBond: Bool) -> BleDevice {
-        return CoreBleDevice(peripheral: manager.retrievePeripherals(withIdentifiers: [UUID(uuidString: id)!]).first!, requiresBond: requiresBond)
+    func bleDevice(id: String) -> BleDevice {
+        return CoreBleDevice(peripheral: manager.retrievePeripherals(withIdentifiers: [UUID(uuidString: id)!]).first!)
     }
 }
 
 private class CoreBleDevice: BleDevice {
     
     let peripheral: Peripheral
-    let requiresBond: Bool
-    init(peripheral: Peripheral, requiresBond: Bool) {
+    init(peripheral: Peripheral) {
         self.peripheral = peripheral
-        self.requiresBond = requiresBond
     }
     var id: String {
         return peripheral.identifier.uuidString
