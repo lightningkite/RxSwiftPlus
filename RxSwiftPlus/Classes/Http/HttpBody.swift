@@ -67,7 +67,7 @@ public extension URL {
                         } else if let error = error {
                             em.onFailure(error)
                         } else {
-                            em.onFailure(HttpResponseException(response: HttpResponse(response: response, data: data ?? Data())))
+                            em.onFailure(HttpResponseException(HttpResponse(response: response, data: data ?? Data())))
                         }
                     } else if let response = response {
                         if let data = data {

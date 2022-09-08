@@ -13,7 +13,7 @@ extension Single where Element == HttpResponse, Trait == SingleTrait {
             if it.isSuccessful {
                 return it
             } else {
-                throw HttpResponseException(response: it)
+                throw HttpResponseException(it)
             }
         }
     }
@@ -25,7 +25,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return it.discard()
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
@@ -34,7 +34,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return it.readJson()
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
@@ -43,7 +43,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return it.readJsonDebug()
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
@@ -58,7 +58,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return it.readJson()
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
@@ -67,7 +67,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return it.readJsonDebug()
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
@@ -82,7 +82,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return Single.just(String(data: it.data, encoding: .utf8)!)
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
@@ -91,7 +91,7 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             if it.isSuccessful {
                 return Single.just(it.data)
             } else {
-                return Single.error(HttpResponseException(response: it))
+                return Single.error(HttpResponseException(it))
             }
         }
     }
