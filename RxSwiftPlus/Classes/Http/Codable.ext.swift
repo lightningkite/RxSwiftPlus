@@ -306,7 +306,6 @@ public extension String {
                 let result = try decoder.decode(Array<T>.self, from: fixedData)
                 return result[0]
             } catch {
-                err = error
             }
             if let err = err {
                 print("Error decoding JSON into \(T.self): \(err)")

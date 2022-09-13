@@ -54,6 +54,9 @@ public class QuickCompositionalLayout {
             let group = NSCollectionLayoutGroup.vertical(layoutSize: size, subitem: item, count: 1)
             let section = NSCollectionLayoutSection(group: group)
             let result = UICollectionViewCompositionalLayout(section: section)
+            let config = result.configuration
+            config.scrollDirection = .horizontal
+            result.configuration = config
             result.fractionalHeight = 1
             return result
         }
