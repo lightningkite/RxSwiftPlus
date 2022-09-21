@@ -22,7 +22,7 @@ private enum RequestType { case image, video, document }
 public extension ViewControllerAccess {
     //--- ViewControllerAccess image helpers
     private static let imageDelegateExtension = ExtensionProperty<ViewControllerAccess, ImageDelegate>()
-    private static let documentDelegateExtension = ExtensionProperty<ViewControllerAccess, DocumentDelgate>()
+//    private static let documentDelegateExtension = ExtensionProperty<ViewControllerAccess, DocumentDelgate>()
     private var imageDelegate: ImageDelegate {
         if let existing = ViewControllerAccess.imageDelegateExtension.get(self) {
             return existing
@@ -32,14 +32,14 @@ public extension ViewControllerAccess {
         return new
     }
 
-    private var documentDelegate: DocumentDelgate {
-        if let existing = ViewControllerAccess.documentDelegateExtension.get(self) {
-            return existing
-        }
-        let new = DocumentDelgate()
-        ViewControllerAccess.documentDelegateExtension.set(self, new)
-        return new
-    }
+//    private var documentDelegate: DocumentDelgate {
+//        if let existing = ViewControllerAccess.documentDelegateExtension.get(self) {
+//            return existing
+//        }
+//        let new = DocumentDelgate()
+//        ViewControllerAccess.documentDelegateExtension.set(self, new)
+//        return new
+//    }
     
     private func getLibraryPermission() -> Completable {
         return Completable.create { (obs) in
@@ -140,9 +140,9 @@ public extension ViewControllerAccess {
             }
         }
     }
-    private func documentsPick() -> Maybe<Array<URL>> {
+    private func documentsPick(_ type: String) -> Maybe<Array<URL>> {
         return Maybe.create { em in
-            let docDelegate = self.documentDelegate
+            let docDelegate = DocumentDelgate(type)
             docDelegate.onDocumentsPicked = { documents in
                 if let documents = documents {
                     em(.success(documents))
@@ -253,40 +253,57 @@ public extension ViewControllerAccess {
         return nil
     }
     
-    func requestDocuments() -> Maybe<Array<URL>> {
-        return documentsPick()
+    func requestDocuments(_ type: String) -> Maybe<Array<URL>> {
+        return documentsPick(type)
     }
 
-    func requestDocument() -> Maybe<URL> {
-        return documentsPick().compactMap { $0.first }
+    func requestDocument(_ type: String) -> Maybe<URL> {
+        return documentsPick(type).compactMap { $0.first }
     }
     
-    func requestFiles() -> Maybe<Array<URL>> {
-        return pickType().flatMap { [weak self] in
-            guard let self = self else { return Maybe.empty() }
-            switch $0 {
-            case .image:
-                return self.requestImagesGallery()
-            case .video:
-                return self.requestVideosGallery()
-            case .document:
-                return self.requestDocuments()
+    func requestFiles(type: String = "*/*") -> Maybe<Array<URL>> {
+        if type.starts(with: "*/") {
+            return pickType().flatMap { [weak self] in
+                guard let self = self else { return Maybe.empty() }
+                switch $0 {
+                case .image:
+                    return self.requestImagesGallery()
+                case .video:
+                    return self.requestVideosGallery()
+                case .document:
+                    return self.requestDocuments(type)
+                }
             }
+        } else if type.starts(with: "image/") {
+            return self.requestImagesGallery()
+        } else if type.starts(with: "video/") {
+            return self.requestVideosGallery()
+        } else {
+            return self.requestDocuments(type)
         }
     }
 
-    func requestFile() -> Maybe<URL> {
-        return pickType().flatMap { [weak self] in
-            guard let self = self else { return Maybe.empty() }
-            switch $0 {
-            case .image:
-                return self.requestImageGallery()
-            case .video:
-                return self.requestVideoGallery()
-            case .document:
-                return self.requestDocument()
+    func requestFile(type: String = "*/*") -> Maybe<URL> {
+        if type.starts(with: "*/") {
+            return pickType().flatMap { [weak self] in
+                guard let self = self else { return Maybe.empty() }
+                switch $0 {
+                case .image:
+                    return self.requestImageGallery()
+                case .video:
+                    return self.requestVideoGallery()
+                case .document:
+                    return self.requestDocument(type)
+                }
             }
+        } else if type.starts(with: "image/") {
+            return self.requestImageGallery()
+        } else if type.starts(with: "video/") {
+            return self.requestVideoGallery()
+        } else {
+            return self.requestDocument(type)
         }
+        
     }
 
     func getFileName(uri:URL) -> String? {
@@ -343,9 +360,25 @@ public extension ViewControllerAccess {
 
 
 private class DocumentDelgate : NSObject, UIDocumentPickerDelegate, UINavigationControllerDelegate {
-    var documentPicker = UIDocumentPickerViewController(documentTypes: ["public.item"], in: .import)
+    var documentPicker:UIDocumentPickerViewController
     var onDocumentsPicked: ((Array<URL>?) -> Void)? = nil
 
+    init(_ type: String){
+        
+        if(type == "*/*"){
+            documentPicker = UIDocumentPickerViewController(documentTypes: ["public.item"], in: .import)
+        } else if #available(iOS 14.0, *) {
+            if let type = UTType(mimeType: type){
+                documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [type])
+            } else {
+                documentPicker = UIDocumentPickerViewController(documentTypes: ["public.item"], in: .import)
+            }
+        } else {
+            documentPicker = UIDocumentPickerViewController(documentTypes: ["public.item"], in: .import)
+        }
+        
+    }
+    
     func prepareMenu(){
         documentPicker.delegate = self
     }
