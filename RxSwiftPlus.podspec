@@ -97,7 +97,7 @@ Pod::Spec.new do |s|
     sub.dependency "RxCoreLocation"
   end
   s.subspec 'Bluetooth' do |sub|
-    sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorCalendar"
+    sub.source_files =  "RxSwiftPlus/Classes/Bluetooth"
     sub.dependency "RxSwiftPlus/ViewGenerator"
     sub.dependency "RxBluetoothKit"
   end

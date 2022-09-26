@@ -31,9 +31,9 @@ public enum HttpClient {
             let fixedBack = backParts.map {
                 $0.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.union( CharacterSet(charactersIn: "%"))) ?? String($0)
             }.joined(separator: "&")
-            return "\(front)\(fixedBack)".replace(" ", "%20")
+            return "\(front)\(fixedBack)".replacingOccurrences(of: " ", with: "%20")
         } else {
-            return url.replace(" ", "%20")
+            return url.replacingOccurrences(of: " ", with: "%20")
         }
     }
 

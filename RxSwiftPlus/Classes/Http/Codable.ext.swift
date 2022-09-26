@@ -48,7 +48,7 @@ private extension StringProtocol {
     }
 }
 
-private extension String {
+extension String {
     func substring(_ startIndex: Int, _ endIndex: Int? = nil) -> String {
         if startIndex > self.count { return "" }
         if let endIndex = endIndex, startIndex >= endIndex { return "" }
@@ -144,11 +144,11 @@ private func dateFromIso(iso8601 str: String) -> Date? {
     var time = String(majorParts[1])
     var timeZone: TimeZone? = nil
     if(time.contains("+")){
-        let index = time.indexOf( "+")
+        let index = time.indexOf( string: "+")
         timeZone = TimeZone.init(iso8601:time.substring(index))
         time = time.substring(startIndex: 0, endIndex:index)
     } else if (time.contains("-")){
-        let index = time.indexOf( "-")
+        let index = time.indexOf( string: "-")
         timeZone = TimeZone.init(iso8601:time.substring(index))
         time = time.substring(startIndex: 0, endIndex:index)
     } else if(time.contains("Z")){

@@ -8,7 +8,12 @@ import RxCocoa
 //--- TabLayout.bind(List<String>, MutableProperty<Int>)
 public extension UISegmentedControl {
     
-    func bind<T: Equatable, Subject:SubjectType>(tabs: Array<T>, selected: Subject, allowReselect:Bool = false, toString: @escaping (T)->String = {String(kotlin: $0)}) -> Void where Subject.Observer.Element == Subject.Element, Subject.Element == T{
+    func bind<Subject: SubjectType>(
+        tabs: Array<Subject.Element>,
+        selected: Subject,
+        allowReselect:Bool = false,
+        toString: @escaping (Subject.Element) -> String
+    ) -> Void where Subject.Observer.Element == Subject.Element, Subject.Element: Equatable {
         self.removeAllSegments()
         for entry in tabs {
             self.insertSegment(withTitle: toString(entry), at: self.numberOfSegments, animated: false)

@@ -41,7 +41,7 @@ public extension ObservableType where Element : Collection, Element.Element: Vie
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
                     let newCount = value.count
                     var transition:TransitionTriple
-                    let newGenerator = value.lastOrNull()
+                    let newGenerator = Array(value).last
                     
                     let newGeneratorObj = newGenerator as? AnyObject
                     let currentGeneratorObj = currentGenerator as? AnyObject
@@ -78,7 +78,7 @@ public extension ObservableType where Element : Collection, Element.Element == V
             .subscribeAutoDispose(view){ view, value in
                 let newCount = value.count
                 var transition:TransitionTriple
-                let newGenerator = value.lastOrNull()
+                let newGenerator = Array(value).last
                 
                 let newGeneratorObj = newGenerator as? AnyObject
                 let currentGeneratorObj = currentGenerator as? AnyObject

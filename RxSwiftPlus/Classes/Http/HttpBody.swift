@@ -210,7 +210,7 @@ public enum MultipartBody {
             #endif
             body.append(string.data(using: .utf8)!)
         }
-        let boundary = UUID.randomUUID().uuidString.replace("-", "")
+        let boundary = UUID().uuidString.replacingOccurrences(of: "-", with: "")
         for part in parts {
             emitText("\r\n--" + boundary + "\r\n")
             switch part {
