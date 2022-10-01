@@ -17,6 +17,17 @@ public struct BleScanResult {
         self.services = services
     }
 }
+extension BleScanResult: Hashable {
+    public func hash(into hasher: inout Hasher){
+        hasher.combine(self.id)
+    }
+}
+extension BleScanResult: Equatable {
+    public static func ==(lhs: BleScanResult, rhs: BleScanResult) -> Bool{
+        return lhs.id == rhs.id
+    }
+}
+
 public struct BleCharacteristic: CharacteristicIdentifier {
     public var uuid: CBUUID { return CBUUID(nsuuid: id) }
     public var service: ServiceIdentifier { return BleService(id: serviceId)}
@@ -81,12 +92,13 @@ public extension ViewControllerAccess {
             }
         }
     }
-    func bleDevice(id: String) -> BleDevice {
+    //Mtu cannot be changed in swift, default value is there because you can in android.
+    func bleDevice(id: String, mtu: Int = 0) -> any BleDevice {
         return CoreBleDevice(peripheral: manager.retrievePeripherals(withIdentifiers: [UUID(uuidString: id)!]).first!)
     }
 }
 
-private class CoreBleDevice: BleDevice {
+private class CoreBleDevice: BleDevice, Hashable {
     
     let peripheral: Peripheral
     init(peripheral: Peripheral) {
@@ -95,6 +107,11 @@ private class CoreBleDevice: BleDevice {
     var id: String {
         return peripheral.identifier.uuidString
     }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    static func == (lhs: CoreBleDevice, rhs: CoreBleDevice) -> Bool { return lhs.id == rhs.id }
     
     lazy var connected = {
         requireBle.toObservable().switchMap { [weak self] _ -> Observable<Peripheral> in

@@ -30,6 +30,18 @@ public extension Observable {
     }
 }
 
+public extension Completable {
+    func toObservable<T>() -> Observable<T> {
+        return self.asObservable().map { _ in fatalError() }
+    }
+    func startWith<T: ObservableType>(_ value: T) -> Observable<T.Element> {
+        return Observable.concat(
+            value.asObservable(),
+            self.toObservable()
+        )
+    }
+}
+
 public class ObservableEmitter<Element>: ObserverType {
     public func on(_ event: RxSwift.Event<Element>) {
         basedOn.on(event)
