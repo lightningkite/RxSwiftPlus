@@ -94,7 +94,7 @@ public extension ViewControllerAccess {
             return DisposableLambda {}
         }
     }
-    private func pick(sourceType: UIImagePickerController.SourceType, mustAllowVideo: Bool, delegateSetup: (ImageDelegate) -> Void) -> Maybe<URL> {
+    private func pick(sourceType: UIImagePickerController.SourceType, mustAllowVideo: Bool, delegateSetup: @escaping (ImageDelegate) -> Void) -> Maybe<URL> {
         if UIImagePickerController.isSourceTypeAvailable(sourceType){
             if mustAllowVideo {
                 if(UIImagePickerController.availableMediaTypes(for: sourceType)?.contains("public.video") != true) {
@@ -102,8 +102,6 @@ public extension ViewControllerAccess {
                 }
             }
             let imageDelegate = self.imageDelegate
-            imageDelegate.forImages()
-            delegateSetup(imageDelegate)
             return Maybe.create { em in
                 imageDelegate.onImagePicked = { url in
                     if let url = url {
@@ -112,7 +110,8 @@ public extension ViewControllerAccess {
                         em(.completed)
                     }
                 }
-                imageDelegate.prepareGallery()
+                delegateSetup(imageDelegate)
+                imageDelegate.imagePicker.modalPresentationStyle = .popover
                 self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
                 return DisposableLambda {
                     imageDelegate.imagePicker.dismiss(animated: true)
@@ -440,7 +439,6 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if #available(iOS 11.0, *) {
             if let image = info[.imageURL] as? URL ?? info[.mediaURL] as? URL {
-//                 print("Image retrieved directly using .imageURL")
                 DispatchQueue.main.async {
                     picker.dismiss(animated: true, completion: {
                         self.onImagePicked?(image)
@@ -451,13 +449,11 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
             }
         }
         if let originalImage = info[.editedImage] as? UIImage, let url = originalImage.saveTemp() {
-//             print("Image retrieved using save as backup")
             picker.dismiss(animated: true, completion: {
                 self.onImagePicked?(url)
                 self.onImagePicked = nil
             })
         } else if let originalImage = info[.originalImage] as? UIImage, let url = originalImage.saveTemp() {
-//             print("Image retrieved using save as backup")
             picker.dismiss(animated: true, completion: {
                 self.onImagePicked?(url)
                 self.onImagePicked = nil
@@ -479,7 +475,6 @@ extension UIImage {
         guard let url2 = self.save(at: tempDirectoryUrl) else {
             return nil
         }
-//         print(url2)
         return url2
     }
 
