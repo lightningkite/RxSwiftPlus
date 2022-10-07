@@ -8,13 +8,19 @@ import RxSwift
 
 public extension SubjectType where Element == Int, Observer.Element == Element {
     @discardableResult
-    func bind(_ view: UISlider) -> Self {
+    func bind(_ view: UISlider, range: ClosedRange<Int>? = nil) -> Self {
+        if let range = range {
+            view.minimumValue = Float(range.lowerBound)
+            view.maximumValue = Float(range.upperBound)
+        }
         var suppress = false
         let observer = self.asObserver()
         view.addAction(for: .valueChanged, action: { [weak view] in
             guard let view = view, !suppress else { return }
             suppress = true
-            observer.onNext(Int(view.value.rounded()))
+            let v = view.value.rounded()
+            observer.onNext(Int(v))
+            view.value = v
             suppress = false
         }).disposed(by: view.removed)
         subscribe(

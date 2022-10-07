@@ -20,7 +20,7 @@ open class ViewGeneratorViewController: UIViewController, UINavigationController
     }
     
     required public init?(coder: NSCoder) {
-        self.main = EmptyViewGenerator()
+        self.main = ViewGeneratorDefault()
         super.init(coder: coder)
     }
         
