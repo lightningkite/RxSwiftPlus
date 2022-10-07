@@ -29,6 +29,20 @@ public extension ObservableType where Element: ViewGenerator{
     
 }
 
+public extension ObservableType where Element == any ViewGenerator{
+    
+    @discardableResult
+    func showIn(_ view: SwapView, dependency: ViewControllerAccess, transition: TransitionTriple = TransitionTriple.Companion.INSTANCE.FADE) -> Self {
+        subscribe(onNext: { value in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
+                view.swap(dependency: dependency, to: value.generate(dependency: dependency), transition: transition)
+            })
+        }).disposed(by: view.removed)
+        return self
+    }
+    
+}
+
 //--- SwapView.bindStack(ViewControllerAccess, StackProperty<ViewGenerator>)
 public extension ObservableType where Element : Collection, Element.Element: ViewGenerator {
     @discardableResult
