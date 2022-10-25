@@ -54,7 +54,7 @@ public protocol BleDevice {
     func notify(characteristic: BleCharacteristic) -> Observable<Data>
 }
 
-private let manager = CentralManager(queue: .main, options:[CBCentralManagerOptionRestoreIdentifierKey:"abcdef" as AnyObject])
+public let manager = CentralManager(queue: .main, options:[CBCentralManagerOptionRestoreIdentifierKey:"abcdef" as AnyObject])
 private let requireBle = manager.observeStateWithInitialValue()
     .doOnNext { print("Got \($0)") }
     .filter { $0 == .poweredOn }
@@ -83,6 +83,7 @@ public extension ViewControllerAccess {
                         serviceData[uuid] = Data()
                     }
                 }
+                print("Service data \(serviceData)")
                 return BleScanResult(
                     name: it.advertisementData.localName ?? "",
                     rssi: Int(truncating: it.rssi),
@@ -94,9 +95,13 @@ public extension ViewControllerAccess {
     }
     //Mtu cannot be changed in swift, default value is there because you can in android.
     func bleDevice(id: String, mtu: Int = 0) -> any BleDevice {
-        return CoreBleDevice(peripheral: manager.retrievePeripherals(withIdentifiers: [UUID(uuidString: id)!]).first!)
+        return coreBleDeviceDictionary.getOrPut(key: id, defaultValue: {
+            CoreBleDevice(peripheral: manager.retrievePeripherals(withIdentifiers: [UUID(uuidString: id)!]).first!)
+        })
     }
 }
+
+private var coreBleDeviceDictionary: Dictionary<String, CoreBleDevice> = [:]
 
 private class CoreBleDevice: BleDevice, Hashable {
     
@@ -117,6 +122,7 @@ private class CoreBleDevice: BleDevice, Hashable {
         requireBle.toObservable().switchMap { [weak self] _ -> Observable<Peripheral> in
             guard let self = self else { return Observable.never() }
             return self.peripheral.establishConnection()
+                .doOnNext { print("Connection established: \($0)") }
                 .doOnError { print("Connection error: \($0)") }
                 .retry { $0.delay(.seconds(1), scheduler: MainScheduler.instance) }
         }
@@ -136,20 +142,29 @@ private class CoreBleDevice: BleDevice, Hashable {
     }
     
     func read(characteristic: BleCharacteristic) -> Single<Data> {
-        return connected.firstOrError()
+        print("Doing the read")
+        return connected
             .doOnError { print("Failed a read \(characteristic.uuid) with connection issue \($0)") }
-            .flatMap {
-                $0.readValue(for: characteristic)
-                    .doOnError { print("Failed a read \(characteristic.uuid) with readValue issue \($0)") }
+            .flatMap { it in
+                print("Attempting read of \(characteristic.uuid) - \(it.state.rawValue)")
+                return it.characteristic(with: characteristic)
+                    .doOnError { print("Failed a read \(characteristic.uuid) with char discovery \($0)") }
+                    .flatMap {
+                        print("Found characteristic \($0)")
+                        return it.readValue(for: $0)
+                    }
             }
+            .doOnError { print("Failed a read \(characteristic.uuid) with readValue issue \($0)") }
             .map { $0.value ?? Data() }
+            .firstOrError()
     }
     
     func write(characteristic: BleCharacteristic, value: Data) -> Single<Void> {
-        return connected.firstOrError()
+        return connected
             .flatMap { $0.writeValue(value, for: characteristic, type: .withResponse) }
             .map { _ in () }
             .doOnError { print("Failed a write \(characteristic.uuid) with \($0)") }
+            .firstOrError()
     }
     
     func notify(characteristic: BleCharacteristic) -> Observable<Data> {
@@ -164,5 +179,17 @@ public extension BleDevice {
             read(characteristic: characteristic).asObservable(),
             notify(characteristic: characteristic)
         )
+    }
+}
+
+private extension Dictionary {
+    mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
+        if let value = self[key] {
+            return value
+        } else {
+            let newValue = defaultValue()
+            self[key] = newValue
+            return newValue
+        }
     }
 }
