@@ -298,3 +298,16 @@ public extension ObservableType where Element: OptionalType {
         return self.compactMap { $0.asOptional() }
     }
 }
+
+public extension ObservableType {
+    func onlyWhile(shouldListen: Observable<Bool>) -> Observable<Element> {
+        return shouldListen.switchMap {
+            $0 ? self.asObservable() : Observable.never()
+        }
+    }
+    func onlyWhile(shouldListen: Observable<Bool>, downtimeValue: Element) -> Observable<Element> {
+        return shouldListen.switchMap {
+            $0 ? self.asObservable() : Observable.concat(Observable.just(downtimeValue), Observable.never())
+        }
+    }
+}

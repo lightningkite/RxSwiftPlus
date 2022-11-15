@@ -14,7 +14,7 @@ public extension ViewGenerator {
     var titleString: String { return "" }
 }
 
-public class EmptyViewGenerator : ViewGenerator {
+public class ViewGeneratorDefault : ViewGenerator {
     public init() {}
     public func generate(dependency: ViewControllerAccess) -> UIView { return UIView(frame: .zero) }
 }
