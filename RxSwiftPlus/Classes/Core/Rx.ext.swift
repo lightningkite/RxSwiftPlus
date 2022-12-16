@@ -187,21 +187,14 @@ public extension Observable {
 
 public extension ConnectableObservableType {
     func autoConnect() -> Observable<Element> {
-        return Observable.create { observer in
-            return self.do(onSubscribe: {
-                _ = self.connect()
-            }).subscribe { (event: Event<Self.Element>) in
-                switch event {
-                case .next(let value):
-                    observer.on(.next(value))
-                case .error(let error):
-                    observer.on(.error(error))
-                case .completed:
-                    observer.on(.completed)
+        var connected = false
+        return self
+            .do(onSubscribe: {
+                if(!connected) {
+                    connected = true
+                    self.connect()
                 }
-
-            }
-        }
+            })
     }
 }
 

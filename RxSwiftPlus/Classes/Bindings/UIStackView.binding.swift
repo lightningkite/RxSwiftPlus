@@ -23,7 +23,7 @@ public extension ObservableType where Element: Collection {
                         let removedView = existingViews.remove(at: existingViews.count - 1)
                         view.removeArrangedSubview(removedView.0)
                         removedView.0.removeFromSuperview()
-                    }
+                    }	
                 } else if countDiff < 0 {
                     let itemsArray: Array<Element.Element> = Array(items)
                     for index in existingViews.count...itemsArray.count - 1 {

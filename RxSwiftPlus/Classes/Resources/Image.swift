@@ -114,7 +114,11 @@ public extension UIImageView {
                 self.addSubview(activityIndicatorView)
                 weak var weakAIV = activityIndicatorView
                 image.load()
-                    .do(onSuccess: { self.image = $0 }, onSubscribe: {  }, onDispose: { weakAIV?.removeFromSuperview() })
+                    .do(
+                        onSuccess: { self.image = $0 },
+                        onSubscribe: {  },
+                        onDispose: { weakAIV?.removeFromSuperview() }
+                    )
                     .subscribe()
                     .disposed(by: self.removed)
             }
@@ -138,15 +142,16 @@ public extension UIImageView {
                 let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
                 let data = data, error == nil,
                 let image = UIImage(data: data)
-                else {
-                    DispatchQueue.main.async() {
-                        weakAIV?.removeFromSuperview()
-                    }
-                return
+            else {
+                DispatchQueue.main.async() {
+                    weakAIV?.removeFromSuperview()
                 }
+                return
+            }
             DispatchQueue.main.async() { [weak self] in
+                guard let self else { return }
                 weakAIV?.removeFromSuperview()
-                self?.image = image
+                self.image = image
             }
         }.resume()
     }
