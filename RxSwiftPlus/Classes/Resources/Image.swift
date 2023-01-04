@@ -96,8 +96,13 @@ private func loadImage(uri: URL, maxDimension: Int32 = 2048) -> Single<UIImage> 
 }
 
 public extension UIImageView {
+    private static let lastLoad = ExtensionProperty<UIImageView, UUID>()
+    private static let loadAiv = ExtensionProperty<UIImageView, UIActivityIndicatorView>()
     func setImage(_ image: Image?) {
         self.image = nil
+        let loadId = UUID.randomUUID()
+        UIImageView.lastLoad.set(self, loadId)
+        UIImageView.loadAiv.get(self)?.removeFromSuperview()
         if let image = image {
             switch image {
             case let image as ImageLocalUrl:
@@ -105,19 +110,28 @@ public extension UIImageView {
             case let image as ImageUI:
                 self.image = image.uiImage
             case let image as ImageRemoteUrl:
-                setImageFromRemoteUrl(url: image.url)
+                setImageFromRemoteUrl(url: image.url, loadId: loadId)
             default:
                 let activityIndicatorView = UIActivityIndicatorView(style: .gray)
                 activityIndicatorView.startAnimating()
                 activityIndicatorView.center.x = self.frame.size.width / 2
                 activityIndicatorView.center.y = self.frame.size.height / 2
                 self.addSubview(activityIndicatorView)
+                UIImageView.loadAiv.set(self, activityIndicatorView)
                 weak var weakAIV = activityIndicatorView
                 image.load()
                     .do(
-                        onSuccess: { self.image = $0 },
+                        onSuccess: {
+                            if UIImageView.lastLoad.get(self) == loadId {
+                                self.image = $0
+                            }
+                        },
                         onSubscribe: {  },
-                        onDispose: { weakAIV?.removeFromSuperview() }
+                        onDispose: {
+                            if let it = weakAIV, weakAIV?.superview != nil {
+                                it.removeFromSuperview()
+                            }
+                        }
                     )
                     .subscribe()
                     .disposed(by: self.removed)
@@ -129,14 +143,16 @@ public extension UIImageView {
         self.image = UIImage(fileURLWithPath: url)
     }
     
-    private func setImageFromRemoteUrl(url: URL) {
+    private func setImageFromRemoteUrl(url: URL, loadId: UUID) {
         let activityIndicatorView = UIActivityIndicatorView(style: .gray)
         activityIndicatorView.startAnimating()
         activityIndicatorView.center.x = self.frame.size.width / 2
         activityIndicatorView.center.y = self.frame.size.height / 2
         self.addSubview(activityIndicatorView)
+        UIImageView.loadAiv.set(self, activityIndicatorView)
         weak var weakAIV = activityIndicatorView
-        URLSession.shared.dataTask(with: URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 30)){ [weak self] data, response, error in
+        let req = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 30)
+        URLSession.shared.dataTask(with: req) { [weak self] data, response, error in
             guard
                 let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
                 let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
@@ -144,14 +160,23 @@ public extension UIImageView {
                 let image = UIImage(data: data)
             else {
                 DispatchQueue.main.async() {
-                    weakAIV?.removeFromSuperview()
+                    if let it = weakAIV, weakAIV?.superview != nil {
+                        it.removeFromSuperview()
+                    }
                 }
                 return
             }
+            if let response = response {
+                URLCache.shared.storeCachedResponse(CachedURLResponse(response: response, data: data), for: req)
+            }
             DispatchQueue.main.async() { [weak self] in
                 guard let self else { return }
-                weakAIV?.removeFromSuperview()
-                self.image = image
+                if let it = weakAIV, weakAIV?.superview != nil {
+                    it.removeFromSuperview()
+                }
+                if UIImageView.lastLoad.get(self) == loadId {
+                    self.image = image
+                }
             }
         }.resume()
     }

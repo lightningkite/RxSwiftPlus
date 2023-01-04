@@ -79,10 +79,14 @@ class SillyDataSource<T>: NSObject, UICollectionViewDataSource, UICollectionView
     }
 
     var atPosition: (Int) -> Void = { _ in }
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    private var lastReportedScroll = -1
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
         if let x = collectionView.currentIndex {
-            atPosition(Int(x))
+            if x != lastReportedScroll {
+                atPosition(Int(x))
+                lastReportedScroll = x
+            }
         }
     }
 }
