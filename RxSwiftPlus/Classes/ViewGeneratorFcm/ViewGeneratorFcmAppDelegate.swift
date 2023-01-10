@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseCore
 import FirebaseMessaging
 
 open class ViewGeneratorFcmDelegate: ViewGeneratorAppDelegate, MessagingDelegate, UNUserNotificationCenterDelegate  {
     
-    override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
+    open override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?) -> Bool {
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
         }
@@ -22,13 +22,6 @@ open class ViewGeneratorFcmDelegate: ViewGeneratorAppDelegate, MessagingDelegate
         UIApplication.shared.registerForRemoteNotifications()
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-    }
-    
-    override func makeMain() -> ViewGenerator {
-        //        fatalError()
-        UIView.backgroundLayersByName = R.drawable.allEntries
-        UIView.useLayoutSubviewsLambda()
-        return RootVG()
     }
     
     public func messaging(
@@ -43,7 +36,7 @@ open class ViewGeneratorFcmDelegate: ViewGeneratorAppDelegate, MessagingDelegate
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ){
-        var result = ForegroundNotificationHandlerResult.UNHANDLED
+        var result = ForegroundNotificationHandlerResult.Unhandled
         if let entryPoint = self.viewController?.main as? ForegroundNotificationHandler {
             let info = notification.request.content.userInfo
             result = entryPoint.handleNotificationInForeground(
@@ -55,7 +48,7 @@ open class ViewGeneratorFcmDelegate: ViewGeneratorAppDelegate, MessagingDelegate
             )
            
         }
-        completionHandler(result == .SUPPRESS_NOTIFICATION ? [] : [.alert, .badge, .sound])
+        completionHandler(result == .SuppressNotification ? [] : [.alert, .badge, .sound])
     }
     
     public func userNotificationCenter(
