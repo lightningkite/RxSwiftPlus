@@ -138,6 +138,41 @@ public extension UIImageView {
             }
         }
     }
+    func setImages(images: Array<Image>) {
+        self.image = nil
+        let loadId = UUID.randomUUID()
+        UIImageView.lastLoad.set(self, loadId)
+        UIImageView.loadAiv.get(self)?.removeFromSuperview()
+        var currentLoadIndex = -1
+        var currentIndex = 0
+        for image in images {
+            let index = currentIndex
+            switch image {
+            case let image as ImageLocalUrl:
+                setImageFromLocalUrl(url: image.url)
+            case let image as ImageUI:
+                self.image = image.uiImage
+            case let image as ImageRemoteUrl:
+                setImageFromRemoteUrl(url: image.url, loadId: loadId)
+            default:
+                image.load()
+                    .do(
+                        onSuccess: {
+                            if UIImageView.lastLoad.get(self) == loadId, index >= currentLoadIndex {
+                                currentLoadIndex = index
+                                self.image = $0
+                            }
+                        },
+                        onSubscribe: {  },
+                        onDispose: {
+                        }
+                    )
+                    .subscribe()
+                    .disposed(by: self.removed)
+            }
+            currentIndex += 1
+        }
+    }
     
     private func setImageFromLocalUrl(url: URL) {
         self.image = UIImage(fileURLWithPath: url)

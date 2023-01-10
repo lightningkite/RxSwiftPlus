@@ -96,6 +96,12 @@ Pod::Spec.new do |s|
     sub.dependency "RxSwiftPlus/ViewGenerator"
     sub.dependency "RxCoreLocation"
   end
+  s.subspec 'ViewGeneratorFcm' do |sub|
+    sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorFcm"
+    sub.dependency "RxSwiftPlus/ViewGenerator"
+    sub.dependency "Firebase/Messaging"
+    sub.dependency "Firebase/Core"
+  end
   s.subspec 'Bluetooth' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Bluetooth"
     sub.dependency "RxSwiftPlus/ViewGenerator"
