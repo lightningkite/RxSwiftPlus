@@ -100,7 +100,7 @@ public extension UIImageView {
     private static let loadAiv = ExtensionProperty<UIImageView, UIActivityIndicatorView>()
     func setImage(_ image: Image?) {
         self.image = nil
-        let loadId = UUID.randomUUID()
+        let loadId = UUID()
         UIImageView.lastLoad.set(self, loadId)
         UIImageView.loadAiv.get(self)?.removeFromSuperview()
         if let image = image {
@@ -140,7 +140,7 @@ public extension UIImageView {
     }
     func setImages(images: Array<Image>) {
         self.image = nil
-        let loadId = UUID.randomUUID()
+        let loadId = UUID()
         UIImageView.lastLoad.set(self, loadId)
         UIImageView.loadAiv.get(self)?.removeFromSuperview()
         var currentLoadIndex = -1
