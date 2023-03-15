@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'RxSwiftPlus'
-  s.version          = '0.1.0'
+  s.version          = '1.0.0'
   s.summary          = 'Use Rx to bind data to your views'
 
   s.description      = <<-DESC
@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   
   s.subspec 'Core' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Core"
-    sub.dependency 'RxSwift', '~> 6.2.0'
+    sub.dependency 'RxSwift', '~> 6.2.2-LK'
     sub.dependency 'RxCocoa', '~> 6.2.0'
   end
   s.subspec 'Http' do |sub|
