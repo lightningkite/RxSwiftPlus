@@ -6,7 +6,14 @@
 # To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
 #
 
+# REQUIRED SOURCE!!
+# source "https://github.com/lightningkite/cocoapods-spec-repo.git"
+#
+# To add this source to cocoa pods run:
+# pod repo add 'name' https://github.com/lightningkite/cocoapods-spec-repo.git
+
 Pod::Spec.new do |s|
+
   s.name             = 'RxSwiftPlus'
   s.version          = '1.0.0'
   s.summary          = 'Use Rx to bind data to your views'
@@ -16,14 +23,16 @@ Pod::Spec.new do |s|
   Use Rx to bind data to your views.
                        DESC
 
-  s.homepage         = 'https://github.com/UnknownJoe796/RxSwiftPlus'
+  s.homepage         = 'https://github.com/lightningkite/RxSwiftPlus'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'UnknownJoe796' => 'joseph@lightningkite.com' }
-  s.source           = { :git => 'https://github.com/UnknownJoe796/RxSwiftPlus.git', :tag => s.version.to_s }
+  s.author           = { 'Joseph' => 'joseph@lightningkite.com' }
+  s.source           = { :git => 'https://github.com/lightningkite/RxSwiftPlus.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '11.0'
+
+  s.swift_version = "5.0"
 
   s.source_files = 'RxSwiftPlus/Classes/**/*'
   
@@ -37,16 +46,19 @@ Pod::Spec.new do |s|
   
   s.subspec 'Core' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Core"
-    sub.dependency 'RxSwift', '~> 6.2.2-LK'
-    sub.dependency 'RxCocoa', '~> 6.2.0'
+    sub.dependency 'RxSwift', '6.2.4'
+    sub.dependency 'RxCocoa', '6.2.4'
   end
   s.subspec 'Http' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Http"
+    sub.dependency "RxSwiftPlus/Core"
+    sub.dependency "RxSwiftPlus/Resources"
     sub.dependency 'Starscream'
   end
   s.subspec 'Resources' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Resources"
     sub.dependency "RxSwiftPlus/Core"
+    sub.dependency "RxSwiftPlus/Bindings"
   end
   s.subspec 'Bindings' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Bindings"
@@ -76,6 +88,7 @@ Pod::Spec.new do |s|
   end
   s.subspec 'ViewGenerator' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/ViewGenerator"
+    sub.dependency "RxSwiftPlus/Bindings"
     sub.dependency "RxSwiftPlus/Resources"
   end
   s.subspec 'ViewGeneratorCalendar' do |sub|
@@ -99,12 +112,13 @@ Pod::Spec.new do |s|
   s.subspec 'ViewGeneratorFcm' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorFcm"
     sub.dependency "RxSwiftPlus/ViewGenerator"
+    sub.dependency "KhrysalisRuntime"
     sub.dependency "Firebase/Messaging"
     sub.dependency "Firebase/Core"
   end
   s.subspec 'Bluetooth' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Bluetooth"
     sub.dependency "RxSwiftPlus/ViewGenerator"
-    sub.dependency "RxBluetoothKit"
+    sub.dependency "RxBluetoothKit", '~> 7.0'
   end
 end

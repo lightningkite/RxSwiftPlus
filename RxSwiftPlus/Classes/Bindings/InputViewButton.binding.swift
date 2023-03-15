@@ -1,5 +1,4 @@
 //Stub file made with Butterfly 2 (by Lightning Kite)
-import XmlToXibRuntime
 import RxSwift
 import RxCocoa
 
