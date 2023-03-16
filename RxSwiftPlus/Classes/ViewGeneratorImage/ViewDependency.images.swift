@@ -18,6 +18,13 @@ public enum NotAvailableErrorEnum : Error { case singleton }
 public let NotAvailableError = NotAvailableErrorEnum.singleton
 private enum RequestType { case image, video, document }
 
+public enum ImageTypes {
+    public static let JPEG = "image/jpeg"
+    public static let PNG = "image/png"
+    public static let WEBP = "image/webp"
+    public static let IMAGE_ANY = "image/*"
+}
+
 //--- ViewControllerAccess
 public extension ViewControllerAccess {
     //--- ViewControllerAccess image helpers
@@ -309,7 +316,7 @@ public extension ViewControllerAccess {
         return UUID().uuidString + uri.lastPathComponent
     }
     
-    func getFileName(name: String, type: MediaType) -> String? {
+    func getFileName(name: String, type: ImageTypes) -> String? {
         return UUID().uuidString + name
     }
     
@@ -339,7 +346,7 @@ public extension ViewControllerAccess {
         task.resume()
     }
     
-    func downloadFileData(data: Data, name: String, type: MediaType){
+    func downloadFileData(data: Data, name: String, type: ImageTypes){
 
         let documentsUrl:URL? = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         let destinationFileUrl = documentsUrl?.appendingPathComponent(getFileName(name: name, type: type)!)

@@ -13,7 +13,7 @@ public struct ImageLocalUrl: Image, Hashable {
         if let image = UIImage(fileURLWithPath: url) {
             return Single.just(image)
         } else {
-            return Single.error(HttpError.invalidUrl)
+            return Single.error(ImageLoadError.requestError)
         }
     }
 }
