@@ -1,133 +1,265 @@
 PODS:
   - Cosmos (23.0.0)
   - DKCamera (1.6.7)
-  - DKImagePickerController/Camera (4.3.2):
+  - DKImagePickerController/Camera (4.3.4):
     - DKCamera
     - DKImagePickerController/Core
-  - DKImagePickerController/Core (4.3.2):
+  - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
-  - DKImagePickerController/ImageDataManager (4.3.2)
-  - DKImagePickerController/Resource (4.3.2)
+  - DKImagePickerController/ImageDataManager (4.3.4)
+  - DKImagePickerController/Resource (4.3.4)
+  - Firebase/Core (10.13.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (~> 10.13.0)
+  - Firebase/CoreOnly (10.13.0):
+    - FirebaseCore (= 10.13.0)
+  - Firebase/Messaging (10.13.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 10.13.0)
+  - FirebaseAnalytics (10.13.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.13.0)
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseAnalytics/AdIdSupport (10.13.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleAppMeasurement (= 10.13.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FirebaseCore (10.13.0):
+    - FirebaseCoreInternal (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Logger (~> 7.8)
+  - FirebaseCoreInternal (10.14.0):
+    - "GoogleUtilities/NSData+zlib (~> 7.8)"
+  - FirebaseInstallations (10.14.0):
+    - FirebaseCore (~> 10.0)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (10.13.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.2)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Reachability (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement (10.13.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.13.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement/AdIdSupport (10.13.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.13.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.13.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
+    - GoogleUtilities/MethodSwizzler (~> 7.11)
+    - GoogleUtilities/Network (~> 7.11)
+    - "GoogleUtilities/NSData+zlib (~> 7.11)"
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+  - GoogleDataTransport (9.2.5):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/AppDelegateSwizzler (7.11.5):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (7.11.5):
+    - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/Logger (7.11.5):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (7.11.5):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (7.11.5):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (7.11.5)"
+  - GoogleUtilities/Reachability (7.11.5):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (7.11.5):
+    - GoogleUtilities/Logger
   - IBPCollectionViewCompositionalLayout (0.6.9)
-  - KhrysalisRuntime (0.1.0)
+  - KhrysalisRuntime (1.0.4)
+  - LifecycleHooks (0.6.2)
   - M13Checkbox (3.4.0)
-  - RxCocoa (6.2.0):
-    - RxRelay (= 6.2.0)
-    - RxSwift (= 6.2.0)
-  - RxCoreLocation (1.5.1):
-    - RxCoreLocation/Core (= 1.5.1)
-  - RxCoreLocation/Core (1.5.1):
-    - RxCocoa (~> 6.0)
-    - RxSwift (~> 6.0)
-  - RxRelay (6.2.0):
-    - RxSwift (= 6.2.0)
-  - RxSwift (6.2.0)
-  - RxSwiftPlus (0.1.0):
-    - RxSwiftPlus/Bindings (= 0.1.0)
-    - RxSwiftPlus/BindingsCosmo (= 0.1.0)
-    - RxSwiftPlus/BindingsSearchTextField (= 0.1.0)
-    - RxSwiftPlus/BindingsXibToXmlRuntime (= 0.1.0)
-    - RxSwiftPlus/BindingsXibToXmlRuntimeKhrysalis (= 0.1.0)
-    - RxSwiftPlus/Core (= 0.1.0)
-    - RxSwiftPlus/Http (= 0.1.0)
-    - RxSwiftPlus/Resources (= 0.1.0)
-    - RxSwiftPlus/ViewGenerator (= 0.1.0)
-    - RxSwiftPlus/ViewGeneratorCalendar (= 0.1.0)
-    - RxSwiftPlus/ViewGeneratorImage (= 0.1.0)
-    - RxSwiftPlus/ViewGeneratorLocation (= 0.1.0)
-  - RxSwiftPlus/Bindings (0.1.0):
+  - nanopb (2.30909.0):
+    - nanopb/decode (= 2.30909.0)
+    - nanopb/encode (= 2.30909.0)
+  - nanopb/decode (2.30909.0)
+  - nanopb/encode (2.30909.0)
+  - PromisesObjC (2.3.1)
+  - RxBluetoothKit (7.0.2):
+    - RxSwift (= 6.2.4)
+  - RxCocoa (6.2.4):
+    - RxRelay (= 6.2.4)
+    - RxSwift (= 6.2.4)
+  - RxCoreLocation (1.5.2):
+    - RxCoreLocation/Core (= 1.5.2)
+  - RxCoreLocation/Core (1.5.2):
+    - RxCocoa (= 6.2.4)
+    - RxSwift (= 6.2.4)
+  - RxRelay (6.2.4):
+    - RxSwift (= 6.2.4)
+  - RxSwift (6.2.4)
+  - RxSwiftPlus (1.0.2):
+    - RxSwiftPlus/Bindings (= 1.0.2)
+    - RxSwiftPlus/BindingsCosmo (= 1.0.2)
+    - RxSwiftPlus/BindingsSearchTextField (= 1.0.2)
+    - RxSwiftPlus/BindingsXmlToXibRuntime (= 1.0.2)
+    - RxSwiftPlus/BindingsXmlToXibRuntimeKhrysalis (= 1.0.2)
+    - RxSwiftPlus/Bluetooth (= 1.0.2)
+    - RxSwiftPlus/Core (= 1.0.2)
+    - RxSwiftPlus/Http (= 1.0.2)
+    - RxSwiftPlus/Resources (= 1.0.2)
+    - RxSwiftPlus/ViewGenerator (= 1.0.2)
+    - RxSwiftPlus/ViewGeneratorCalendar (= 1.0.2)
+    - RxSwiftPlus/ViewGeneratorFcm (= 1.0.2)
+    - RxSwiftPlus/ViewGeneratorImage (= 1.0.2)
+    - RxSwiftPlus/ViewGeneratorLocation (= 1.0.2)
+  - RxSwiftPlus/Bindings (1.0.2):
     - IBPCollectionViewCompositionalLayout
+    - LifecycleHooks
     - RxSwiftPlus/Core
-  - RxSwiftPlus/BindingsCosmo (0.1.0):
+  - RxSwiftPlus/BindingsCosmo (1.0.2):
     - Cosmos
     - RxSwiftPlus/Bindings
-  - RxSwiftPlus/BindingsSearchTextField (0.1.0):
+  - RxSwiftPlus/BindingsSearchTextField (1.0.2):
     - RxSwiftPlus/Bindings
     - SearchTextField
-  - RxSwiftPlus/BindingsXibToXmlRuntime (0.1.0):
+  - RxSwiftPlus/BindingsXmlToXibRuntime (1.0.2):
     - RxSwiftPlus/Bindings
     - XmlToXibRuntime
-  - RxSwiftPlus/BindingsXibToXmlRuntimeKhrysalis (0.1.0):
+  - RxSwiftPlus/BindingsXmlToXibRuntimeKhrysalis (1.0.2):
     - KhrysalisRuntime
-    - RxSwiftPlus/BindingsXibToXmlRuntime
-  - RxSwiftPlus/Core (0.1.0):
-    - RxCocoa (~> 6.2.0)
-    - RxSwift (~> 6.2.0)
-  - RxSwiftPlus/Http (0.1.0):
-    - Starscream
-  - RxSwiftPlus/Resources (0.1.0):
-    - RxSwiftPlus/Core
-  - RxSwiftPlus/ViewGenerator (0.1.0):
-    - RxSwiftPlus/Resources
-  - RxSwiftPlus/ViewGeneratorCalendar (0.1.0):
+    - RxSwiftPlus/BindingsXmlToXibRuntime
+  - RxSwiftPlus/Bluetooth (1.0.2):
+    - RxBluetoothKit (~> 7.0)
     - RxSwiftPlus/ViewGenerator
-  - RxSwiftPlus/ViewGeneratorImage (0.1.0):
+  - RxSwiftPlus/Core (1.0.2):
+    - RxCocoa (= 6.2.4)
+    - RxSwift (= 6.2.4)
+  - RxSwiftPlus/Http (1.0.2):
+    - RxSwiftPlus/Core
+    - RxSwiftPlus/Resources
+    - Starscream
+  - RxSwiftPlus/Resources (1.0.2):
+    - RxSwiftPlus/Bindings
+    - RxSwiftPlus/Core
+  - RxSwiftPlus/ViewGenerator (1.0.2):
+    - RxSwiftPlus/Bindings
+    - RxSwiftPlus/Resources
+  - RxSwiftPlus/ViewGeneratorCalendar (1.0.2):
+    - RxSwiftPlus/ViewGenerator
+  - RxSwiftPlus/ViewGeneratorFcm (1.0.2):
+    - Firebase/Core
+    - Firebase/Messaging
+    - KhrysalisRuntime
+    - RxSwiftPlus/ViewGenerator
+  - RxSwiftPlus/ViewGeneratorImage (1.0.2):
     - DKImagePickerController/Camera
     - DKImagePickerController/Core
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
     - RxSwiftPlus/Resources
     - RxSwiftPlus/ViewGenerator
-  - RxSwiftPlus/ViewGeneratorLocation (0.1.0):
+  - RxSwiftPlus/ViewGeneratorLocation (1.0.2):
     - RxCoreLocation
     - RxSwiftPlus/ViewGenerator
   - SearchTextField (1.2.4)
-  - Starscream (4.0.4)
-  - XmlToXibRuntime (0.1.0):
+  - Starscream (4.0.6)
+  - XmlToXibRuntime (1.0.2):
     - M13Checkbox
 
 DEPENDENCIES:
-  - KhrysalisRuntime (from `../../khrysalis/ios-runtime/KhrysalisRuntime/KhrysalisRuntime.podspec`)
-  - RxCoreLocation (from `https://github.com/RxSwiftCommunity/RxCoreLocation.git`, branch `master`)
+  - KhrysalisRuntime
+  - RxCoreLocation
   - RxSwiftPlus (from `../`)
-  - XmlToXibRuntime (from `../../XmlToXibRuntime/XmlToXibRuntime.podspec`)
+  - XmlToXibRuntime (from `../../android-layout-translator/XmlToXibRuntime.podspec`)
 
 SPEC REPOS:
+  https://github.com/lightningkite/cocoapods-spec-repo.git:
+    - KhrysalisRuntime
+    - RxBluetoothKit
+    - RxCocoa
+    - RxCoreLocation
+    - RxRelay
+    - RxSwift
   trunk:
     - Cosmos
     - DKCamera
     - DKImagePickerController
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseCoreInternal
+    - FirebaseInstallations
+    - FirebaseMessaging
+    - GoogleAppMeasurement
+    - GoogleDataTransport
+    - GoogleUtilities
     - IBPCollectionViewCompositionalLayout
+    - LifecycleHooks
     - M13Checkbox
-    - RxCocoa
-    - RxRelay
-    - RxSwift
+    - nanopb
+    - PromisesObjC
     - SearchTextField
     - Starscream
 
 EXTERNAL SOURCES:
-  KhrysalisRuntime:
-    :path: "../../khrysalis/ios-runtime/KhrysalisRuntime/KhrysalisRuntime.podspec"
-  RxCoreLocation:
-    :branch: master
-    :git: https://github.com/RxSwiftCommunity/RxCoreLocation.git
   RxSwiftPlus:
     :path: "../"
   XmlToXibRuntime:
-    :path: "../../XmlToXibRuntime/XmlToXibRuntime.podspec"
-
-CHECKOUT OPTIONS:
-  RxCoreLocation:
-    :commit: 8c4b301640e84c258018a82a105678ae287576a7
-    :git: https://github.com/RxSwiftCommunity/RxCoreLocation.git
+    :path: "../../android-layout-translator/XmlToXibRuntime.podspec"
 
 SPEC CHECKSUMS:
   Cosmos: b5c6a9a637e28a061b54c8f8b1d8529d7d4db73f
   DKCamera: a902b66921fca14b7a75266feb8c7568aa7caa71
-  DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
+  DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
+  Firebase: 343d7539befb614d22b2eae24759f6307b1175e9
+  FirebaseAnalytics: 9a12e090ead49f8877ed8132ae920e3cbbd2fcd0
+  FirebaseCore: 9948a31ff2c6cf323f9b040068201a95d271b68d
+  FirebaseCoreInternal: d558159ee6cc4b823c2296ecc193de9f6d9a5bb3
+  FirebaseInstallations: f672b1eda64e6381c21d424a2f680a943fd83f3b
+  FirebaseMessaging: c2b782a6af3058b6e53ac2a6eaab84c5786200c8
+  GoogleAppMeasurement: 3ae505b44174bcc0775f5c86cecc5826259fbb1e
+  GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
+  GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   IBPCollectionViewCompositionalLayout: bbb29e39ac564666a8c3cdb6633ed944b6feb55b
-  KhrysalisRuntime: f268ebe4be0aeab646e4f13f60b9ef5cd212b870
+  KhrysalisRuntime: 36a61826703f754c8879956f517c384221e8f7ab
+  LifecycleHooks: 246984e8ef036a8c717298166845bb999b245f5b
   M13Checkbox: 6f59404540ac98ba83a3d1afac335895a40c6a5d
-  RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
-  RxCoreLocation: 5db05ff830a313466a29e82798d983826b93a2f8
-  RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
-  RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
-  RxSwiftPlus: 71c2cbc4b0f77f28455b851f8e224a9df48dda6a
+  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  RxBluetoothKit: eaf89d210150d8e3999cfba90ae2ff4cabc52ad6
+  RxCocoa: bd4e0d2ca941ee58f670e20b1e7a793dac9632f3
+  RxCoreLocation: 90ac13f6fb7943d1a97ae5ccd34a4d6f49264a4b
+  RxRelay: f4ae9433e1b8ec324de77b3a0a76373e687fa2a7
+  RxSwift: 2b839723e63788edfe35bf940e9b6af04ad69e6c
+  RxSwiftPlus: e9909d143f0d51a62f96bd4689df00f41953d93d
   SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
-  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  XmlToXibRuntime: 544458d25275c4cccc86bc3e959300b886ea3736
+  Starscream: fb2c4510bebf908c62bd383bcf05e673720e91fd
+  XmlToXibRuntime: bc1d7bdeefe8c48ab809a2bc93bc78516e71c34e
 
-PODFILE CHECKSUM: 3f900ea493a3e2d60d061ea6c67d9f2e4d30caf7
+PODFILE CHECKSUM: 62c6099e13d09abfd51f36b030b79a2b4171e480
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.12.0

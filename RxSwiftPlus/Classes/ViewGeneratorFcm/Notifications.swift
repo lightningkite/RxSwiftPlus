@@ -64,7 +64,7 @@ public class Notifications {
             }
         }
     }
-    public func configure(dependency: ViewControllerAccess){
+    public func configure(_ dependency: ViewControllerAccess){
         request(insistMessage:"Notification are required for this app to work correctly. Open Settings?")
     }
 }

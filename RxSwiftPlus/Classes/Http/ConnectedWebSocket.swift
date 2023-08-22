@@ -9,6 +9,7 @@ public protocol WebSocketInterface: Disposable {
 }
 
 public final class ConnectedWebSocket: WebSocketInterface, WebSocketDelegate, Disposable, ObserverType {
+    
     public typealias Element = WebSocketFrame
     public var write: AnyObserver<WebSocketFrame> { return AnyObserver(self) }
     
@@ -43,7 +44,7 @@ public final class ConnectedWebSocket: WebSocketInterface, WebSocketDelegate, Di
         self.url = url
     }
 
-    public func didReceive(event: WebSocketEvent, client: WebSocket) {
+    public func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient) {
         switch event {
         case .binary(let data):
 //            print("Socket to \(url) got binary message of length '\(data.count)'")
