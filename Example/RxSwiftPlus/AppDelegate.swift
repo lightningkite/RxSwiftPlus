@@ -10,7 +10,7 @@ import UIKit
 import RxSwiftPlus
 
 @UIApplicationMain
-class AppDelegate: ViewGeneratorAppDelegate {
+	class AppDelegate: ViewGeneratorAppDelegate {
     override func makeMain() -> ViewGenerator {
         return RootVG()
     }

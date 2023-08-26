@@ -107,7 +107,7 @@ Pod::Spec.new do |s|
   s.subspec 'ViewGeneratorLocation' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorLocation"
     sub.dependency "RxSwiftPlus/ViewGenerator"
-    sub.dependency "RxCoreLocation"
+    sub.dependency "RxCoreLocation", '1.5.2'
   end
   s.subspec 'ViewGeneratorFcm' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorFcm"

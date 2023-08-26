@@ -9,16 +9,16 @@ PODS:
     - DKImagePickerController/Resource
   - DKImagePickerController/ImageDataManager (4.3.4)
   - DKImagePickerController/Resource (4.3.4)
-  - Firebase/Core (10.13.0):
+  - Firebase/Core (10.14.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 10.13.0)
-  - Firebase/CoreOnly (10.13.0):
-    - FirebaseCore (= 10.13.0)
-  - Firebase/Messaging (10.13.0):
+    - FirebaseAnalytics (~> 10.14.0)
+  - Firebase/CoreOnly (10.14.0):
+    - FirebaseCore (= 10.14.0)
+  - Firebase/Messaging (10.14.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.13.0)
-  - FirebaseAnalytics (10.13.0):
-    - FirebaseAnalytics/AdIdSupport (= 10.13.0)
+    - FirebaseMessaging (~> 10.14.0)
+  - FirebaseAnalytics (10.14.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.14.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
@@ -26,16 +26,16 @@ PODS:
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseAnalytics/AdIdSupport (10.13.0):
+  - FirebaseAnalytics/AdIdSupport (10.14.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement (= 10.13.0)
+    - GoogleAppMeasurement (= 10.14.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCore (10.13.0):
+  - FirebaseCore (10.14.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
@@ -46,7 +46,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.13.0):
+  - FirebaseMessaging (10.14.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.2)
@@ -55,21 +55,21 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement (10.13.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.13.0)
+  - GoogleAppMeasurement (10.14.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.14.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.13.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.13.0)
+  - GoogleAppMeasurement/AdIdSupport (10.14.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.14.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.13.0):
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.14.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
@@ -183,7 +183,7 @@ PODS:
     - RxSwiftPlus/Resources
     - RxSwiftPlus/ViewGenerator
   - RxSwiftPlus/ViewGeneratorLocation (1.0.2):
-    - RxCoreLocation
+    - RxCoreLocation (= 1.5.2)
     - RxSwiftPlus/ViewGenerator
   - SearchTextField (1.2.4)
   - Starscream (4.0.6)
@@ -235,13 +235,13 @@ SPEC CHECKSUMS:
   Cosmos: b5c6a9a637e28a061b54c8f8b1d8529d7d4db73f
   DKCamera: a902b66921fca14b7a75266feb8c7568aa7caa71
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
-  Firebase: 343d7539befb614d22b2eae24759f6307b1175e9
-  FirebaseAnalytics: 9a12e090ead49f8877ed8132ae920e3cbbd2fcd0
-  FirebaseCore: 9948a31ff2c6cf323f9b040068201a95d271b68d
+  Firebase: 6c1bf3f534bc422d52af2e41fe0d50bf08b6b773
+  FirebaseAnalytics: 5c6d58814afa4db82cf7fdbc02b0b0e2fa3d43ff
+  FirebaseCore: 6fc17ac9f03509d51c131298aacb3ee5698b4f02
   FirebaseCoreInternal: d558159ee6cc4b823c2296ecc193de9f6d9a5bb3
   FirebaseInstallations: f672b1eda64e6381c21d424a2f680a943fd83f3b
-  FirebaseMessaging: c2b782a6af3058b6e53ac2a6eaab84c5786200c8
-  GoogleAppMeasurement: 3ae505b44174bcc0775f5c86cecc5826259fbb1e
+  FirebaseMessaging: 1077a4499f0c0a140b9a2e34fe08a1acc806b36d
+  GoogleAppMeasurement: 7fee012a868315d418f365fbc8d394d8e020e749
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   IBPCollectionViewCompositionalLayout: bbb29e39ac564666a8c3cdb6633ed944b6feb55b
@@ -255,7 +255,7 @@ SPEC CHECKSUMS:
   RxCoreLocation: 90ac13f6fb7943d1a97ae5ccd34a4d6f49264a4b
   RxRelay: f4ae9433e1b8ec324de77b3a0a76373e687fa2a7
   RxSwift: 2b839723e63788edfe35bf940e9b6af04ad69e6c
-  RxSwiftPlus: e9909d143f0d51a62f96bd4689df00f41953d93d
+  RxSwiftPlus: f2caaa70a29c52b8d1ec324d40c0de5616fa6a3d
   SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
   Starscream: fb2c4510bebf908c62bd383bcf05e673720e91fd
   XmlToXibRuntime: bc1d7bdeefe8c48ab809a2bc93bc78516e71c34e
