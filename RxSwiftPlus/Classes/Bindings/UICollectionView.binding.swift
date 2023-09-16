@@ -106,7 +106,7 @@ public extension UICollectionView {
         if itemsToReloadSoon.isEmpty {
             post {
                 let itemsToReload = self.itemsToReloadSoon.filter { $0.section < self.numberOfSections && $0.row < self.numberOfItems(inSection: $0.section) }
-//                 print(itemsToReload)
+                //                 print(itemsToReload)
                 self.reloadItems(at: Array(itemsToReload))
                 self.itemsToReloadSoon = []
             }
@@ -173,7 +173,7 @@ public extension UICollectionView {
         guard let centerId = self.indexPathForItem(at: CGPoint(x: self.contentOffset.x + self.frame.midX, y: self.contentOffset.y)) else { around(); return }
         guard let oldCenterPos = self.collectionViewLayout.layoutAttributesForItem(at: centerId)?.frame.origin else { around(); return }
         let oldScreenY = oldCenterPos.y - self.contentOffset.y
-//         print("Cell \(centerId) was at \(oldScreenY)")
+        //         print("Cell \(centerId) was at \(oldScreenY)")
         around()
         while true {
             let newCenterPos = self.collectionViewLayout.layoutAttributesForItem(at: centerId)?.frame.origin ?? oldCenterPos
@@ -181,20 +181,20 @@ public extension UICollectionView {
             let offset = newScreenY - oldScreenY
             self.contentOffset.y += offset
             self.layoutIfNeeded()
-//             print("Cell \(centerId) is now at \(newScreenY) after moving \(offset)")
+            //             print("Cell \(centerId) is now at \(newScreenY) after moving \(offset)")
             if abs(offset) < 4 { break }
         }
         post {
             let newCenterPos = self.collectionViewLayout.layoutAttributesForItem(at: centerId)?.frame.origin ?? oldCenterPos
             let newScreenY = newCenterPos.y - self.contentOffset.y
-//             print("Cell \(centerId) is now at \(newScreenY) after a post")
+            //             print("Cell \(centerId) is now at \(newScreenY) after a post")
         }
     }
     internal static let atEndExtension = ExtensionProperty<UICollectionView, ()->Void>()
     func whenScrolledToEnd(action: @escaping () -> Void) -> Void{
         UICollectionView.atEndExtension.set(self, action)
     }
-
+    
     //--- RecyclerView.bind(Property<List<T>>, T, (Property<T>)->UIView)
     fileprivate func setupDefault() {
         let current = self.collectionViewLayout
@@ -205,7 +205,7 @@ public extension UICollectionView {
             current.configuration.interSectionSpacing = max(self.contentInset.top, self.contentInset.bottom)
         }
     }
-        
+    
 }
 
 class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollectionViewDataSource, HasAtPosition {
@@ -213,7 +213,8 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
     let makeView: (Observable<T>, Int) -> UIView
     let getType: (T) -> Int
     var atPosition: (Int) -> Void = { _ in }
-
+    var recentlyScrolled = false
+    
     init(
         makeView: @escaping (Observable<T>, Int) -> UIView,
         getType: @escaping (T) -> Int = { _ in 0 },
@@ -233,13 +234,13 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(type), for: indexPath) as! ObsUICollectionViewCell
         cell.indexPath = indexPath
-//        cell.resizeEnabled = false
+        //        cell.resizeEnabled = false
         if collectionView.reverseDirection {
             cell.contentView.transform = CGAffineTransform(scaleX: 1, y: -1)
         } else {
             cell.contentView.transform = .identity
         }
-
+        
         if cell.obs == nil {
             let obs = BehaviorSubject(value: item)
             let newView = makeView(obs, type)
@@ -265,23 +266,24 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         } else {
             fatalError("Could not find cell observable")
         }
-//        cell.absorbCaps(collectionView: collectionView)
-//        cell.resizeEnabled = true
+        //        cell.absorbCaps(collectionView: collectionView)
+        //        cell.resizeEnabled = true
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if(indexPath.row >= items.count - 1 && items.count > 1){
-//             print("Triggered end with \(indexPath.row) size \(items.count)")
+        if(indexPath.row >= items.count - 1 && items.count > 1 && recentlyScrolled){
+            //             print("Triggered end with \(indexPath.row) size \(items.count)")
             if let atEnd = UICollectionView.atEndExtension.get(collectionView) {
+                recentlyScrolled = false
                 atEnd()
             }
         }
     }
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-
+        
         if let cell = cell as? ObsUICollectionViewCell {
             cell.indexPath = nil
         }
@@ -291,6 +293,7 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         let collectionView = scrollView as! UICollectionView
         if let x = collectionView.currentIndex {
             if x != lastReportedScroll {
+                recentlyScrolled = true
                 atPosition(Int(x))
                 lastReportedScroll = x
             }
@@ -302,111 +305,111 @@ class ObsUICollectionViewCell: UICollectionViewCell {
     
     weak var collectionView: UICollectionView?
     var obs: Any?
-//    var resizeEnabled = false
+    //    var resizeEnabled = false
     var indexPath: IndexPath? = nil
     
-//    var heightSetSize: CGFloat? = nil
-//    var widthSetSize: CGFloat? = nil
-//
+    //    var heightSetSize: CGFloat? = nil
+    //    var widthSetSize: CGFloat? = nil
+    //
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
-
+    
     private func commonInit(){
         self.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         ({ () -> Void in
             let c = contentView.topAnchor.constraint(equalTo: self.topAnchor)
-//            c.priority = UILayoutPriority(999)
+            //            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
         ({ () -> Void in
             let c = contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor)
-//            c.priority = UILayoutPriority(999)
+            //            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
         ({ () -> Void in
             let c = contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
-//            c.priority = UILayoutPriority(999)
+            //            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
         ({ () -> Void in
             let c = contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-//            c.priority = UILayoutPriority(999)
+            //            c.priority = UILayoutPriority(999)
             c.isActive = true
         })()
     }
-//
-//    override func layoutSubviews() {
-//        contentView.frame = self.bounds
-//        for child in contentView.subviews {
-//            child.frame = contentView.bounds
-//        }
-//    }
-//
-//    func absorbCaps(collectionView: UICollectionView){
-//        self.collectionView = collectionView
-//        if let layout = collectionView.collectionViewLayout as? UICollectionViewCompositionalLayout {
-//            if let s = layout.fractionalWidth {
-//                widthSetSize = collectionView.frame.size.width * s
-//            }
-//            if let s = layout.fractionalHeight {
-//                heightSetSize = collectionView.frame.size.height * s
-//            }
-//        }
-//    }
-//
-//    var lastSize: CGSize = .zero
-//    private func internalMeasure(_ targetSize: CGSize) -> CGSize {
-//        var newTargetSize = targetSize
-//        if let widthSetSize = widthSetSize {
-//            newTargetSize.width = widthSetSize
-//        }
-//        if let heightSetSize = heightSetSize {
-//            newTargetSize.height = heightSetSize
-//        }
-//        var maxX: CGFloat = 0
-//        var maxY: CGFloat = 0
-//        for child in contentView.subviews {
-//            let childSize = child.systemLayoutSizeFitting(newTargetSize)
-//            if childSize.width > maxX { maxX = childSize.width }
-//            if childSize.height > maxY { maxY = childSize.height }
-//        }
-//        return CGSize(width: maxX, height: maxY)
-//    }
-//
-//    override func systemLayoutSizeFitting(_ targetSize: CGSize) -> CGSize {
-//        let newSize = internalMeasure(targetSize)
-//        lastSize = newSize
-//        return newSize
-//    }
-//
-//    override func sizeThatFits(_ size: CGSize) -> CGSize {
-//        return systemLayoutSizeFitting(size)
-//    }
-//    override var intrinsicContentSize: CGSize {
-//        return systemLayoutSizeFitting(CGSize.zero)
-//    }
-//
-//    func childSizeUpdated(_ child: UIView) {
-//        guard resizeEnabled, lastSize != internalMeasure(.zero) else { return }
-//        self.setNeedsLayout()
-//        if let collectionView = collectionView {
-//            if self.indexPath != nil {
-//                collectionView.refreshSizes()
-//            }
-//        }
-//    }
+    //
+    //    override func layoutSubviews() {
+    //        contentView.frame = self.bounds
+    //        for child in contentView.subviews {
+    //            child.frame = contentView.bounds
+    //        }
+    //    }
+    //
+    //    func absorbCaps(collectionView: UICollectionView){
+    //        self.collectionView = collectionView
+    //        if let layout = collectionView.collectionViewLayout as? UICollectionViewCompositionalLayout {
+    //            if let s = layout.fractionalWidth {
+    //                widthSetSize = collectionView.frame.size.width * s
+    //            }
+    //            if let s = layout.fractionalHeight {
+    //                heightSetSize = collectionView.frame.size.height * s
+    //            }
+    //        }
+    //    }
+    //
+    //    var lastSize: CGSize = .zero
+    //    private func internalMeasure(_ targetSize: CGSize) -> CGSize {
+    //        var newTargetSize = targetSize
+    //        if let widthSetSize = widthSetSize {
+    //            newTargetSize.width = widthSetSize
+    //        }
+    //        if let heightSetSize = heightSetSize {
+    //            newTargetSize.height = heightSetSize
+    //        }
+    //        var maxX: CGFloat = 0
+    //        var maxY: CGFloat = 0
+    //        for child in contentView.subviews {
+    //            let childSize = child.systemLayoutSizeFitting(newTargetSize)
+    //            if childSize.width > maxX { maxX = childSize.width }
+    //            if childSize.height > maxY { maxY = childSize.height }
+    //        }
+    //        return CGSize(width: maxX, height: maxY)
+    //    }
+    //
+    //    override func systemLayoutSizeFitting(_ targetSize: CGSize) -> CGSize {
+    //        let newSize = internalMeasure(targetSize)
+    //        lastSize = newSize
+    //        return newSize
+    //    }
+    //
+    //    override func sizeThatFits(_ size: CGSize) -> CGSize {
+    //        return systemLayoutSizeFitting(size)
+    //    }
+    //    override var intrinsicContentSize: CGSize {
+    //        return systemLayoutSizeFitting(CGSize.zero)
+    //    }
+    //
+    //    func childSizeUpdated(_ child: UIView) {
+    //        guard resizeEnabled, lastSize != internalMeasure(.zero) else { return }
+    //        self.setNeedsLayout()
+    //        if let collectionView = collectionView {
+    //            if self.indexPath != nil {
+    //                collectionView.refreshSizes()
+    //            }
+    //        }
+    //    }
     
-//    deinit {
-//        self.removedDeinitHandler()
-//    }
+    //    deinit {
+    //        self.removedDeinitHandler()
+    //    }
 }
 
 public extension UICollectionView {
