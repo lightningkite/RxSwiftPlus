@@ -7,7 +7,7 @@ enum ObservableExtensionError: Error {
 
 public extension Observable {
 
-    static func create(_ action: @escaping (ObservableEmitter<Element>) -> Void) -> Observable<Element> {
+    static func create(_ action: @escaping (ObservableEmitter<Element>) -> Void) -> RxSwift.Observable<Element> {
         return Observable.create { (it: AnyObserver<Element>) in
             let emitter = ObservableEmitter(basedOn: it)
             action(emitter)
@@ -15,8 +15,8 @@ public extension Observable {
         }
     }
 
-    static func just(_ items: Element...) -> Observable<Element> {
-        return Observable<Element>.from(items)
+    static func just(_ items: Element...) -> RxSwift.Observable<Element> {
+        return RxSwift.Observable<Element>.from(items)
     }
     
     func firstOrError() -> Single<Element> {
@@ -31,10 +31,10 @@ public extension Observable {
 }
 
 public extension Completable {
-    func toObservable<T>() -> Observable<T> {
+    func toObservable<T>() -> RxSwift.Observable<T> {
         return self.asObservable().map { _ in fatalError() }
     }
-    func startWith<T: ObservableType>(_ value: T) -> Observable<T.Element> {
+    func startWith<T: ObservableType>(_ value: T) -> RxSwift.Observable<T.Element> {
         return Observable.concat(
             value.asObservable(),
             self.toObservable()
@@ -107,14 +107,14 @@ public class SingleEmitter<Element> {
 }
 
 extension Observable {
-    public func distinct<T: Hashable>(_ by: @escaping (Element)->T) -> Observable<Element> {
+    public func distinct<T: Hashable>(_ by: @escaping (Element)->T) -> RxSwift.Observable<Element> {
          var cache = Set<T>()
-         return flatMap { element -> Observable<Element> in
+         return flatMap { element -> RxSwift.Observable<Element> in
              if cache.contains(by(element)) {
-                 return Observable<Element>.empty()
+                 return RxSwift.Observable<Element>.empty()
              } else {
                  cache.insert(by(element))
-                 return Observable<Element>.just(element)
+                 return RxSwift.Observable<Element>.just(element)
              }
          }
      }
@@ -126,14 +126,14 @@ extension Observable where Element: Hashable {
      - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
      - returns: An observable sequence only containing the distinct contiguous elements, based on equality operator, from the source sequence.
      */
-     public func distinct() -> Observable<Element> {
+     public func distinct() -> RxSwift.Observable<Element> {
          var cache = Set<Element>()
-         return flatMap { element -> Observable<Element> in
+         return flatMap { element -> RxSwift.Observable<Element> in
              if cache.contains(element) {
-                 return Observable<Element>.empty()
+                 return RxSwift.Observable<Element>.empty()
              } else {
                  cache.insert(element)
-                 return Observable<Element>.just(element)
+                 return RxSwift.Observable<Element>.just(element)
              }
          }
      }
@@ -145,14 +145,14 @@ extension Observable where Element: Equatable {
      - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
      - returns: An observable sequence only containing the distinct contiguous elements, based on equality operator, from the source sequence.
      */
-    public func distinct() -> Observable<Element> {
+    public func distinct() -> RxSwift.Observable<Element> {
         var cache = [Element]()
-        return flatMap { element -> Observable<Element> in
+        return flatMap { element -> RxSwift.Observable<Element> in
             if cache.contains(element) {
-                return Observable<Element>.empty()
+                return RxSwift.Observable<Element>.empty()
             } else {
                 cache.append(element)
-                return Observable<Element>.just(element)
+                return RxSwift.Observable<Element>.just(element)
             }
         }
     }
@@ -167,18 +167,18 @@ extension ObservableType {
     */
     public func combineLatest<O2: ObservableType, OUT>
         (_ observable: O2, _ function: @escaping (Element, O2.Element) throws -> OUT)
-            -> Observable<OUT> {
-                return Observable<OUT>.combineLatest(self, observable, resultSelector: function)
+            -> RxSwift.Observable<OUT> {
+                return RxSwift.Observable<OUT>.combineLatest(self, observable, resultSelector: function)
     }
 }
 
 public extension Observable {
-    func mapNotNull<Destination>(transform: @escaping (Element) -> Destination?) -> Observable<Destination> {
-        return self.flatMap { (it: Element) -> Observable<Destination> in
+    func mapNotNull<Destination>(transform: @escaping (Element) -> Destination?) -> RxSwift.Observable<Destination> {
+        return self.flatMap { (it: Element) -> RxSwift.Observable<Destination> in
             if let result: Destination = transform(it) {
-                return Observable<Destination>.just(result)
+                return RxSwift.Observable<Destination>.just(result)
             } else {
-                return Observable<Destination>.empty()
+                return RxSwift.Observable<Destination>.empty()
             }
         }
     }
@@ -186,7 +186,7 @@ public extension Observable {
 
 
 public extension ConnectableObservableType {
-    func autoConnect() -> Observable<Element> {
+    func autoConnect() -> RxSwift.Observable<Element> {
         var connected = false
         return self
             .do(onSubscribe: {
@@ -224,39 +224,39 @@ extension SubjectType {
 // TODO: Find a way to remove the below
 public extension Observable {
 
-    func flatMapNR<Destination>(_ conversion: @escaping (Element)->Observable<Destination>) -> Observable<Destination> {
-        return self.flatMap { (it: Element) -> Observable<Destination> in
+    func flatMapNR<Destination>(_ conversion: @escaping (Element)->RxSwift.Observable<Destination>) -> RxSwift.Observable<Destination> {
+        return self.flatMap { (it: Element) -> RxSwift.Observable<Destination> in
             conversion(it)
         }
     }
 
-    func switchMap<Destination>(_ conversion: @escaping (Element) -> Observable<Destination>) -> Observable<Destination> {
-        return self.flatMapLatest { (it: Element) -> Observable<Destination> in
+    func switchMap<Destination>(_ conversion: @escaping (Element) -> RxSwift.Observable<Destination>) -> RxSwift.Observable<Destination> {
+        return self.flatMapLatest { (it: Element) -> RxSwift.Observable<Destination> in
             conversion(it)
         }
     }
 
-    func drop(_ count: Int) -> Observable<Element> {
+    func drop(_ count: Int) -> RxSwift.Observable<Element> {
         return self.skip(count)
     }
 
-    func doOnComplete(_ action: @escaping () throws -> Void) -> Observable<Element> {
+    func doOnComplete(_ action: @escaping () throws -> Void) -> RxSwift.Observable<Element> {
         return self.do(onCompleted: action)
     }
-    func doOnError(_ action: @escaping (Error) throws -> Void) -> Observable<Element> {
+    func doOnError(_ action: @escaping (Error) throws -> Void) -> RxSwift.Observable<Element> {
         return self.do(onError: action)
     }
-    func doOnNext(_ action: @escaping (Element) throws -> Void) -> Observable<Element> {
+    func doOnNext(_ action: @escaping (Element) throws -> Void) -> RxSwift.Observable<Element> {
         return self.do(onNext: action)
     }
-    func doOnTerminate(_ action: @escaping () -> Void) -> Observable<Element> {
+    func doOnTerminate(_ action: @escaping () -> Void) -> RxSwift.Observable<Element> {
         return self.do(onDispose: action)
     }
 
-    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Observable<Element> {
+    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> RxSwift.Observable<Element> {
         return self.do(onSubscribe: { action(placeholderDisposable) })
     }
-    func doOnDispose(_ action: @escaping () -> Void) -> Observable<Element> {
+    func doOnDispose(_ action: @escaping () -> Void) -> RxSwift.Observable<Element> {
         return self.do(onDispose: action)
     }
 }
@@ -264,7 +264,7 @@ public extension Observable {
 private let placeholderDisposable = DisposableLambda {}
 
 public extension PrimitiveSequenceType where Trait == SingleTrait {
-    func toObservable() -> Observable<Element> {
+    func toObservable() -> RxSwift.Observable<Element> {
         return self.primitiveSequence.asObservable()
     }
 
@@ -295,7 +295,7 @@ public extension PrimitiveSequenceType where Trait == SingleTrait {
     }
 }
 public extension PrimitiveSequenceType where Trait == MaybeTrait {
-    func toObservable() -> Observable<Element> {
+    func toObservable() -> RxSwift.Observable<Element> {
         return self.primitiveSequence.asObservable()
     }
     func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Maybe<Element> {
@@ -348,27 +348,27 @@ public extension PublishSubject {
 }
 
 //extension Observable where Observable.Element: OptionalConvertible {
-//    func filterNotNull() -> Observable<Element.Wrapped> {
+//    func filterNotNull() -> RxSwift.Observable<Element.Wrapped> {
 //        self.filter { $0.asOptional != nil }.map { $0.asOptional! }
 //    }
 //}
 
 public func xListCombineLatest<IN, OUT>(
-    _ self: Array<Observable<IN>>,
+    _ self: Array<RxSwift.Observable<IN>>,
     combine: @escaping (Array<IN>) -> OUT
-) -> Observable<OUT> {
+) -> RxSwift.Observable<OUT> {
     return Observable.combineLatest(self, resultSelector: combine)
 }
 public func xListCombineLatest<IN>(
-    _ self: Array<Observable<IN>>
-) -> Observable<Array<IN>> {
+    _ self: Array<RxSwift.Observable<IN>>
+) -> RxSwift.Observable<Array<IN>> {
     return Observable.combineLatest(self)
 }
 public extension Array where Element: ObservableType {
-    func combineLatest<OUT>(combine: @escaping (Array<Element.Element>)->OUT) -> Observable<OUT> {
+    func combineLatest<OUT>(combine: @escaping (Array<Element.Element>)->OUT) -> RxSwift.Observable<OUT> {
         return Observable.combineLatest(self, resultSelector: combine)
     }
-    func combineLatest() -> Observable<Array<Element.Element>> {
+    func combineLatest() -> RxSwift.Observable<Array<Element.Element>> {
         return Observable.combineLatest(self)
     }
 }
