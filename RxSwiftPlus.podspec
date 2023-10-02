@@ -120,6 +120,6 @@ Pod::Spec.new do |s|
   s.subspec 'Bluetooth' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/Bluetooth"
     sub.dependency "RxSwiftPlus/ViewGenerator"
-    sub.dependency "RxBluetoothKit", "7.0.5"
+    sub.dependency "RxBluetoothKit"
   end
 end
