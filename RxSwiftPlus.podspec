@@ -28,7 +28,6 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Joseph' => 'joseph@lightningkite.com' }
   s.source           = { :git => 'https://github.com/lightningkite/RxSwiftPlus.git', :tag => s.version.to_s }
-  s.source           = { :git => 'https://github.com/lightningkite/cocoapods-spec-repo' }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '11.0'
