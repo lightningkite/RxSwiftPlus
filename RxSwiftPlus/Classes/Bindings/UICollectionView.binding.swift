@@ -190,10 +190,6 @@ public extension UICollectionView {
             //             print("Cell \(centerId) is now at \(newScreenY) after a post")
         }
     }
-    internal static let atEndExtension = ExtensionProperty<UICollectionView, ()->Void>()
-    func whenScrolledToEnd(action: @escaping () -> Void) -> Void{
-        UICollectionView.atEndExtension.set(self, action)
-    }
     
     //--- RecyclerView.bind(Property<List<T>>, T, (Property<T>)->UIView)
     fileprivate func setupDefault() {
@@ -208,12 +204,14 @@ public extension UICollectionView {
     
 }
 
-class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollectionViewDataSource, HasAtPosition {
+
+class GeneralCollectionDelegate<T>: ScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, HasAtPosition {
     var items: Array<T> = []
     let makeView: (Observable<T>, Int) -> UIView
     let getType: (T) -> Int
     var atPosition: (Int) -> Void = { _ in }
-    var recentlyScrolled = false
+    private var lastReportedScroll = -1
+    private var recentlyScrolled = false
     
     init(
         makeView: @escaping (Observable<T>, Int) -> UIView,
@@ -273,29 +271,32 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if(indexPath.row >= items.count - 1 && items.count > 1 && recentlyScrolled){
-            //             print("Triggered end with \(indexPath.row) size \(items.count)")
-            if let atEnd = UICollectionView.atEndExtension.get(collectionView) {
-                recentlyScrolled = false
-                atEnd()
-            }
-        }
-    }
+
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
         if let cell = cell as? ObsUICollectionViewCell {
             cell.indexPath = nil
         }
     }
-    private var lastReportedScroll = -1
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
         if let x = collectionView.currentIndex {
             if x != lastReportedScroll {
                 recentlyScrolled = true
                 atPosition(Int(x))
                 lastReportedScroll = x
+            }
+        }
+        
+        let scrollViewHeight = scrollView.frame.size.height;
+        let scrollContentSizeHeight = scrollView.contentSize.height;
+        let scrollOffset = scrollView.contentOffset.y;
+        
+        if let atEnd = UIScrollView.atEndExtension.get(scrollView) {
+            if (scrollOffset + scrollViewHeight == scrollContentSizeHeight && recentlyScrolled)
+            {
+                recentlyScrolled = false
+                atEnd()
             }
         }
     }
