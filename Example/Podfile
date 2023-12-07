@@ -1,6 +1,6 @@
 use_frameworks!
 
-platform :ios, '11.0'
+platform :ios, '12.0'
 	
 source "https://github.com/lightningkite/cocoapods-spec-repo.git"
 source "https://cdn.cocoapods.org"

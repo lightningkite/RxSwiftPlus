@@ -15,7 +15,7 @@
 Pod::Spec.new do |s|
 
   s.name             = 'RxSwiftPlus'
-  s.version          = '1.0.7'
+  s.version          = '1.0.8'
   s.summary          = 'Use Rx to bind data to your views'
 
   s.description      = <<-DESC
@@ -64,7 +64,7 @@ Pod::Spec.new do |s|
     sub.source_files =  "RxSwiftPlus/Classes/Bindings"
     sub.dependency "RxSwiftPlus/Core"
     sub.dependency "IBPCollectionViewCompositionalLayout"
-    sub.dependency 'LifecycleHooks'
+    sub.dependency 'LifecycleHooks', '0.6.3-LK'
   end
   s.subspec 'BindingsCosmo' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/BindingsCosmo"
@@ -74,7 +74,7 @@ Pod::Spec.new do |s|
   s.subspec 'BindingsXmlToXibRuntime' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/BindingsXmlToXibRuntime"
     sub.dependency "RxSwiftPlus/Bindings"
-    sub.dependency "XmlToXibRuntime"
+    sub.dependency "XmlToXibRuntime", "1.0.4"
   end
   s.subspec 'BindingsXmlToXibRuntimeKhrysalis' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/BindingsXmlToXibRuntimeKhrysalis"
@@ -99,10 +99,10 @@ Pod::Spec.new do |s|
     sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorImage"
     sub.dependency "RxSwiftPlus/ViewGenerator"
     sub.dependency "RxSwiftPlus/Resources"
-    sub.dependency "DKImagePickerController/Core"
-    sub.dependency "DKImagePickerController/ImageDataManager"
-    sub.dependency "DKImagePickerController/Resource"
-    sub.dependency "DKImagePickerController/Camera"
+    sub.dependency "DKImagePickerController/Core", "4.3.5-LK"
+    sub.dependency "DKImagePickerController/ImageDataManager", "4.3.5-LK"
+    sub.dependency "DKImagePickerController/Resource", "4.3.5-LK"
+    sub.dependency "DKImagePickerController/Camera", "4.3.5-LK"
   end
   s.subspec 'ViewGeneratorLocation' do |sub|
     sub.source_files =  "RxSwiftPlus/Classes/ViewGeneratorLocation"
